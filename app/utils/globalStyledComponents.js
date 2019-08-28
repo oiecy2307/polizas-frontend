@@ -6,6 +6,11 @@ export const SpaceBetween = styled.div`
   ${props => (props.alignVertical ? 'align-items: center;' : '')}
 `;
 
+export const AlignVertical = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const LabelButton = styled.button`
   background: transparent;
   border: none;

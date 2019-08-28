@@ -7,6 +7,7 @@
 
 import React from 'react';
 import Input from 'components/InputText';
+import LayersIcon from '@material-ui/icons/Layers';
 import {
   SpaceBetween,
   LabelButton,
@@ -25,7 +26,9 @@ export default function HomePage() {
   return (
     <MainContainer>
       <FormSection>
-        <Logo src="http://tecint.mx/images/logo-tecint.png" />
+        <Logo>
+          <LayersIcon style={{ color: '#108043', fontSize: 32 }} />
+        </Logo>
         <H1>Bienvenido a Suppdesk</H1>
         <P>
           Por favor ingresa los siguientes datos para poder acceder a nuestro
