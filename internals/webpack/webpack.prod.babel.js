@@ -116,11 +116,11 @@ module.exports = require('./webpack.base.babel')({
     }),
 
     new WebpackPwaManifest({
-      name: 'React Boilerplate',
-      short_name: 'React BP',
-      description: 'My React Boilerplate-based project!',
+      name: 'Suppdesk Backoffice',
+      short_name: 'Suppdesk',
+      description: 'Suppdesk - administrador de tickets',
       background_color: '#fafafa',
-      theme_color: '#b1624d',
+      theme_color: '#0F8043',
       inject: true,
       ios: true,
       icons: [
