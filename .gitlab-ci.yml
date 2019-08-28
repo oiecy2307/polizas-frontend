@@ -1,0 +1,19 @@
+image: node:10
+
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  environment: Production
+  only:
+    - master
+  script:
+    - npm install -g firebase-tools
+    - npm install
+    - npm run build
+    - firebase use --token $FIREBASE_DEPLOY_KEY suppdesk
+    - firebase deploy -m "Pipeline $CI_PIPELINE_ID, build $CI_BUILD_ID" --non-interactive --token $FIREBASE_DEPLOY_KEY
+
+after_script:
+  - rm /tmp/$CI_PIPELINE_ID.json
