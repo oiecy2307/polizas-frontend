@@ -57,7 +57,7 @@ export function MainLayout() {
       <Flex>
         <LeftMenu>
           <MenuItem active>
-
+            Ejemplo de un item
           </MenuItem>
         </LeftMenu>
       </Flex>
