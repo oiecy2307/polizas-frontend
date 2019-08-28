@@ -6,13 +6,48 @@
  */
 
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
+import Input from 'components/InputText';
+import {
+  SpaceBetween,
+  LabelButton,
+  Button,
+} from 'utils/globalStyledComponents';
+import {
+  MainContainer,
+  FormSection,
+  Logo,
+  H1,
+  P,
+  Form,
+} from './styledComponents';
 
 export default function HomePage() {
   return (
-    <h1>
-      <FormattedMessage {...messages.header} />
-    </h1>
+    <MainContainer>
+      <FormSection>
+        <Logo src="http://tecint.mx/images/logo-tecint.png" />
+        <H1>Bienvenido a Suppdesk</H1>
+        <P>
+          Por favor ingresa los siguientes datos para poder acceder a nuestro
+          sistema de soporte.
+        </P>
+        <Form>
+          <Input
+            label="Correo"
+            error={false}
+            helperText={false && 'Ingrese un correo válido'}
+          />
+          <Input
+            label="Contraseña"
+            error={false}
+            helperText={false && 'Ingrese una contraseña'}
+          />
+          <SpaceBetween>
+            <LabelButton>Crear cuenta</LabelButton>
+            <Button>Ingresar</Button>
+          </SpaceBetween>
+        </Form>
+      </FormSection>
+    </MainContainer>
   );
 }
