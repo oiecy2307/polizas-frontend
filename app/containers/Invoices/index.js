@@ -1,6 +1,6 @@
 /**
  *
- * DashboardBackoffice
+ * Invoices
  *
  */
 
@@ -13,31 +13,31 @@ import { compose } from 'redux';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectDashboardBackoffice from './selectors';
+import makeSelectInvoices from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 
-export function DashboardBackoffice() {
-  useInjectReducer({ key: 'dashboardBackoffice', reducer });
-  useInjectSaga({ key: 'dashboardBackoffice', saga });
+export function Invoices() {
+  useInjectReducer({ key: 'invoices', reducer });
+  useInjectSaga({ key: 'invoices', saga });
 
   return (
     <div>
       <Helmet>
-        <title>Dashboard</title>
-        <meta name="description" content="Description of DashboardBackoffice" />
+        <title>Facturas</title>
+        <meta name="description" content="Description of Invoices" />
       </Helmet>
-      <h1>Dashboard</h1>
+      <h1>Facturas</h1>
     </div>
   );
 }
 
-DashboardBackoffice.propTypes = {
+Invoices.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
-  dashboardBackoffice: makeSelectDashboardBackoffice(),
+  invoices: makeSelectInvoices(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -54,4 +54,4 @@ const withConnect = connect(
 export default compose(
   withConnect,
   memo,
-)(DashboardBackoffice);
+)(Invoices);

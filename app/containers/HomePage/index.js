@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Input from 'components/InputText';
 import LayersIcon from '@material-ui/icons/Layers';
 import {
@@ -22,7 +23,10 @@ import {
   Form,
 } from './styledComponents';
 
-export default function HomePage() {
+export default function HomePage({ history }) {
+  const handleLogin = () => {
+    history.push('/');
+  };
   return (
     <MainContainer>
       <FormSection>
@@ -47,10 +51,14 @@ export default function HomePage() {
           />
           <SpaceBetween>
             <LabelButton>Crear cuenta</LabelButton>
-            <Button>Ingresar</Button>
+            <Button onClick={handleLogin}>Ingresar</Button>
           </SpaceBetween>
         </Form>
       </FormSection>
     </MainContainer>
   );
 }
+
+HomePage.propTypes = {
+  history: PropTypes.object.isRequired,
+};

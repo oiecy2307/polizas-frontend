@@ -14,6 +14,8 @@ import { Helmet } from 'react-helmet';
 import AppRoute from 'components/AppRoute';
 import HomePage from 'containers/HomePage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
+import TicketsAdmin from 'containers/TicketsAdmin/Loadable';
+import Invoices from 'containers/Invoices/Loadable';
 import MainLayout from 'containers/MainLayout';
 import DashboardBackoffice from 'containers/DashboardBackoffice';
 
@@ -29,13 +31,25 @@ export default function App() {
         <meta name="description" content="Backoffice de la primavera" />
       </Helmet>
       <Switch>
-        <Route exact path="/inicio-sesion" component={HomePage} />
+        <AppRoute
+          exact
+          path="/tickets"
+          layout={MainLayout}
+          component={TicketsAdmin}
+        />
+        <AppRoute
+          exact
+          path="/facturas"
+          layout={MainLayout}
+          component={Invoices}
+        />
         <AppRoute
           exact
           path="/"
           layout={MainLayout}
           component={DashboardBackoffice}
         />
+        <Route exact path="/inicio-sesion" component={HomePage} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />

@@ -27,8 +27,9 @@ import {
   Avatar,
   Flex,
   LeftMenu,
-  MenuItem,
+  Content,
 } from './styledComponents';
+import { SidebarIcon, SidebarItem, SidebarItemText } from './icons';
 
 const iconStyle = {
   color: '#108043',
@@ -36,9 +37,14 @@ const iconStyle = {
   cursor: 'pointer',
 };
 
-export function MainLayout() {
+export function MainLayout({ children, history }) {
   useInjectReducer({ key: 'mainLayout', reducer });
   useInjectSaga({ key: 'mainLayout', saga });
+  const optionSelected = children.props.location.pathname;
+
+  const handleChangeRoute = route => () => {
+    history.push(`${route}`);
+  };
 
   return (
     <MainContainer>
@@ -56,17 +62,37 @@ export function MainLayout() {
       </TopBarContainer>
       <Flex>
         <LeftMenu>
-          <MenuItem active>
-            Ejemplo de un item
-          </MenuItem>
+          <SidebarItem
+            onClick={handleChangeRoute('/')}
+            selected={optionSelected === '/'}
+          >
+            <SidebarIcon icon="dashboard" />
+            <SidebarItemText>Dashboard</SidebarItemText>
+          </SidebarItem>
+          <SidebarItem
+            onClick={handleChangeRoute('/tickets')}
+            selected={optionSelected === '/tickets'}
+          >
+            <SidebarIcon icon="tickets" />
+            <SidebarItemText>Tickets</SidebarItemText>
+          </SidebarItem>
+          <SidebarItem
+            onClick={handleChangeRoute('/facturas')}
+            selected={optionSelected === '/facturas'}
+          >
+            <SidebarIcon icon="facturas" />
+            <SidebarItemText>Facturas</SidebarItemText>
+          </SidebarItem>
         </LeftMenu>
+        <Content>{children}</Content>
       </Flex>
     </MainContainer>
   );
 }
 
 MainLayout.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  children: PropTypes.element,
+  history: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
