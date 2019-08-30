@@ -49,19 +49,42 @@ export const Flex = styled.div`
 `;
 
 export const LeftMenu = styled.div`
-  height: 100%;
   background-color: #ffffff;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
   width: 236px;
   min-height: calc(100vh - 64px);
   padding: 40px 8px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+export const Content = styled.div`
+  width: calc(100% - 236px);
+  min-height: calc(100vh - 64px);
+  padding: 24px;
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 24px 16px;
+  }
 `;
 
 export const MenuItem = styled.div`
   display: flex;
   align-items: center;
   background: ${props => (props.active ? '#E3F1DF' : 'white')};
+  color: ${props => (props.active ? '#108043' : '#454F5B')};
+  font-size: 14px;
   border-radius: 12px;
   width: 100%;
-  padding: 16px 10px;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: all 0.25s;
+
+  &:hover {
+    background: #e3f1df;
+    color: #108043;
+  }
 `;

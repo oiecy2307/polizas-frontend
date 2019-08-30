@@ -41,3 +41,23 @@ export const Button = styled.button`
     opacity: 0.7;
   }
 `;
+
+export const TabButton = styled.button`
+  background: ${({ selected }) => (selected ? '#E3F1DF' : '#DFE3E8')};
+  color: ${({ selected }) => (selected ? '#108043' : '#454F5B')};
+  border: none;
+  outline: none;
+  font-size: 14px;
+  letter-spacing: 0.28px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.25s all;
+  margin-right: ${({ noMargin }) => (noMargin ? 0 : 16)}px;
+  margin-bottom: ${({ noMargin }) => (noMargin ? 0 : 16)}px;
+
+  &:hover {
+    background: #e3f1df;
+    color: #108043;
+  }
+`;
