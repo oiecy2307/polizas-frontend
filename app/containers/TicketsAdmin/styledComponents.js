@@ -49,6 +49,8 @@ export const ItemMessage = styled.div`
 export const ItemCompany = styled.div`
   color: #919eab;
   font-size: 14px;
+  padding-left: 8px;
+  text-align: right;
 `;
 
 export const LabelPurple = styled.div`
@@ -57,10 +59,16 @@ export const LabelPurple = styled.div`
   color: #50248f;
   font-size: 13px;
   padding: 8px 22px;
+  @media (max-width: 576px) {
+    display: none;
+  }
 `;
 
 export const ItemMainInfo = styled.div`
   display: flex;
   justify-content: space-between;
   width: calc(100% - 246px);
+  @media (max-width: 576px) {
+    width: calc(100% - 90px);
+  }
 `;
