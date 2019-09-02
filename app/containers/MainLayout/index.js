@@ -4,14 +4,16 @@
  *
  */
 
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
 import LayersIcon from '@material-ui/icons/Layers';
+import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
+import Drawer from '@material-ui/core/Drawer';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
@@ -28,6 +30,8 @@ import {
   Flex,
   LeftMenu,
   Content,
+  MobileMenu,
+  MenuResponsive,
 } from './styledComponents';
 import { SidebarIcon, SidebarItem, SidebarItemText } from './icons';
 
@@ -40,11 +44,52 @@ const iconStyle = {
 export function MainLayout({ children, history }) {
   useInjectReducer({ key: 'mainLayout', reducer });
   useInjectSaga({ key: 'mainLayout', saga });
+  const [menuOpen, setMenuOpen] = useState(false);
   const optionSelected = children.props.location.pathname;
 
   const handleChangeRoute = route => () => {
     history.push(`${route}`);
   };
+  const handleChangeMenuState = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const toggleDrawer = event => {
+    if (
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+
+    setMenuOpen(!menuOpen);
+  };
+
+  const menu = (
+    <React.Fragment>
+      <SidebarItem
+        onClick={handleChangeRoute('/')}
+        selected={optionSelected === '/'}
+      >
+        <SidebarIcon icon="dashboard" />
+        <SidebarItemText>Dashboard</SidebarItemText>
+      </SidebarItem>
+      <SidebarItem
+        onClick={handleChangeRoute('/tickets')}
+        selected={optionSelected === '/tickets'}
+      >
+        <SidebarIcon icon="tickets" />
+        <SidebarItemText>Tickets</SidebarItemText>
+      </SidebarItem>
+      <SidebarItem
+        onClick={handleChangeRoute('/facturas')}
+        selected={optionSelected === '/facturas'}
+      >
+        <SidebarIcon icon="facturas" />
+        <SidebarItemText>Facturas</SidebarItemText>
+      </SidebarItem>
+    </React.Fragment>
+  );
 
   return (
     <MainContainer>
@@ -60,30 +105,23 @@ export function MainLayout({ children, history }) {
           <Avatar src="https://lasillarotarm.blob.core.windows.net/images/2019/06/09/lafotoineditadejosejosequegeneracontroversiaporestarenlacamacondosmujeres-focus-0-0-983-557.jpg" />
         </AlignVertical>
       </TopBarContainer>
+      <MobileMenu>
+        <MenuIcon onClick={handleChangeMenuState} style={{ ...iconStyle }} />
+        <h1>{optionSelected.replace('/', '')}</h1>
+        <Drawer open={menuOpen} onClose={toggleDrawer}>
+          <MenuResponsive>
+            <AlignVertical style={{ marginBottom: 24, paddingLeft: 10 }}>
+              <Logo>
+                <LayersIcon style={{ ...iconStyle }} />
+              </Logo>
+              <Suppdesk>Suppdesk</Suppdesk>
+            </AlignVertical>
+            {menu}
+          </MenuResponsive>
+        </Drawer>
+      </MobileMenu>
       <Flex>
-        <LeftMenu>
-          <SidebarItem
-            onClick={handleChangeRoute('/')}
-            selected={optionSelected === '/'}
-          >
-            <SidebarIcon icon="dashboard" />
-            <SidebarItemText>Dashboard</SidebarItemText>
-          </SidebarItem>
-          <SidebarItem
-            onClick={handleChangeRoute('/tickets')}
-            selected={optionSelected === '/tickets'}
-          >
-            <SidebarIcon icon="tickets" />
-            <SidebarItemText>Tickets</SidebarItemText>
-          </SidebarItem>
-          <SidebarItem
-            onClick={handleChangeRoute('/facturas')}
-            selected={optionSelected === '/facturas'}
-          >
-            <SidebarIcon icon="facturas" />
-            <SidebarItemText>Facturas</SidebarItemText>
-          </SidebarItem>
-        </LeftMenu>
+        <LeftMenu>{menu}</LeftMenu>
         <Content>{children}</Content>
       </Flex>
     </MainContainer>

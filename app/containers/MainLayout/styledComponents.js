@@ -60,6 +60,14 @@ export const LeftMenu = styled.div`
   }
 `;
 
+export const MenuResponsive = styled.div`
+  width: 100%;
+  height: 100%;
+  background: white;
+  width: 236px;
+  padding: 32px 16px;
+`;
+
 export const Content = styled.div`
   width: calc(100% - 236px);
   min-height: calc(100vh - 64px);
@@ -86,5 +94,19 @@ export const MenuItem = styled.div`
   &:hover {
     background: #e3f1df;
     color: #108043;
+  }
+`;
+
+export const MobileMenu = styled.div`
+  display: none;
+  padding: 24px 16px 16px;
+  align-items: center;
+  @media (max-width: 768px) {
+    display: flex;
+  }
+  & h1 {
+    text-transform: capitalize;
+    margin: 0;
+    margin-left: 16px;
   }
 `;
