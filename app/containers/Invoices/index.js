@@ -27,7 +27,6 @@ export function Invoices() {
         <title>Facturas</title>
         <meta name="description" content="Description of Invoices" />
       </Helmet>
-      <h1>Facturas</h1>
     </div>
   );
 }
