@@ -46,9 +46,18 @@ export function MainLayout({ children, history }) {
   useInjectSaga({ key: 'mainLayout', saga });
   const [menuOpen, setMenuOpen] = useState(false);
   const optionSelected = children.props.location.pathname;
+  const optionResponsive = (() => {
+    switch (optionSelected) {
+      case '/':
+        return 'Dashboard';
+      default:
+        return optionSelected.replace('/', '');
+    }
+  })();
 
   const handleChangeRoute = route => () => {
     history.push(`${route}`);
+    handleChangeMenuState();
   };
   const handleChangeMenuState = () => {
     setMenuOpen(!menuOpen);
@@ -107,7 +116,7 @@ export function MainLayout({ children, history }) {
       </TopBarContainer>
       <MobileMenu>
         <MenuIcon onClick={handleChangeMenuState} style={{ ...iconStyle }} />
-        <h1>{optionSelected.replace('/', '')}</h1>
+        <h1>{optionResponsive}</h1>
         <Drawer open={menuOpen} onClose={toggleDrawer}>
           <MenuResponsive>
             <AlignVertical style={{ marginBottom: 24, paddingLeft: 10 }}>

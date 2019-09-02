@@ -27,7 +27,6 @@ export function DashboardBackoffice() {
         <title>Dashboard</title>
         <meta name="description" content="Description of DashboardBackoffice" />
       </Helmet>
-      <h1>Dashboard</h1>
     </div>
   );
 }
