@@ -5,12 +5,13 @@
  */
 
 import React, { memo, useState } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
+import Calendar from 'components/SelectableCalendar';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { TabButton } from 'utils/globalStyledComponents';
@@ -54,6 +55,7 @@ export function TicketsAdmin() {
           Cerrados
         </TabButton>
       </div>
+      <Calendar />
       <div>
         <PorAsignar />
       </div>
@@ -62,7 +64,7 @@ export function TicketsAdmin() {
 }
 
 TicketsAdmin.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  // dispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
