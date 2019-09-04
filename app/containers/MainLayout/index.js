@@ -57,7 +57,7 @@ export function MainLayout({ children, history }) {
 
   const handleChangeRoute = route => () => {
     history.push(`${route}`);
-    handleChangeMenuState();
+    setMenuOpen(false);
   };
   const handleChangeMenuState = () => {
     setMenuOpen(!menuOpen);
