@@ -26,6 +26,7 @@ export const Header = styled.div`
   font-family: product-sans-bold;
   font-size: 16px;
   letter-spacing: 0.32px;
+  text-transform: capitalize;
 `;
 
 export const IconContainer = styled.div`

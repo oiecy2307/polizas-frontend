@@ -4,10 +4,12 @@
  *
  */
 
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import { times } from 'lodash';
+import moment from 'moment/min/moment-with-locales';
 import {
   Container,
   IconContainer,
@@ -16,7 +18,6 @@ import {
   DaysContainer,
   DayItem,
 } from './styledComponents';
-// import styled from 'styled-components';
 
 const iconStyle = {
   color: '#919EAB',
@@ -24,15 +25,35 @@ const iconStyle = {
   cursor: 'pointer',
 };
 
+moment.locale('es');
+
 function SelectableCalendar({ responsive, maxResponsive }) {
+  const [currentDate, setCurrentDate] = useState(moment().format());
+  const currentMonth = moment(currentDate).month();
+  const daysInMonth = moment()
+    .month(currentMonth)
+    .daysInMonth();
+  const currentMonthFormated = moment(currentDate).format('MMMM YYYY');
+  const startOfMonth = Number(
+    moment(currentDate)
+      .startOf('month')
+      .format('d'),
+  );
+  const handleChangeMonth = amount => () => {
+    setCurrentDate(
+      moment(currentDate)
+        .add(amount, 'M')
+        .format(),
+    );
+  };
   return (
     <Container responsive={responsive} maxResponsive={maxResponsive}>
       <Header>
-        <IconContainer>
+        <IconContainer onClick={handleChangeMonth(-1)}>
           <ArrowLeftIcon style={iconStyle} />
         </IconContainer>
-        <span>12 de junio 2019</span>
-        <IconContainer>
+        <span>{currentMonthFormated}</span>
+        <IconContainer onClick={handleChangeMonth(1)}>
           <ArrowRightIcon style={iconStyle} />
         </IconContainer>
       </Header>
@@ -46,99 +67,14 @@ function SelectableCalendar({ responsive, maxResponsive }) {
         <span>S</span>
       </DaysName>
       <DaysContainer>
-        <DayItem>
-          <span>1</span>
-        </DayItem>
-        <DayItem>
-          <span>2</span>
-        </DayItem>
-        <DayItem>
-          <span>3</span>
-        </DayItem>
-        <DayItem>
-          <span>4</span>
-        </DayItem>
-        <DayItem selected>
-          <span>5</span>
-        </DayItem>
-        <DayItem>
-          <span>6</span>
-        </DayItem>
-        <DayItem>
-          <span>7</span>
-        </DayItem>
-        <DayItem>
-          <span>8</span>
-        </DayItem>
-        <DayItem>
-          <span>9</span>
-        </DayItem>
-        <DayItem>
-          <span>10</span>
-        </DayItem>
-        <DayItem>
-          <span>11</span>
-        </DayItem>
-        <DayItem>
-          <span>12</span>
-        </DayItem>
-        <DayItem>
-          <span>13</span>
-        </DayItem>
-        <DayItem>
-          <span>14</span>
-        </DayItem>
-        <DayItem>
-          <span>15</span>
-        </DayItem>
-        <DayItem>
-          <span>16</span>
-        </DayItem>
-        <DayItem>
-          <span>17</span>
-        </DayItem>
-        <DayItem>
-          <span>18</span>
-        </DayItem>
-        <DayItem>
-          <span>19</span>
-        </DayItem>
-        <DayItem>
-          <span>20</span>
-        </DayItem>
-        <DayItem>
-          <span>21</span>
-        </DayItem>
-        <DayItem>
-          <span>22</span>
-        </DayItem>
-        <DayItem>
-          <span>23</span>
-        </DayItem>
-        <DayItem>
-          <span>24</span>
-        </DayItem>
-        <DayItem>
-          <span>25</span>
-        </DayItem>
-        <DayItem>
-          <span>26</span>
-        </DayItem>
-        <DayItem>
-          <span>27</span>
-        </DayItem>
-        <DayItem>
-          <span>28</span>
-        </DayItem>
-        <DayItem>
-          <span>29</span>
-        </DayItem>
-        <DayItem>
-          <span>30</span>
-        </DayItem>
-        <DayItem>
-          <span>31</span>
-        </DayItem>
+        {times(startOfMonth, () => (
+          <DayItem />
+        ))}
+        {times(daysInMonth, i => (
+          <DayItem>
+            <span>{i + 1}</span>
+          </DayItem>
+        ))}
       </DaysContainer>
     </Container>
   );
