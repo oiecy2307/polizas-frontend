@@ -5,6 +5,7 @@
  */
 
 import React, { memo } from 'react';
+import PropTypes from 'prop-types';
 import ArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import {
@@ -15,7 +16,6 @@ import {
   DaysContainer,
   DayItem,
 } from './styledComponents';
-// import PropTypes from 'prop-types';
 // import styled from 'styled-components';
 
 const iconStyle = {
@@ -24,9 +24,9 @@ const iconStyle = {
   cursor: 'pointer',
 };
 
-function SelectableCalendar() {
+function SelectableCalendar({ responsive, maxResponsive }) {
   return (
-    <Container>
+    <Container responsive={responsive} maxResponsive={maxResponsive}>
       <Header>
         <IconContainer>
           <ArrowLeftIcon style={iconStyle} />
@@ -144,6 +144,14 @@ function SelectableCalendar() {
   );
 }
 
-SelectableCalendar.propTypes = {};
+SelectableCalendar.propTypes = {
+  responsive: PropTypes.bool,
+  maxResponsive: PropTypes.number,
+};
+
+SelectableCalendar.defaultProps = {
+  responsive: false,
+  maxResponsive: 768,
+};
 
 export default memo(SelectableCalendar);

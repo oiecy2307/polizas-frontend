@@ -1,11 +1,32 @@
 import styled from 'styled-components';
 
+export const Content = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  // @media (max-width: 768px) {
+  @media (max-width: 1190px) {
+    flex-direction: column-reverse;
+    align-items: center;
+    & > div {
+      margin-bottom: 24px;
+    }
+  }
+`;
+
+export const LeftSection = styled.div`
+  width: calc(100% - 444px);
+  // @media (max-width: 768px) {
+  @media (max-width: 1190px) {
+    width: 100%;
+  }
+`;
+
 export const DateDetailContainer = styled.div`
   background-color: #ffffff;
   border-radius: 12px 12px 0 0;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
-  max-width: 684px;
-  margin-top: 24px;
+  margin-bottom: 24px;
 `;
 
 export const DateText = styled.div`

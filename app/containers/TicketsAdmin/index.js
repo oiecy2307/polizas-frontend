@@ -19,6 +19,7 @@ import PorAsignar from './privateComponents/porAsignar';
 import makeSelectTicketsAdmin from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import { Content, LeftSection } from './styledComponents';
 
 export function TicketsAdmin() {
   useInjectReducer({ key: 'ticketsAdmin', reducer });
@@ -55,10 +56,12 @@ export function TicketsAdmin() {
           Cerrados
         </TabButton>
       </div>
-      <Calendar />
-      <div>
-        <PorAsignar />
-      </div>
+      <Content>
+        <LeftSection>
+          <PorAsignar />
+        </LeftSection>
+        <Calendar responsive maxResponsive={1190} />
+      </Content>
     </div>
   );
 }

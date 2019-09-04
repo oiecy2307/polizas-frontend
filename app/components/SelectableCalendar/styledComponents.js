@@ -9,9 +9,13 @@ const daySelectedGreen = `
 export const Container = styled.div`
   background-color: #ffffff;
   border-radius: 12px;
-  max-width: 448px;
+  max-width: 420px;
   padding: 24px 32px;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+  ${({ responsive }) => responsive && 'align-self: start;'}
+  @media (max-width: ${({ maxResponsive }) => maxResponsive}px) {
+    ${({ responsive }) => responsive && 'max-width: unset;'}
+  }
 `;
 
 export const Header = styled.div`
