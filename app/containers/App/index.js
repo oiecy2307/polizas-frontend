@@ -18,12 +18,29 @@ import TicketsAdmin from 'containers/TicketsAdmin/Loadable';
 import Invoices from 'containers/Invoices/Loadable';
 import MainLayout from 'containers/MainLayout';
 import DashboardBackoffice from 'containers/DashboardBackoffice';
+import Users from 'containers/Users/Loadable';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import GlobalStyle from '../../global-styles';
 
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: ['product-sans', 'Helvetica Neue', 'Arial'].join(','),
+    useNextVariants: true,
+  },
+  palette: {
+    primary: {
+      main: '#108043',
+    },
+    secondary: {
+      main: '#E3F1DF',
+    },
+  },
+});
+
 export default function App() {
   return (
-    <div>
+    <MuiThemeProvider theme={theme}>
       <Helmet
         titleTemplate="%s - Suppdesk"
         defaultTitle="Backoffice - Suppdesk"
@@ -45,6 +62,12 @@ export default function App() {
         />
         <AppRoute
           exact
+          path="/usuarios"
+          layout={MainLayout}
+          component={Users}
+        />
+        <AppRoute
+          exact
           path="/"
           layout={MainLayout}
           component={DashboardBackoffice}
@@ -53,6 +76,6 @@ export default function App() {
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
-    </div>
+    </MuiThemeProvider>
   );
 }

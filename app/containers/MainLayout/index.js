@@ -97,6 +97,13 @@ export function MainLayout({ children, history }) {
         <SidebarIcon icon="facturas" />
         <SidebarItemText>Facturas</SidebarItemText>
       </SidebarItem>
+      <SidebarItem
+        onClick={handleChangeRoute('/usuarios')}
+        selected={optionSelected === '/usuarios'}
+      >
+        <SidebarIcon icon="usuarios" />
+        <SidebarItemText>Usuarios</SidebarItemText>
+      </SidebarItem>
     </React.Fragment>
   );
 

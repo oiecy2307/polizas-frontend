@@ -59,6 +59,9 @@ const GlobalStyle = createGlobalStyle`
     src:
       url('${ProductSansBoldItalic}') format('opentype');
   }
+  .text-capitalize {
+    text-transform: capitalize;
+  }
 `;
 
 export default GlobalStyle;

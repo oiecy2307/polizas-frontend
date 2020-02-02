@@ -1,5 +1,11 @@
 import styled from 'styled-components';
 
+export const Paper = styled.div`
+  background-color: #ffffff;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+`;
+
 export const SpaceBetween = styled.div`
   display: flex;
   justify-content: space-between;
@@ -60,4 +66,10 @@ export const TabButton = styled.button`
     background: #e3f1df;
     color: #108043;
   }
+`;
+
+export const FabContainer = styled.div`
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
 `;
