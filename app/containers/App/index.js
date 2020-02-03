@@ -7,11 +7,21 @@
  *
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { useInjectReducer } from 'utils/injectReducer';
+import GlobalStyle from 'global-styles';
 
 import AppRoute from 'components/AppRoute';
+import Loader from 'components/Loader';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
 import HomePage from 'containers/HomePage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import TicketsAdmin from 'containers/TicketsAdmin/Loadable';
@@ -21,7 +31,9 @@ import DashboardBackoffice from 'containers/DashboardBackoffice';
 import Users from 'containers/Users/Loadable';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
-import GlobalStyle from '../../global-styles';
+import { makeSelectApp } from './selectors';
+import reducer from './reducer';
+import { closeSnackbar } from './actions';
 
 const theme = createMuiTheme({
   typography: {
@@ -38,7 +50,18 @@ const theme = createMuiTheme({
   },
 });
 
-export default function App() {
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+function App({ app, dispatch }) {
+  useInjectReducer({ key: 'appPage', reducer });
+  const { loading, snackbar } = app;
+
+  const handleCloseSnackbar = () => {
+    dispatch(closeSnackbar());
+  };
+
   return (
     <MuiThemeProvider theme={theme}>
       <Helmet
@@ -76,6 +99,41 @@ export default function App() {
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
+      {loading && <Loader />}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
+          {snackbar.text}
+        </Alert>
+      </Snackbar>
     </MuiThemeProvider>
   );
 }
+
+App.propTypes = {
+  app: PropTypes.object,
+  dispatch: PropTypes.func,
+};
+
+const mapStateToProps = createStructuredSelector({
+  app: makeSelectApp(),
+});
+
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatch,
+  };
+}
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(
+  withConnect,
+  memo,
+)(App);

@@ -32,7 +32,7 @@ class AppRoute extends React.PureComponent { // eslint-disable-line
 
 AppRoute.propTypes = {
   layout: PropTypes.object.isRequired,
-  component: PropTypes.object.isRequired,
+  component: PropTypes.any.isRequired,
   history: PropTypes.object.isRequired,
 };
 

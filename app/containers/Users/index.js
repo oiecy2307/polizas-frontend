@@ -23,6 +23,7 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
 import { wsGetUsersByType } from 'services/users';
+import { setLoadingState } from 'containers/App/actions';
 
 import { useInjectReducer } from 'utils/injectReducer';
 import makeSelectUsers from './selectors';
@@ -37,14 +38,13 @@ export function Users(props) {
 
   const { dispatch } = props;
 
-  console.log('users', users, dispatch);
-
   useEffect(() => {
     fetchUsers(optionSelected);
   }, [optionSelected]);
 
   async function fetchUsers(type) {
     try {
+      dispatch(setLoadingState(true));
       const rUsers = await wsGetUsersByType(type);
       if (rUsers.error) {
         // TODO: ERROR HANDLER
@@ -52,6 +52,8 @@ export function Users(props) {
       setUsers(get(rUsers, 'data.rows', []));
     } catch (e) {
       // TODO: ERROR HANDLER
+    } finally {
+      dispatch(setLoadingState(false));
     }
   }
 
@@ -97,7 +99,7 @@ export function Users(props) {
           </TableHead>
           <TableBody>
             {users.map(user => (
-              <TableRow>
+              <TableRow key={user.id}>
                 <TableCell className="text-capitalize">
                   {`${user.name} ${user.lastname} ${user.secondLastName}`}
                 </TableCell>
