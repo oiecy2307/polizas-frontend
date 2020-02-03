@@ -7,7 +7,7 @@
  *
  */
 
-import React, { memo } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
@@ -16,6 +16,8 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { useInjectReducer } from 'utils/injectReducer';
 import GlobalStyle from 'global-styles';
+import { GlobalValuesContext } from 'contexts/global-values';
+import moment from 'moment/min/moment-with-locales';
 
 import AppRoute from 'components/AppRoute';
 import Loader from 'components/Loader';
@@ -62,66 +64,77 @@ const theme = createMuiTheme({
   },
 });
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 function App({ app, dispatch }) {
   useInjectReducer({ key: 'appPage', reducer });
   const { loading, snackbar } = app;
+  const [globalValues] = useState({
+    primaryColor: '#108043',
+    language: 'es',
+    isResponsive: false,
+  });
 
-  function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
+  useEffect(() => {
+    moment.locale(globalValues.language);
+  }, [globalValues.language]);
 
   const handleCloseSnackbar = () => {
     dispatch(closeSnackbar());
   };
 
   return (
-    <MuiThemeProvider theme={theme}>
-      <Helmet
-        titleTemplate="%s - Suppdesk"
-        defaultTitle="Backoffice - Suppdesk"
-      >
-        <meta name="description" content="Backoffice de la primavera" />
-      </Helmet>
-      <Switch>
-        <AppRoute
-          exact
-          path="/tickets"
-          layout={MainLayout}
-          component={TicketsAdmin}
-        />
-        <AppRoute
-          exact
-          path="/facturas"
-          layout={MainLayout}
-          component={Invoices}
-        />
-        <AppRoute
-          exact
-          path="/usuarios"
-          layout={MainLayout}
-          component={Users}
-        />
-        <AppRoute
-          exact
-          path="/"
-          layout={MainLayout}
-          component={DashboardBackoffice}
-        />
-        <Route exact path="/inicio-sesion" component={HomePage} />
-        <Route component={NotFoundPage} />
-      </Switch>
-      <GlobalStyle />
-      {loading && <Loader />}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
-          {snackbar.text}
-        </Alert>
-      </Snackbar>
-    </MuiThemeProvider>
+    <GlobalValuesContext.Provider value={globalValues}>
+      <MuiThemeProvider theme={theme}>
+        <Helmet
+          titleTemplate="%s - Suppdesk"
+          defaultTitle="Backoffice - Suppdesk"
+        >
+          <meta name="description" content="Backoffice de la primavera" />
+        </Helmet>
+        <Switch>
+          <AppRoute
+            exact
+            path="/tickets"
+            layout={MainLayout}
+            component={TicketsAdmin}
+          />
+          <AppRoute
+            exact
+            path="/facturas"
+            layout={MainLayout}
+            component={Invoices}
+          />
+          <AppRoute
+            exact
+            path="/usuarios"
+            layout={MainLayout}
+            component={Users}
+          />
+          <AppRoute
+            exact
+            path="/"
+            layout={MainLayout}
+            component={DashboardBackoffice}
+          />
+          <Route exact path="/inicio-sesion" component={HomePage} />
+          <Route component={NotFoundPage} />
+        </Switch>
+        <GlobalStyle />
+        {loading && <Loader />}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={handleCloseSnackbar}
+        >
+          <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
+            {snackbar.text}
+          </Alert>
+        </Snackbar>
+      </MuiThemeProvider>
+    </GlobalValuesContext.Provider>
   );
 }
 

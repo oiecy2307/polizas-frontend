@@ -5,13 +5,14 @@
  *
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { wLogin } from 'services/auth';
 import { aOpenSnackbar } from 'containers/App/actions';
 import { getToken } from 'utils/helper';
+import { GlobalValuesContext } from 'contexts/global-values';
 
 import Input from 'components/InputText';
 import LayersIcon from '@material-ui/icons/Layers';
@@ -28,8 +29,11 @@ import {
   P,
   Form,
 } from './styledComponents';
+import getMessages from './messages';
 
 function HomePage({ history, dispatch }) {
+  const { language } = useContext(GlobalValuesContext);
+  const [messages] = useState(getMessages(language));
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -65,30 +69,25 @@ function HomePage({ history, dispatch }) {
         <Logo>
           <LayersIcon style={{ color: '#108043', fontSize: 32 }} />
         </Logo>
-        <H1>Bienvenido a Suppdesk</H1>
-        <P>
-          Por favor ingresa los siguientes datos para poder acceder a nuestro
-          sistema de soporte.
-        </P>
+        <H1>{messages.welcome}</H1>
+        <P>{messages.welcomeMessage}</P>
         <Form>
           <Input
-            label="Correo"
+            label={messages.email}
             type="email"
             error={false}
-            helperText={false && 'Ingrese un correo válido'}
             onChange={e => setUsername(e.target.value)}
           />
           <Input
-            label="Contraseña"
+            label={messages.password}
             type="password"
             error={false}
-            helperText={false && 'Ingrese una contraseña'}
             onChange={e => setPassword(e.target.value)}
           />
           <SpaceBetween>
             {false && <LabelButton>Crear cuenta</LabelButton>}
             <Button disabled={disabled} onClick={() => handleLogin()}>
-              Ingresar
+              {messages.login}
             </Button>
           </SpaceBetween>
         </Form>

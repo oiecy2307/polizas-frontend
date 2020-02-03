@@ -4,7 +4,7 @@
  *
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -12,6 +12,7 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
+import { GlobalValuesContext } from 'contexts/global-values';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -28,12 +29,13 @@ import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { useInjectReducer } from 'utils/injectReducer';
 import makeSelectUsers from './selectors';
 import reducer from './reducer';
-
-moment.locale('es');
+import getMessages from './messages';
 
 export function Users(props) {
   useInjectReducer({ key: 'users', reducer });
+  const { language } = useContext(GlobalValuesContext);
   const [optionSelected, setOptionSelected] = useState('admin');
+  const [messages] = useState(getMessages(language));
   const [users, setUsers] = useState([]);
 
   const { dispatch } = props;
@@ -72,29 +74,29 @@ export function Users(props) {
           selected={optionSelected === 'admin'}
           onClick={handleSelectOption('admin')}
         >
-          Administrativos
+          {messages.tabs.admins}
         </TabButton>
         <TabButton
           selected={optionSelected === 'technical'}
           onClick={handleSelectOption('technical')}
         >
-          Soporte
+          {messages.tabs.technicalSupport}
         </TabButton>
         <TabButton
           selected={optionSelected === 'salesman'}
           onClick={handleSelectOption('salesman')}
         >
-          Clientes
+          {messages.tabs.clients}
         </TabButton>
       </div>
       <Paper>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell align="right">Correo electrónico</TableCell>
-              <TableCell align="right">Username</TableCell>
-              <TableCell align="right">Fecha registro</TableCell>
+              <TableCell>{messages.table.name}</TableCell>
+              <TableCell align="right">{messages.table.email}</TableCell>
+              <TableCell align="right">{messages.table.username}</TableCell>
+              <TableCell align="right">{messages.table.date}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

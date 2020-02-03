@@ -4,12 +4,13 @@
  *
  */
 
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { getToken } from 'utils/helper';
+import { GlobalValuesContext } from 'contexts/global-values';
 
 import LayersIcon from '@material-ui/icons/Layers';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -35,6 +36,7 @@ import {
   MenuResponsive,
 } from './styledComponents';
 import { SidebarIcon, SidebarItem, SidebarItemText } from './icons';
+import getMessages from './messages';
 
 const iconStyle = {
   color: '#108043',
@@ -45,7 +47,9 @@ const iconStyle = {
 export function MainLayout({ children, history }) {
   useInjectReducer({ key: 'mainLayout', reducer });
   useInjectSaga({ key: 'mainLayout', saga });
+  const { language } = useContext(GlobalValuesContext);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [messages] = useState(getMessages(language));
 
   useEffect(() => {
     const token = getToken();
@@ -88,28 +92,28 @@ export function MainLayout({ children, history }) {
         selected={optionSelected === '/'}
       >
         <SidebarIcon icon="dashboard" />
-        <SidebarItemText>Dashboard</SidebarItemText>
+        <SidebarItemText>{messages.menu.dashboard}</SidebarItemText>
       </SidebarItem>
       <SidebarItem
         onClick={handleChangeRoute('/tickets')}
         selected={optionSelected === '/tickets'}
       >
         <SidebarIcon icon="tickets" />
-        <SidebarItemText>Tickets</SidebarItemText>
+        <SidebarItemText>{messages.menu.tickets}</SidebarItemText>
       </SidebarItem>
       <SidebarItem
         onClick={handleChangeRoute('/facturas')}
         selected={optionSelected === '/facturas'}
       >
         <SidebarIcon icon="facturas" />
-        <SidebarItemText>Facturas</SidebarItemText>
+        <SidebarItemText>{messages.menu.invoices}</SidebarItemText>
       </SidebarItem>
       <SidebarItem
         onClick={handleChangeRoute('/usuarios')}
         selected={optionSelected === '/usuarios'}
       >
         <SidebarIcon icon="usuarios" />
-        <SidebarItemText>Usuarios</SidebarItemText>
+        <SidebarItemText>{messages.menu.users}</SidebarItemText>
       </SidebarItem>
     </React.Fragment>
   );
