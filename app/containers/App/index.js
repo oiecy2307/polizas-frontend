@@ -47,16 +47,28 @@ const theme = createMuiTheme({
     secondary: {
       main: '#E3F1DF',
     },
+    success: {
+      main: '#4caf50',
+    },
+    error: {
+      main: '#f44336',
+    },
+    info: {
+      main: '#2196f3',
+    },
+    warning: {
+      main: '#ff9800',
+    },
   },
 });
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 function App({ app, dispatch }) {
   useInjectReducer({ key: 'appPage', reducer });
   const { loading, snackbar } = app;
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
 
   const handleCloseSnackbar = () => {
     dispatch(closeSnackbar());
