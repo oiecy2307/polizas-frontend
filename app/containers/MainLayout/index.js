@@ -4,11 +4,12 @@
  *
  */
 
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
+import { getToken } from 'utils/helper';
 
 import LayersIcon from '@material-ui/icons/Layers';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -45,6 +46,12 @@ export function MainLayout({ children, history }) {
   useInjectReducer({ key: 'mainLayout', reducer });
   useInjectSaga({ key: 'mainLayout', saga });
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const token = getToken();
+    if (!token) history.push('inicio-sesion');
+  }, []);
+
   const optionSelected = children.props.location.pathname;
   const optionResponsive = (() => {
     switch (optionSelected) {

@@ -46,6 +46,12 @@ export const Button = styled.button`
   &:hover {
     opacity: 0.7;
   }
+  &:disabled {
+    background: #cccccc;
+    cursor: default;
+    transition: none;
+    opacity: 1 !important;
+  }
 `;
 
 export const TabButton = styled.button`

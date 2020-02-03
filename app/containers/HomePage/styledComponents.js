@@ -42,6 +42,6 @@ export const P = styled.p`
   text-align: center;
 `;
 
-export const Form = styled.form`
+export const Form = styled.div`
   width: 100%;
 `;

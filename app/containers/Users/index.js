@@ -23,7 +23,7 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
 import { wsGetUsersByType } from 'services/users';
-import { setLoadingState, openSnackbar } from 'containers/App/actions';
+import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 
 import { useInjectReducer } from 'utils/injectReducer';
 import makeSelectUsers from './selectors';
@@ -44,16 +44,16 @@ export function Users(props) {
 
   async function fetchUsers(type) {
     try {
-      dispatch(setLoadingState(true));
+      dispatch(aSetLoadingState(true));
       const rUsers = await wsGetUsersByType(type);
       if (rUsers.error) {
-        dispatch(openSnackbar('Error al consultar usuarios', 'error'));
+        dispatch(aOpenSnackbar('Error al consultar usuarios', 'error'));
       }
       setUsers(get(rUsers, 'data.rows', []));
     } catch (e) {
-      dispatch(openSnackbar('Error al consultar usuarios', 'error'));
+      dispatch(aOpenSnackbar('Error al consultar usuarios', 'error'));
     } finally {
-      dispatch(setLoadingState(false));
+      dispatch(aSetLoadingState(false));
     }
   }
 

@@ -30,20 +30,16 @@ apiCall.interceptors.response.use(response => response, function(error) {
 });
 
 export function getToken() {
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (user === undefined) {
-    history.push('/');
-  }
+  try {
+    const token = localStorage.getItem('token');
 
-  const token = user.access_token;
-  if (token === undefined) {
-    history.push('/');
+    if (token) {
+      return token;
+    }
+    return '';
+  } catch (e) {
+    return '';  
   }
-
-  if (user && token) {
-    return token;
-  }
-  return '';
 }
 
 export const post = (data) => {
