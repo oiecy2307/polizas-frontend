@@ -10,6 +10,7 @@ export const LoaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 9999;
 `;
 
 const transform = keyframes`

@@ -34,8 +34,12 @@ const CloseSection = styled.div`
 const ActionsSection = styled.div`
   ${mediaQuery} {
     position: fixed;
-    bottom: 16px;
+    padding-bottom: 16px;
+    bottom: 0;
     right: 16px;
+    width: 100%;
+    background: white;
+    z-index: 1;
   }
 `;
 
@@ -49,6 +53,8 @@ function DialogComponent({
   onNegativeAction,
   positiveAction,
   onPositiveAction,
+  disabled,
+  actionIsSubmit,
 }) {
   const { isResponsive } = useContext(GlobalValuesContext);
 
@@ -76,7 +82,15 @@ function DialogComponent({
             >
               {negativeAction}
             </Button>
-            <Button onClick={onPositiveAction}>{positiveAction}</Button>
+            {actionIsSubmit ? (
+              <Button disabled={disabled} type="submit">
+                {positiveAction}
+              </Button>
+            ) : (
+              <Button disabled={disabled} onClick={onPositiveAction}>
+                {positiveAction}
+              </Button>
+            )}
           </DialogActions>
         </ActionsSection>
       )}
@@ -94,6 +108,8 @@ DialogComponent.propTypes = {
   onNegativeAction: PropTypes.func,
   positiveAction: PropTypes.string,
   onPositiveAction: PropTypes.func,
+  disabled: PropTypes.bool,
+  actionIsSubmit: PropTypes.bool,
 };
 
 DialogComponent.defaultProps = {

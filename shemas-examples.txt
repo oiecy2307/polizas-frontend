@@ -1,0 +1,128 @@
+const validationSchema = Yup.object({
+  name: Yup.string('Ingrese el nombre').required('Campo requerido'),
+  telephone: Yup.string('Ingresa el nombre').required('Campo requerido'),
+  neighborhood: Yup.string('Ingrese un barrio').required('Campo requerido'),
+  person: Yup.string('Selecciona un persona'),
+  allDay: Yup.boolean(),
+  startTime: Yup.number('Ingrese hora'),
+  endTime: Yup.number('Ingrese hora').moreThan(
+    Yup.ref('startTime'),
+    'Debe ser mayor a hora de inicio',
+  ),
+});
+
+const validationSchema = Yup.object({
+    nameClubHouse: Yup.string('Ingrese el nombre')
+      .required('Campo requerido')
+      .matches(textRegex, 'Caracteres inválidos'),
+    startTime: Yup.string().required('Campo requerido'),
+    endTime: Yup.string().required('Campo requerido'),
+    file: Yup.string(),
+    areas: Yup.array().when('typeClubHouse', {
+      is: typeClubHouse =>
+        typeClubHouse === 'Para Reservar' || typeClubHouse === 'Para reservar',
+      then: Yup.array().of(
+        Yup.object({
+          nameArea: Yup.string()
+            .required('Campo requerido')
+            .matches(textRegex, 'Caracteres inválidos'),
+          allDay: Yup.boolean(),
+          everyDayArea: Yup.boolean(),
+          reservationCost: Yup.number('Ingresa la cantidad')
+            .typeError('Ingrese un número')
+            .required('Campo requerido'),
+          depositCostArea: Yup.number('Ingresa la cantidad')
+            .typeError('Ingrese un número')
+            .required('Campo requerido'),
+          maximumNumberGuests: Yup.number('Ingresa la cantidad')
+            .typeError('Ingrese un número')
+            .required('Campo requerido'),
+          endHourArea: Yup.string().when('allDay', {
+            is: allDay => allDay,
+            then: Yup.string(),
+            otherwise: Yup.string().required('Campo requerido'),
+          }),
+          startHourArea: Yup.string().when('allDay', {
+            is: allDay => allDay,
+            then: Yup.string(),
+            otherwise: Yup.string().required('Campo requerido'),
+          }),
+          daysAreas: Yup.array().when('everyDayArea', {
+            is: everyDayArea => everyDayArea,
+            then: Yup.array(),
+            otherwise: Yup.array()
+              .required()
+              .min(1, 'Seleccione al menos un día'),
+          }),
+        }),
+      ),
+      otherwise: Yup.array(),
+    }),
+  });
+
+  const validationSchema = Yup.object({
+    barrio: Yup.string()
+      .required('Campo requerido')
+      .typeError('Ingrese un número válido'),
+    numeroLote: Yup.number()
+      .required('Campo requerido')
+      .typeError('Ingrese un número válido'),
+    metros: Yup.number()
+      .required('Campo requerido')
+      .typeError('Ingrese un número válido'),
+    medidorAgua: Yup.number().typeError('Ingrese un número válido'),
+    condominoPropietario: Yup.string().nullable(),
+    estatusLote: Yup.string()
+      .required('Campo requerido')
+      .typeError('Ingrese un número válido'),
+    udiAdicional: Yup.number()
+      .nullable()
+      .typeError('Ingrese un número válido'),
+    propietarioTarjeta: Yup.string().when('tarjetaModified', {
+      is: tarjetaModified => tarjetaModified === 'Si',
+      then: Yup.string()
+        .required('Campo requerido')
+        .matches(textRegex, 'Caracteres inválidos'),
+      otherwise: Yup.string().nullable(),
+    }),
+    numeroTarjeta: Yup.string().when('tarjetaModified', {
+      is: tarjetaModified => tarjetaModified === 'Si',
+      then: Yup.string()
+        .test(
+          'test-number',
+          'Ingrese un número válido',
+          value => valid.number(value).isValid,
+        )
+        .required(),
+      otherwise: Yup.string(),
+    }),
+    fechaVencimiento: Yup.string().when('tarjetaModified', {
+      is: tarjetaModified => tarjetaModified === 'Si',
+      then: Yup.string()
+        .typeError('Ingrese fecha vencimiento')
+        .required('Campo Requerido'),
+      otherwise: Yup.string()
+        .typeError('Ingrese fecha vencimiento')
+        .nullable(),
+    }),
+    codigoSeguridad: Yup.string().when('tarjetaModified', {
+      is: tarjetaModified => tarjetaModified === 'Si',
+      then: Yup.string()
+        .typeError('Ingrese un número válido')
+        .required('Campo Requerido')
+        .typeError('Ingrese un número válido'),
+      otherwise: Yup.string()
+        .typeError('Ingrese un número válido')
+        .nullable(),
+    }),
+    banco: Yup.string().when('tarjetaModified', {
+      is: tarjetaModified => tarjetaModified === 'Si',
+      then: Yup.string()
+        .required('Campo requerido')
+        .typeError('Ingrese un número válido'),
+      otherwise: Yup.string()
+        .typeError('Ingrese un número válido')
+        .nullable(),
+    }),
+    tarjetaModified: Yup.string().nullable(),
+  });

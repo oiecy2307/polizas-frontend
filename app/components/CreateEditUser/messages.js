@@ -50,6 +50,10 @@ export default language => {
       es: 'Contraseña',
       en: 'Password',
     },
+    passwordConfirmation: {
+      es: 'Confirme contraseña',
+      en: 'Confirm password',
+    },
     role: {
       es: 'Rol',
       en: 'Role',
@@ -59,16 +63,24 @@ export default language => {
       en: 'Field required',
     },
     invalidCharacters: {
-      es: 'Solo texto',
-      en: 'Only text',
+      es: 'Caracteres no válidos',
+      en: 'Text invalid',
     },
     tooLong: {
       es: 'Texto demasiado extenso',
       en: 'Text too long',
     },
+    tooShort: {
+      es: 'Contraseña muy corta',
+      en: 'Password too short',
+    },
     emailError: {
       es: 'Correo no válido',
       en: 'Not valid email',
+    },
+    passwordDontMatch: {
+      es: 'Las contraseñas no coinciden',
+      en: 'Passwords must match',
     },
   };
 
@@ -92,11 +104,14 @@ export default language => {
       email: values.email[language],
       username: values.username[language],
       password: values.password[language],
+      passwordConfirmation: values.passwordConfirmation[language],
       role: values.role[language],
     },
     required: values.required[language],
     invalidCharacters: values.invalidCharacters[language],
     tooLong: values.tooLong[language],
+    tooShort: values.tooShort[language],
     emailError: values.emailError[language],
+    passwordDontMatch: values.passwordDontMatch[language],
   });
 };

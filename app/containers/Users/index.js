@@ -39,6 +39,7 @@ export function Users(props) {
   const [optionSelected, setOptionSelected] = useState('admin');
   const [messages] = useState(getMessages(language));
   const [users, setUsers] = useState([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const { dispatch } = props;
 
@@ -63,6 +64,10 @@ export function Users(props) {
 
   const handleSelectOption = option => () => {
     setOptionSelected(option);
+  };
+
+  const handleSaveSuccess = () => {
+    fetchUsers(optionSelected);
   };
 
   return (
@@ -119,11 +124,20 @@ export function Users(props) {
       </Paper>
       {users.length === 0 && <EmptyState />}
       <FabContainer>
-        <Fab color="primary" aria-label="add" onClick={() => {}}>
+        <Fab
+          color="primary"
+          aria-label="add"
+          onClick={() => setDialogOpen(true)}
+        >
           <AddIcon />
         </Fab>
       </FabContainer>
-      <CreateEditUser open />
+      <CreateEditUser
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        callback={handleSaveSuccess}
+        dispatch={dispatch}
+      />
     </div>
   );
 }
