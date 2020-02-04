@@ -15,6 +15,7 @@ import { GlobalValuesContext } from 'contexts/global-values';
 import LayersIcon from '@material-ui/icons/Layers';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
+import ExitIcon from '@material-ui/icons/ExitToAppOutlined';
 import Drawer from '@material-ui/core/Drawer';
 
 import { useInjectSaga } from 'utils/injectSaga';
@@ -85,6 +86,12 @@ export function MainLayout({ children, history }) {
     setMenuOpen(!menuOpen);
   };
 
+  const handleLogOut = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    history.push('/inicio-sesion');
+  };
+
   const menu = (
     <React.Fragment>
       <SidebarItem
@@ -114,6 +121,10 @@ export function MainLayout({ children, history }) {
       >
         <SidebarIcon icon="usuarios" />
         <SidebarItemText>{messages.menu.users}</SidebarItemText>
+      </SidebarItem>
+      <SidebarItem onClick={handleLogOut}>
+        <ExitIcon />
+        <SidebarItemText>{messages.menu.logout}</SidebarItemText>
       </SidebarItem>
     </React.Fragment>
   );

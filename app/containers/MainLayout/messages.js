@@ -26,6 +26,10 @@ export default language => {
       es: 'Usuarios',
       en: 'Users',
     },
+    logout: {
+      es: 'Cerrar sesión',
+      en: 'Log out',
+    },
   };
   return defineMessages({
     header: {
@@ -37,6 +41,7 @@ export default language => {
       tickets: values.tickets[language],
       invoices: values.invoices[language],
       users: values.users[language],
+      logout: values.logout[language],
     },
   });
 };

@@ -22,6 +22,8 @@ import TableRow from '@material-ui/core/TableRow';
 import { TabButton, Paper, FabContainer } from 'utils/globalStyledComponents';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import EmptyState from 'components/EmptyState';
+import CreateEditUser from 'components/CreateEditUser';
 
 import { wsGetUsersByType } from 'services/users';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
@@ -115,11 +117,13 @@ export function Users(props) {
           </TableBody>
         </Table>
       </Paper>
+      {users.length === 0 && <EmptyState />}
       <FabContainer>
         <Fab color="primary" aria-label="add" onClick={() => {}}>
           <AddIcon />
         </Fab>
       </FabContainer>
+      <CreateEditUser open />
     </div>
   );
 }

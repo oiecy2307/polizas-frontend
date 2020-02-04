@@ -7,7 +7,7 @@
  *
  */
 
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
@@ -31,7 +31,12 @@ import Invoices from 'containers/Invoices/Loadable';
 import MainLayout from 'containers/MainLayout';
 import DashboardBackoffice from 'containers/DashboardBackoffice';
 import Users from 'containers/Users/Loadable';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import {
+  MuiThemeProvider,
+  createMuiTheme,
+  useTheme,
+} from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { makeSelectApp } from './selectors';
 import reducer from './reducer';
@@ -71,11 +76,13 @@ function Alert(props) {
 function App({ app, dispatch }) {
   useInjectReducer({ key: 'appPage', reducer });
   const { loading, snackbar } = app;
-  const [globalValues] = useState({
+  const themeR = useTheme();
+  const matches = useMediaQuery(themeR.breakpoints.down('sm'));
+  const globalValues = {
     primaryColor: '#108043',
     language: 'es',
-    isResponsive: false,
-  });
+    isResponsive: matches,
+  };
 
   useEffect(() => {
     moment.locale(globalValues.language);

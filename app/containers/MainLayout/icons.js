@@ -32,13 +32,16 @@ export const SidebarItem = styled.span`
   text-decoration: none;
   display: ${({ active }) => (active ? 'flex' : 'none')};
   display: flex;
+  color: ${({ selected }) => (selected ? '#108043' : '#454F5B')};
 
   &:hover {
     background: #e3f1df;
+    color: #108043;
   }
 
-  & ${SidebarItemText} {
-    color: ${({ selected }) => (selected ? '#108043' : '#454F5B')} !important;
+  & svg {
+    width: 18px;
+    height: 18px;
   }
 
   & ${SidebarIcon} {

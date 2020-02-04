@@ -27,8 +27,6 @@ const styles = () => ({
     flexWrap: 'wrap',
     flexBasis: 200,
     width: '100%',
-  },
-  margin: {
     marginBottom: 32,
   },
 });
@@ -39,7 +37,7 @@ function Input(props) {
     <ThemeProvider theme={theme}>
       <TextField
         {...props}
-        className={classNames(classes.margin, classes.root)}
+        className={classNames(classes.root)}
         variant="filled"
         InputProps={{
           ...props.InputProps,
