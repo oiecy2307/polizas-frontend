@@ -8,8 +8,10 @@ import React, { memo, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { GlobalValuesContext } from 'contexts/global-values';
 import { Field } from 'formik';
+import { find } from 'lodash';
 
 import Input from 'components/InputText';
+import Select from 'components/Select';
 
 import { Form } from './styledComponents';
 import getMessages from './messages';
@@ -17,13 +19,21 @@ import getMessages from './messages';
 function CreateEditUserForm(props) {
   const { language } = useContext(GlobalValuesContext);
   const [messages] = useState(getMessages(language));
-  const {
-    // setFieldValue,
-    // setFieldTouched,
-    values,
-    touched,
-    errors,
-  } = props;
+  const [options] = useState([
+    {
+      value: 'admin',
+      label: 'Administrador',
+    },
+    {
+      value: 'technical',
+      label: 'Soporte',
+    },
+    {
+      value: 'salesman',
+      label: 'Cliente',
+    },
+  ]);
+  const { setFieldValue, setFieldTouched, values, touched, errors } = props;
   return (
     <Form>
       <Field
@@ -119,24 +129,37 @@ function CreateEditUserForm(props) {
         )}
       />
       <Field
+        defaultValue={values.role}
         name="role"
-        defaultValues={values.role}
-        render={({ field }) => (
-          <Input
-            {...field}
-            label={messages.fields.role}
-            helperText={touched.role ? errors.role : ''}
-            error={touched.role && Boolean(errors.role)}
-          />
-        )}
+        render={({ field }) => {
+          const { label } = find(options, { value: field.value }) || {};
+          const value = field.value ? { value: field.value, label } : null;
+          return (
+            <Select
+              {...field}
+              value={value}
+              onChange={newValue => {
+                setFieldValue(field.name, newValue.value);
+              }}
+              options={options}
+              placeholder={messages.fields.role}
+              error={
+                touched[field.name] && Boolean(errors[field.name])
+                  ? errors[field.name]
+                  : ''
+              }
+              onBlur={() => setFieldTouched(field.name, true)}
+            />
+          );
+        }}
       />
     </Form>
   );
 }
 
 CreateEditUserForm.propTypes = {
-  // setFieldValue: PropTypes.func,
-  // setFieldTouched: PropTypes.func,
+  setFieldValue: PropTypes.func,
+  setFieldTouched: PropTypes.func,
   values: PropTypes.object,
   touched: PropTypes.object,
   errors: PropTypes.object,

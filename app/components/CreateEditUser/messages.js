@@ -82,6 +82,18 @@ export default language => {
       es: 'Las contraseñas no coinciden',
       en: 'Passwords must match',
     },
+    admin: {
+      es: 'Administrador',
+      en: 'Administrator',
+    },
+    technical: {
+      es: 'Soporte',
+      en: 'Technical',
+    },
+    salesman: {
+      es: 'Cliente',
+      en: 'client',
+    },
   };
 
   return defineMessages({
@@ -113,5 +125,10 @@ export default language => {
     tooShort: values.tooShort[language],
     emailError: values.emailError[language],
     passwordDontMatch: values.passwordDontMatch[language],
+    roles: {
+      admin: values.admin[language],
+      technical: values.technical[language],
+      salesman: values.salesman[language],
+    },
   });
 };
