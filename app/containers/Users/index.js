@@ -51,9 +51,8 @@ export function Users(props) {
     try {
       dispatch(aSetLoadingState(true));
       const rUsers = await wsGetUsersByType(type);
-      if (rUsers.error) {
+      if (rUsers.error)
         dispatch(aOpenSnackbar('Error al consultar usuarios', 'error'));
-      }
       setUsers(get(rUsers, 'data.rows', []));
     } catch (e) {
       dispatch(aOpenSnackbar('Error al consultar usuarios', 'error'));
