@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import ArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { times } from 'lodash';
-import moment from 'moment';
+import moment from 'moment/min/moment-with-locales';
 import {
   Container,
   IconContainer,

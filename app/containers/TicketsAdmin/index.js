@@ -12,6 +12,8 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
 import Calendar from 'components/SelectableCalendar';
+import Fab from 'components/Fab';
+import CreateEditTicket from 'components/CreateEditTicket';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { TabButton } from 'utils/globalStyledComponents';
@@ -25,6 +27,7 @@ export function TicketsAdmin() {
   useInjectReducer({ key: 'ticketsAdmin', reducer });
   useInjectSaga({ key: 'ticketsAdmin', saga });
   const [optionSelected, setOptionSelected] = useState('porAsignar');
+  const [dialogOpen, setDialogOpen] = useState(true);
 
   const handleSelectOption = option => () => {
     setOptionSelected(option);
@@ -62,6 +65,11 @@ export function TicketsAdmin() {
         </LeftSection>
         <Calendar responsive maxResponsive={1190} />
       </Content>
+      <Fab onClick={() => setDialogOpen(true)} />
+      <CreateEditTicket
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+      />
     </div>
   );
 }
