@@ -45,6 +45,10 @@ function CreateEditTicket({ open, onClose, callback, dispatch }) {
     ticketTitle: '',
     ticketDescription: '',
     ticketPriority: '',
+    reporterId: '',
+    technicalId: '',
+    clientId: '',
+    dueDate: '',
   };
 
   const validationSchema = Yup.object({
@@ -60,6 +64,12 @@ function CreateEditTicket({ open, onClose, callback, dispatch }) {
       .required(messages.required)
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
+    reporterId: Yup.number().required(messages.required),
+    technicalId: Yup.number().required(messages.required),
+    clientId: Yup.number(),
+    dueDate: Yup.date()
+      .required(messages.required)
+      .min(new Date()),
   });
 
   const isEditing = false;
