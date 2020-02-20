@@ -38,6 +38,14 @@ export default language => {
       es: 'Nivel de urgencia',
       en: 'Priority level',
     },
+    technicalId: {
+      es: 'Técnico asignado',
+      en: 'Assigned technical',
+    },
+    dueDate: {
+      es: 'Fecha terminación',
+      en: 'Due date',
+    },
     required: {
       es: 'Campo requerido',
       en: 'Field required',
@@ -66,6 +74,10 @@ export default language => {
       es: 'Nivel bajo',
       en: 'Low level',
     },
+    errorDate: {
+      es: 'La fecha debe ser mayor al día de hoy',
+      en: 'Date must be later than today',
+    },
   };
 
   return defineMessages({
@@ -85,6 +97,8 @@ export default language => {
       ticketTitle: values.ticketTitle[language],
       ticketDescription: values.ticketDescription[language],
       ticketPriority: values.ticketPriority[language],
+      technicalId: values.technicalId[language],
+      dueDate: values.dueDate[language],
     },
     required: values.required[language],
     invalidCharacters: values.invalidCharacters[language],
@@ -95,5 +109,6 @@ export default language => {
       mediumLevel: values.mediumLevel[language],
       lowLevel: values.lowLevel[language],
     },
+    errorDate: values.errorDate[language],
   });
 };

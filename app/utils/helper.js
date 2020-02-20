@@ -1,6 +1,6 @@
 export const getCurrentUser = () => {
   try {
-    const user = localStorage.getItem('user');
+    const user = JSON.parse(localStorage.getItem('user'));
     return user;
   } catch (e) {
     return null;
