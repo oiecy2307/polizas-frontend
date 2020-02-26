@@ -27,9 +27,10 @@ const iconStyle = {
 
 moment.locale('es');
 
-function SelectableCalendar({ responsive, maxResponsive }) {
+function SelectableCalendar({ responsive, maxResponsive, dates }) {
   const [currentDate, setCurrentDate] = useState(moment().format());
   const currentMonth = moment(currentDate).month();
+  const currentDayOfMonth = moment(currentDate).date();
   const daysInMonth = moment()
     .month(currentMonth)
     .daysInMonth();
@@ -46,6 +47,23 @@ function SelectableCalendar({ responsive, maxResponsive }) {
         .format(),
     );
   };
+  const handleDateSelected = date => () => {
+    setCurrentDate(
+      moment(currentDate)
+        .date(date + 1)
+        .format(),
+    );
+  };
+
+  const handleEvaluateVariant = i => {
+    const date = moment(currentDate)
+      .date(i + 1)
+      .format();
+    const foundDate = dates.find(d => moment(d.value).isSame(date, 'day'));
+    if (!foundDate) return '';
+    return foundDate.type;
+  };
+
   return (
     <Container responsive={responsive} maxResponsive={maxResponsive}>
       <Header>
@@ -71,7 +89,11 @@ function SelectableCalendar({ responsive, maxResponsive }) {
           <DayItem />
         ))}
         {times(daysInMonth, i => (
-          <DayItem>
+          <DayItem
+            onClick={handleDateSelected(i)}
+            selected={i === currentDayOfMonth - 1}
+            variant={handleEvaluateVariant(i)}
+          >
             <span>{i + 1}</span>
           </DayItem>
         ))}
@@ -83,6 +105,7 @@ function SelectableCalendar({ responsive, maxResponsive }) {
 SelectableCalendar.propTypes = {
   responsive: PropTypes.bool,
   maxResponsive: PropTypes.number,
+  dates: PropTypes.array,
 };
 
 SelectableCalendar.defaultProps = {

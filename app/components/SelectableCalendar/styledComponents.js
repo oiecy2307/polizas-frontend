@@ -3,8 +3,32 @@ import styled from 'styled-components';
 const daySelectedGreen = `
   border: 2px solid #50B83C;
   border-radius: 50%;
+  color: white;
+  background: #50B83C;
+`;
+
+const dayGreen = `
+  border: 2px solid #50B83C;
+  border-radius: 50%;
   color: #50B83C;
 `;
+
+const dayRed = `
+  border: 2px solid #DE3618;
+  border-radius: 50%;
+  color: #DE3618;
+`;
+
+const getVariant = variant => {
+  switch (variant) {
+    case 'success':
+      return dayGreen;
+    case 'warning':
+      return dayRed;
+    default:
+      return '';
+  }
+};
 
 export const Container = styled.div`
   background-color: #ffffff;
@@ -67,6 +91,7 @@ export const DayItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 
   & span {
     width: 32px;
@@ -75,5 +100,6 @@ export const DayItem = styled.div`
     align-items: center;
     justify-content: center;
     ${({ selected }) => selected && daySelectedGreen}
+    ${({ variant, selected }) => variant && !selected && getVariant(variant)}
   }
 `;

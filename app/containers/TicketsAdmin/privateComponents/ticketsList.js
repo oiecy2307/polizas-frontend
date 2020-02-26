@@ -18,7 +18,6 @@ import {
 } from '../styledComponents';
 
 export function TicketsList({ tickets }) {
-  console.log('tickets', tickets);
   return (
     <div>
       <DateDetailContainer>

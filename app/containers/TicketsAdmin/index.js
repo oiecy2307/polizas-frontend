@@ -13,7 +13,7 @@ import { compose } from 'redux';
 import { get } from 'lodash';
 import moment from 'moment';
 
-import { wsGetTicketsByStatus } from 'services/tickets';
+import { wsGetTicketsByStatus, wsGetDatesWithTickets } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 
 import Calendar from 'components/SelectableCalendar';
@@ -28,6 +28,21 @@ import reducer from './reducer';
 import saga from './saga';
 import { Content, LeftSection } from './styledComponents';
 
+const dates = [
+  {
+    value: '2020-02-20',
+    type: 'success',
+  },
+  {
+    value: '2020-02-25',
+    type: 'warning',
+  },
+  {
+    value: '2020-04-20',
+    type: 'success',
+  },
+];
+
 export function TicketsAdmin({ dispatch }) {
   useInjectReducer({ key: 'ticketsAdmin', reducer });
   useInjectSaga({ key: 'ticketsAdmin', saga });
@@ -38,6 +53,10 @@ export function TicketsAdmin({ dispatch }) {
   useEffect(() => {
     fetchTickets(optionSelected);
   }, [optionSelected]);
+
+  useEffect(() => {
+    fetchDatesWithTickets();
+  }, []);
 
   async function fetchTickets(status) {
     try {
@@ -53,6 +72,15 @@ export function TicketsAdmin({ dispatch }) {
       dispatch(aOpenSnackbar('Error al consultar tickets', 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
+    }
+  }
+
+  async function fetchDatesWithTickets() {
+    try {
+      const datesWTickets = await wsGetDatesWithTickets(2, 2020);
+      console.log('datesWTickets', datesWTickets);
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -84,36 +112,36 @@ export function TicketsAdmin({ dispatch }) {
         >
           Abiertos
         </TabButton>
-        <TabButton
+        {/* <TabButton
           selected={optionSelected === 'in-progress'}
           onClick={handleSelectOption('in-progress')}
         >
           En progreso
-        </TabButton>
-        <TabButton
+        </TabButton> */}
+        {/* <TabButton
           selected={optionSelected === 'finished'}
           onClick={handleSelectOption('finished')}
         >
           Terminados
-        </TabButton>
+        </TabButton> */}
         <TabButton
           selected={optionSelected === 'closed'}
           onClick={handleSelectOption('closed')}
         >
           Cerrados
         </TabButton>
-        <TabButton
+        {/* <TabButton
           selected={optionSelected === 'cancelled'}
           onClick={handleSelectOption('cancelled')}
         >
           Cancelado
-        </TabButton>
+        </TabButton> */}
       </div>
       <Content>
         <LeftSection>
           <TicketsList tickets={tickets} />
         </LeftSection>
-        <Calendar responsive maxResponsive={1190} />
+        <Calendar responsive maxResponsive={1190} dates={dates} />
       </Content>
       <Fab onClick={() => setDialogOpen(true)} />
       <CreateEditTicket

@@ -28,3 +28,17 @@ export const wsGetTicketsByStatus = (status, date) => {
       .catch(err => reject(err));
   });
 };
+
+export const wsGetDatesWithTickets = (month, year) => {
+  const token = getToken();
+  return new Promise((resolve, reject) => {
+    get({
+      url: `/tickets/by-month/${month}/${year}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
