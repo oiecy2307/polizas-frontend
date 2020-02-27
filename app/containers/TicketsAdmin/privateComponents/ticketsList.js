@@ -6,6 +6,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment/min/moment-with-locales';
+
 import ExpandableItem from 'components/ExpandableItem';
 import {
   DateDetailContainer,
@@ -17,11 +19,18 @@ import {
   ItemMainInfo,
 } from '../styledComponents';
 
-export function TicketsList({ tickets }) {
+moment.locale('es');
+
+export function TicketsList({ tickets, date }) {
+  const isToday = moment(date).isSame(new Date(), 'day');
+  const formatedDate = moment(date).format('LL');
+  const displayDate = isToday
+    ? `Hoy (${moment(date).format('LL')})`
+    : formatedDate;
   return (
     <div>
       <DateDetailContainer>
-        <DateText>Hoy (12 de junio 2019)</DateText>
+        <DateText>{displayDate}</DateText>
         {tickets.map(ticket => (
           <ExpandableItem
             header={
@@ -44,6 +53,7 @@ export function TicketsList({ tickets }) {
 
 TicketsList.propTypes = {
   tickets: PropTypes.array,
+  date: PropTypes.string,
 };
 
 export default TicketsList;

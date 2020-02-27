@@ -93,3 +93,47 @@ export const ItemMainInfo = styled.div`
     width: calc(100% - 90px);
   }
 `;
+
+export const Explanation = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  & > span {
+    margin-left: 16px;
+    color: #212b36;
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  &:not(:last-child) {
+    margin-bottom: 16px;
+  }
+`;
+
+export const IconCalendarContainer = styled.div`
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  background: ${props => props.background};
+  color: ${props => props.color};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & svg {
+    font-size: 16px;
+  }
+`;
+
+export const ColorsExplanation = styled.div`
+  background-color: #ffffff;
+  border-radius: 12px;
+  max-width: 420px;
+  padding: 24px 32px;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+  margin-top: 24px;
+  @media (max-width: 1190px) {
+    max-width: unset;
+  }
+`;

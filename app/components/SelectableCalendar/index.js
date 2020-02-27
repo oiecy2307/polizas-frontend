@@ -27,7 +27,13 @@ const iconStyle = {
 
 moment.locale('es');
 
-function SelectableCalendar({ responsive, maxResponsive, dates }) {
+function SelectableCalendar({
+  responsive,
+  maxResponsive,
+  dates,
+  onChange,
+  onMonthChange,
+}) {
   const [currentDate, setCurrentDate] = useState(moment().format());
   const currentMonth = moment(currentDate).month();
   const currentDayOfMonth = moment(currentDate).date();
@@ -41,18 +47,18 @@ function SelectableCalendar({ responsive, maxResponsive, dates }) {
       .format('d'),
   );
   const handleChangeMonth = amount => () => {
-    setCurrentDate(
-      moment(currentDate)
-        .add(amount, 'M')
-        .format(),
-    );
+    const newDate = moment(currentDate)
+      .add(amount, 'M')
+      .format();
+    setCurrentDate(newDate);
+    onMonthChange(newDate);
   };
   const handleDateSelected = date => () => {
-    setCurrentDate(
-      moment(currentDate)
-        .date(date + 1)
-        .format(),
-    );
+    const newDate = moment(currentDate)
+      .date(date + 1)
+      .format();
+    setCurrentDate(newDate);
+    onChange(newDate);
   };
 
   const handleEvaluateVariant = i => {
@@ -106,11 +112,15 @@ SelectableCalendar.propTypes = {
   responsive: PropTypes.bool,
   maxResponsive: PropTypes.number,
   dates: PropTypes.array,
+  onChange: PropTypes.func,
+  onMonthChange: PropTypes.func,
 };
 
 SelectableCalendar.defaultProps = {
   responsive: false,
   maxResponsive: 768,
+  onChange: () => {},
+  onMonthChange: () => {},
 };
 
 export default memo(SelectableCalendar);

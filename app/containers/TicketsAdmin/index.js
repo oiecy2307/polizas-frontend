@@ -11,10 +11,11 @@ import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { get } from 'lodash';
-import moment from 'moment';
+import moment from 'moment/min/moment-with-locales';
 
 import { wsGetTicketsByStatus, wsGetDatesWithTickets } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
+import CalendarIcon from '@material-ui/icons/CalendarToday';
 
 import Calendar from 'components/SelectableCalendar';
 import Fab from 'components/Fab';
@@ -26,22 +27,13 @@ import TicketsList from './privateComponents/ticketsList';
 import makeSelectTicketsAdmin from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import { Content, LeftSection } from './styledComponents';
-
-const dates = [
-  {
-    value: '2020-02-20',
-    type: 'success',
-  },
-  {
-    value: '2020-02-25',
-    type: 'warning',
-  },
-  {
-    value: '2020-04-20',
-    type: 'success',
-  },
-];
+import {
+  Content,
+  LeftSection,
+  ColorsExplanation,
+  IconCalendarContainer,
+  Explanation,
+} from './styledComponents';
 
 export function TicketsAdmin({ dispatch }) {
   useInjectReducer({ key: 'ticketsAdmin', reducer });
@@ -49,20 +41,34 @@ export function TicketsAdmin({ dispatch }) {
   const [optionSelected, setOptionSelected] = useState('new');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [tickets, setTickets] = useState([]);
+  const [selectedDateMonth, setSelectedDateMonth] = useState(
+    moment(new Date(), 'DD-MM-YYYY').format(),
+  );
+  const [selectedDate, setSelectedDate] = useState(
+    moment(new Date(), 'DD-MM-YYYY').format(),
+  );
+  const [lastDatesSearch, setLastDatesSearch] = useState('');
+  const [debtDates, setDebtDates] = useState([]);
+  const [onTimeDates, setOnTimeDates] = useState([]);
+
+  const dates = [
+    ...debtDates.map(date => ({ value: date, type: 'warning' })),
+    ...onTimeDates.map(date => ({ value: date, type: 'success' })),
+  ];
 
   useEffect(() => {
-    fetchTickets(optionSelected);
-  }, [optionSelected]);
+    fetchTickets(optionSelected, selectedDate);
+  }, [optionSelected, selectedDate]);
 
   useEffect(() => {
-    fetchDatesWithTickets();
-  }, []);
+    fetchDatesWithTickets(selectedDateMonth);
+  }, [selectedDateMonth]);
 
-  async function fetchTickets(status) {
+  async function fetchTickets(status, date) {
     try {
       dispatch(aSetLoadingState(true));
-      const date = moment(new Date(), 'DD-MM-YYYY').format();
-      const rTickets = await wsGetTicketsByStatus(status, date);
+      const ldate = moment(date).format();
+      const rTickets = await wsGetTicketsByStatus(status, ldate);
       if (rTickets.error) {
         dispatch(aOpenSnackbar('Error al consultar tickets', 'error'));
       } else {
@@ -75,10 +81,18 @@ export function TicketsAdmin({ dispatch }) {
     }
   }
 
-  async function fetchDatesWithTickets() {
+  async function fetchDatesWithTickets(date) {
     try {
-      const datesWTickets = await wsGetDatesWithTickets(2, 2020);
-      console.log('datesWTickets', datesWTickets);
+      const momentDate = moment(date);
+      const month = momentDate.month() + 1;
+      const year = momentDate.year();
+      const monthYearString = `${month}-${year}`;
+      if (monthYearString === lastDatesSearch) return;
+      const rDatesWTickets = await wsGetDatesWithTickets(month, year);
+      if (rDatesWTickets.error) return;
+      setDebtDates(get(rDatesWTickets, 'data.onDebt', []));
+      setOnTimeDates(get(rDatesWTickets, 'data.onTime', []));
+      setLastDatesSearch(monthYearString);
     } catch (e) {
       console.error(e);
     }
@@ -90,7 +104,8 @@ export function TicketsAdmin({ dispatch }) {
 
   const handleCallback = () => {
     setDialogOpen(false);
-    // TODO: fetch tickets again to refresh info
+    fetchTickets(optionSelected, selectedDate);
+    fetchDatesWithTickets(selectedDateMonth);
   };
 
   return (
@@ -139,9 +154,31 @@ export function TicketsAdmin({ dispatch }) {
       </div>
       <Content>
         <LeftSection>
-          <TicketsList tickets={tickets} />
+          <TicketsList tickets={tickets} date={selectedDate} />
         </LeftSection>
-        <Calendar responsive maxResponsive={1190} dates={dates} />
+        <div>
+          <Calendar
+            responsive
+            maxResponsive={1190}
+            dates={dates}
+            onMonthChange={date => setSelectedDateMonth(date)}
+            onChange={date => setSelectedDate(date)}
+          />
+          <ColorsExplanation>
+            <Explanation>
+              <IconCalendarContainer background="#FBEAE5" color="#DE3618">
+                <CalendarIcon />
+              </IconCalendarContainer>
+              <span>Ticket(s) con pendiente de pago</span>
+            </Explanation>
+            <Explanation>
+              <IconCalendarContainer background="#E3F1DF" color="#108043">
+                <CalendarIcon />
+              </IconCalendarContainer>
+              <span>Ticket(s) sin adeudo</span>
+            </Explanation>
+          </ColorsExplanation>
+        </div>
       </Content>
       <Fab onClick={() => setDialogOpen(true)} />
       <CreateEditTicket
