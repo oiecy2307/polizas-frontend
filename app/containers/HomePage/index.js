@@ -90,6 +90,7 @@ function HomePage({ history, dispatch }) {
             onChange={e => setPassword(e.target.value)}
           />
           <SpaceBetween>
+            <span />
             {false && <LabelButton>Crear cuenta</LabelButton>}
             <Button disabled={disabled} onClick={() => handleLogin()}>
               {messages.login}

@@ -9,8 +9,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
-import { getToken } from 'utils/helper';
+import { getToken, getCurrentUser } from 'utils/helper';
 import { GlobalValuesContext } from 'contexts/global-values';
+import { LoggedUser } from 'contexts/logged-user';
 import { ImmortalDB } from 'immortal-db';
 
 import LayersIcon from '@material-ui/icons/Layers';
@@ -18,6 +19,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import ExitIcon from '@material-ui/icons/ExitToAppOutlined';
 import Drawer from '@material-ui/core/Drawer';
+import Avatar from 'components/Avatar';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
@@ -30,7 +32,6 @@ import {
   TopBarContainer,
   Logo,
   Suppdesk,
-  Avatar,
   Flex,
   LeftMenu,
   Content,
@@ -53,6 +54,7 @@ export function MainLayout({ children, history }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [pageLoaded, setPageLoaded] = useState(false);
   const [messages] = useState(getMessages(language));
+  const [currentUser, setCurrentUser] = useState({});
 
   useEffect(() => {
     evaluateToken();
@@ -61,6 +63,7 @@ export function MainLayout({ children, history }) {
   async function evaluateToken() {
     const token = await getToken();
     if (!token) history.push('inicio-sesion');
+    setCurrentUser(await getCurrentUser());
     setPageLoaded(true);
   }
 
@@ -139,39 +142,43 @@ export function MainLayout({ children, history }) {
   );
 
   return (
-    <MainContainer>
-      <TopBarContainer>
-        <AlignVertical>
-          <Logo>
-            <LayersIcon style={{ ...iconStyle }} />
-          </Logo>
-          <Suppdesk>Suppdesk</Suppdesk>
-        </AlignVertical>
-        <AlignVertical>
-          <NotificationsIcon style={{ ...iconStyle, color: '#637381' }} />
-          <Avatar src="https://lasillarotarm.blob.core.windows.net/images/2019/06/09/lafotoineditadejosejosequegeneracontroversiaporestarenlacamacondosmujeres-focus-0-0-983-557.jpg" />
-        </AlignVertical>
-      </TopBarContainer>
-      <MobileMenu>
-        <MenuIcon onClick={handleChangeMenuState} style={{ ...iconStyle }} />
-        <h1>{optionResponsive}</h1>
-        <Drawer open={menuOpen} onClose={toggleDrawer}>
-          <MenuResponsive>
-            <AlignVertical style={{ marginBottom: 24, paddingLeft: 10 }}>
-              <Logo>
-                <LayersIcon style={{ ...iconStyle }} />
-              </Logo>
-              <Suppdesk>Suppdesk</Suppdesk>
-            </AlignVertical>
-            {menu}
-          </MenuResponsive>
-        </Drawer>
-      </MobileMenu>
-      <Flex>
-        <LeftMenu>{menu}</LeftMenu>
-        <Content>{children}</Content>
-      </Flex>
-    </MainContainer>
+    <LoggedUser.Provider value={currentUser}>
+      <MainContainer>
+        <TopBarContainer>
+          <AlignVertical>
+            <Logo>
+              <LayersIcon style={{ ...iconStyle }} />
+            </Logo>
+            <Suppdesk>Suppdesk</Suppdesk>
+          </AlignVertical>
+          <AlignVertical>
+            <NotificationsIcon
+              style={{ ...iconStyle, color: '#637381', marginRight: 24 }}
+            />
+            <Avatar name={currentUser.name} />
+          </AlignVertical>
+        </TopBarContainer>
+        <MobileMenu>
+          <MenuIcon onClick={handleChangeMenuState} style={{ ...iconStyle }} />
+          <h1>{optionResponsive}</h1>
+          <Drawer open={menuOpen} onClose={toggleDrawer}>
+            <MenuResponsive>
+              <AlignVertical style={{ marginBottom: 24, paddingLeft: 10 }}>
+                <Logo>
+                  <LayersIcon style={{ ...iconStyle }} />
+                </Logo>
+                <Suppdesk>Suppdesk</Suppdesk>
+              </AlignVertical>
+              {menu}
+            </MenuResponsive>
+          </Drawer>
+        </MobileMenu>
+        <Flex>
+          <LeftMenu>{menu}</LeftMenu>
+          <Content>{children}</Content>
+        </Flex>
+      </MainContainer>
+    </LoggedUser.Provider>
   );
 }
 
