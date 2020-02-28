@@ -16,7 +16,6 @@ apiCall.interceptors.response.use(response => response, async function(error) {
   let errorMessage = 'There was an error communicating with the server.';
   if (error.response) {
     if (error.response.status === 401) {
-      await ImmortalDB.remove('user');
       history.push('/');
     }
     errorMessage = error.response.message

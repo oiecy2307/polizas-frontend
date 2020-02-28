@@ -21,13 +21,13 @@ import Form from './form';
 
 import getMessages from './messages';
 
-function CreateEditTicket({ open, onClose, callback, dispatch }) {
+function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
   const { language } = useContext(GlobalValuesContext);
   const [messages] = useState(getMessages(language));
   const [sTechnicals, setTechnicals] = useState([]);
 
   useEffect(() => {
-    fetchUsers();
+    if (!isClient) fetchUsers();
     moment.locale(language);
   }, []);
 
@@ -139,6 +139,7 @@ function CreateEditTicket({ open, onClose, callback, dispatch }) {
             disabled={false}
             isEditing={isEditing}
             technicals={sTechnicals}
+            isClient={isClient}
           />
         </Dialog>
       )}
@@ -151,6 +152,11 @@ CreateEditTicket.propTypes = {
   onClose: PropTypes.func,
   callback: PropTypes.func,
   dispatch: PropTypes.func,
+  isClient: PropTypes.bool,
+};
+
+CreateEditTicket.defaultProps = {
+  isClient: true,
 };
 
 export default memo(CreateEditTicket);

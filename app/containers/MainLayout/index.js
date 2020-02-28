@@ -13,6 +13,7 @@ import { getToken, getCurrentUser } from 'utils/helper';
 import { GlobalValuesContext } from 'contexts/global-values';
 import { LoggedUser } from 'contexts/logged-user';
 import { ImmortalDB } from 'immortal-db';
+import { get } from 'lodash';
 
 import LayersIcon from '@material-ui/icons/Layers';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -63,7 +64,8 @@ export function MainLayout({ children, history }) {
   async function evaluateToken() {
     const token = await getToken();
     if (!token) history.push('inicio-sesion');
-    setCurrentUser(await getCurrentUser());
+    const lCurrentUser = await getCurrentUser();
+    setCurrentUser(lCurrentUser);
     setPageLoaded(true);
   }
 
@@ -155,7 +157,7 @@ export function MainLayout({ children, history }) {
             <NotificationsIcon
               style={{ ...iconStyle, color: '#637381', marginRight: 24 }}
             />
-            <Avatar name={currentUser.name} />
+            <Avatar name={get(currentUser, 'name', '')} />
           </AlignVertical>
         </TopBarContainer>
         <MobileMenu>

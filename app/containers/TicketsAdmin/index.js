@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -12,6 +12,7 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
+import { LoggedUser } from 'contexts/logged-user';
 
 import { wsGetTicketsByStatus, wsGetDatesWithTickets } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
@@ -38,6 +39,8 @@ import {
 export function TicketsAdmin({ dispatch }) {
   useInjectReducer({ key: 'ticketsAdmin', reducer });
   useInjectSaga({ key: 'ticketsAdmin', saga });
+  const currentUser = useContext(LoggedUser);
+
   const [optionSelected, setOptionSelected] = useState('new');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [tickets, setTickets] = useState([]);
@@ -50,6 +53,7 @@ export function TicketsAdmin({ dispatch }) {
   const [lastDatesSearch, setLastDatesSearch] = useState('');
   const [debtDates, setDebtDates] = useState([]);
   const [onTimeDates, setOnTimeDates] = useState([]);
+  const [isClient] = useState(get(currentUser, 'role', '') === 'salesman');
 
   const dates = [
     ...debtDates.map(date => ({ value: date, type: 'warning' })),
@@ -186,6 +190,7 @@ export function TicketsAdmin({ dispatch }) {
         onClose={() => setDialogOpen(false)}
         dispatch={dispatch}
         callback={handleCallback}
+        isClient={isClient}
       />
     </div>
   );
