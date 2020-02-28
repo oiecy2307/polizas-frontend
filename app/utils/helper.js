@@ -1,15 +1,17 @@
-export const getCurrentUser = () => {
+import { ImmortalDB } from 'immortal-db';
+
+export const getCurrentUser = async () => {
   try {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(await ImmortalDB.get('user'));
     return user;
   } catch (e) {
     return null;
   }
 };
 
-export const getToken = () => {
+export const getToken = async () => {
   try {
-    const token = localStorage.getItem('token');
+    const token = await ImmortalDB.get('token');
     return token;
   } catch (e) {
     return null;

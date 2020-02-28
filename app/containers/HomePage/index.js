@@ -13,6 +13,7 @@ import { wLogin } from 'services/auth';
 import { aOpenSnackbar } from 'containers/App/actions';
 import { getToken } from 'utils/helper';
 import { GlobalValuesContext } from 'contexts/global-values';
+import { ImmortalDB } from 'immortal-db';
 
 import Input from 'components/InputText';
 import LayersIcon from '@material-ui/icons/Layers';
@@ -38,9 +39,13 @@ function HomePage({ history, dispatch }) {
   const [password, setPassword] = useState('');
 
   useEffect(() => {
-    const token = getToken();
-    if (token) history.push('/');
+    evaluateToken();
   }, []);
+
+  async function evaluateToken() {
+    const token = await getToken();
+    if (token) history.push('/');
+  }
 
   async function handleLogin() {
     try {
@@ -51,8 +56,8 @@ function HomePage({ history, dispatch }) {
             aOpenSnackbar('Usuario y/o contraseña incorrectos', 'error'),
           );
         } else {
-          localStorage.setItem('user', JSON.stringify(response.user));
-          localStorage.setItem('token', response.token);
+          await ImmortalDB.set('user', JSON.stringify(response.user));
+          await ImmortalDB.set('token', response.token);
           history.push('/');
         }
       }

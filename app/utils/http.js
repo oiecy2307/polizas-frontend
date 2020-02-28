@@ -1,6 +1,8 @@
 /* eslint-disable */
 import axios from 'axios';
 import { BASE_URL } from 'config';
+import { ImmortalDB } from 'immortal-db';
+
 import history from 'utils/history';
 const apiCall = axios.create({
   baseURL: BASE_URL,
@@ -10,11 +12,11 @@ apiCall.interceptors.request.use(config => config, function(error) {
   return Promise.reject(error);
 });
 
-apiCall.interceptors.response.use(response => response, function(error) {
+apiCall.interceptors.response.use(response => response, async function(error) {
   let errorMessage = 'There was an error communicating with the server.';
   if (error.response) {
     if (error.response.status === 401) {
-      localStorage.removeItem('user');
+      await ImmortalDB.remove('user');
       history.push('/');
     }
     errorMessage = error.response.message
@@ -29,16 +31,16 @@ apiCall.interceptors.response.use(response => response, function(error) {
   return Promise.reject(error.response);
 });
 
-export function getToken() {
+export async function getToken() {
   try {
-    const token = localStorage.getItem('token');
+    const token = await ImmortalDB.get('token');
 
     if (token) {
       return token;
     }
     return '';
   } catch (e) {
-    return '';  
+    return '';
   }
 }
 

@@ -1,7 +1,7 @@
 import { post, getToken, get } from 'utils/http';
 
-export const wsCreateTicket = body => {
-  const token = getToken();
+export const wsCreateTicket = async body => {
+  const token = await getToken();
   return new Promise((resolve, reject) => {
     post({
       url: `/tickets`,
@@ -15,8 +15,8 @@ export const wsCreateTicket = body => {
   });
 };
 
-export const wsGetTicketsByStatus = (status, date) => {
-  const token = getToken();
+export const wsGetTicketsByStatus = async (status, date) => {
+  const token = await getToken();
   return new Promise((resolve, reject) => {
     get({
       url: `/tickets?status=${status}&date=${date}`,
@@ -29,8 +29,8 @@ export const wsGetTicketsByStatus = (status, date) => {
   });
 };
 
-export const wsGetDatesWithTickets = (month, year) => {
-  const token = getToken();
+export const wsGetDatesWithTickets = async (month, year) => {
+  const token = await getToken();
   return new Promise((resolve, reject) => {
     get({
       url: `/tickets/by-month/${month}/${year}`,

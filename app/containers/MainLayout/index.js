@@ -11,6 +11,7 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { getToken } from 'utils/helper';
 import { GlobalValuesContext } from 'contexts/global-values';
+import { ImmortalDB } from 'immortal-db';
 
 import LayersIcon from '@material-ui/icons/Layers';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -50,12 +51,18 @@ export function MainLayout({ children, history }) {
   useInjectSaga({ key: 'mainLayout', saga });
   const { language } = useContext(GlobalValuesContext);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [pageLoaded, setPageLoaded] = useState(false);
   const [messages] = useState(getMessages(language));
 
   useEffect(() => {
-    const token = getToken();
-    if (!token) history.push('inicio-sesion');
+    evaluateToken();
   }, []);
+
+  async function evaluateToken() {
+    const token = await getToken();
+    if (!token) history.push('inicio-sesion');
+    setPageLoaded(true);
+  }
 
   const optionSelected = children.props.location.pathname;
   const optionResponsive = (() => {
@@ -86,11 +93,13 @@ export function MainLayout({ children, history }) {
     setMenuOpen(!menuOpen);
   };
 
-  const handleLogOut = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+  async function handleLogOut() {
+    await ImmortalDB.remove('user');
+    await ImmortalDB.remove('token');
     history.push('/inicio-sesion');
-  };
+  }
+
+  if (!pageLoaded) return <div />;
 
   const menu = (
     <React.Fragment>

@@ -52,7 +52,7 @@ function CreateEditTicket({ open, onClose, callback, dispatch }) {
   async function handleCreateTicket(body, resetValues) {
     try {
       dispatch(aSetLoadingState(true));
-      const user = getCurrentUser();
+      const user = await getCurrentUser();
       const response = await wsCreateTicket({
         ...body,
         reporterId: user.id,

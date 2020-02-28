@@ -1,7 +1,7 @@
 import { get, getToken } from 'utils/http';
 
-export const wsGetUsersByType = type => {
-  const token = getToken();
+export const wsGetUsersByType = async type => {
+  const token = await getToken();
   return new Promise((resolve, reject) => {
     get({
       url: `/users/type/${type}`,
