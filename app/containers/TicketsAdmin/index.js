@@ -72,7 +72,12 @@ export function TicketsAdmin({ dispatch }) {
     try {
       dispatch(aSetLoadingState(true));
       const ldate = moment(date).format();
-      const rTickets = await wsGetTicketsByStatus(status, ldate);
+      let rTickets = null;
+      if (isClient) {
+        rTickets = await wsGetTicketsByStatus(status, ldate, currentUser.id);
+      } else {
+        rTickets = await wsGetTicketsByStatus(status, ldate);
+      }
       if (rTickets.error) {
         dispatch(aOpenSnackbar('Error al consultar tickets', 'error'));
       } else {
@@ -92,7 +97,16 @@ export function TicketsAdmin({ dispatch }) {
       const year = momentDate.year();
       const monthYearString = `${month}-${year}`;
       if (monthYearString === lastDatesSearch) return;
-      const rDatesWTickets = await wsGetDatesWithTickets(month, year);
+      let rDatesWTickets = null;
+      if (isClient) {
+        rDatesWTickets = await wsGetDatesWithTickets(
+          month,
+          year,
+          currentUser.id,
+        );
+      } else {
+        rDatesWTickets = await wsGetDatesWithTickets(month, year);
+      }
       if (rDatesWTickets.error) return;
       setDebtDates(get(rDatesWTickets, 'data.onDebt', []));
       setOnTimeDates(get(rDatesWTickets, 'data.onTime', []));

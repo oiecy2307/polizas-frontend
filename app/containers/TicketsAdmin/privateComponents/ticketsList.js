@@ -7,6 +7,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment/min/moment-with-locales';
+import { get } from 'lodash';
 
 import ExpandableItem from 'components/ExpandableItem';
 import {
@@ -28,7 +29,6 @@ export function TicketsList({ tickets, date }) {
     ? `Hoy (${moment(date).format('LL')})`
     : formatedDate;
 
-  console.log('tickets', tickets);
   return (
     <div>
       <DateDetailContainer>
@@ -40,9 +40,11 @@ export function TicketsList({ tickets, date }) {
                 <IconPurple />
                 <ItemMainInfo>
                   <ItemMessage>{ticket.shortName}</ItemMessage>
-                  <ItemCompany>Company</ItemCompany>
+                  <ItemCompany>
+                    {get(ticket, 'client.company.name', '-')}
+                  </ItemCompany>
                 </ItemMainInfo>
-                <LabelPurple>{ticket.status}</LabelPurple>
+                {false && <LabelPurple>{ticket.status}</LabelPurple>}
               </React.Fragment>
             }
             content={<div>{ticket.description}</div>}

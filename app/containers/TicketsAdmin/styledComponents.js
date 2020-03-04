@@ -88,7 +88,7 @@ export const LabelPurple = styled.div`
 export const ItemMainInfo = styled.div`
   display: flex;
   justify-content: space-between;
-  width: calc(100% - 246px);
+  width: calc(100% - 100px);
   @media (max-width: 576px) {
     width: calc(100% - 90px);
   }

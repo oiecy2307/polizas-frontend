@@ -15,11 +15,14 @@ export const wsCreateTicket = async body => {
   });
 };
 
-export const wsGetTicketsByStatus = async (status, date) => {
+export const wsGetTicketsByStatus = async (status, date, clientId) => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
+    const url = clientId
+      ? `/tickets?status=${status}&date=${date}&clientId=${clientId}`
+      : `/tickets?status=${status}&date=${date}`;
     get({
-      url: `/tickets?status=${status}&date=${date}`,
+      url,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -29,11 +32,14 @@ export const wsGetTicketsByStatus = async (status, date) => {
   });
 };
 
-export const wsGetDatesWithTickets = async (month, year) => {
+export const wsGetDatesWithTickets = async (month, year, clientId) => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
+    const url = clientId
+      ? `/tickets/by-month/${month}/${year}?clientId=${clientId}`
+      : `/tickets/by-month/${month}/${year}`;
     get({
-      url: `/tickets/by-month/${month}/${year}`,
+      url,
       headers: {
         Authorization: `Bearer ${token}`,
       },
