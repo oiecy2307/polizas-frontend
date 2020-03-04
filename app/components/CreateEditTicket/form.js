@@ -19,7 +19,7 @@ import { Form } from './styledComponents';
 import getMessages from './messages';
 
 function CreateEditTicketForm(props) {
-  const { technicals, isClient } = props;
+  const { technicals, isClient, clients } = props;
   const { language } = useContext(GlobalValuesContext);
   moment.locale(language);
   const [messages] = useState(getMessages(language));
@@ -71,33 +71,33 @@ function CreateEditTicketForm(props) {
           />
         )}
       />
+      <Field
+        defaultValue={values.ticketPriority}
+        name="ticketPriority"
+        render={({ field }) => {
+          const { label } = find(options, { value: field.value }) || {};
+          const value = field.value ? { value: field.value, label } : null;
+          return (
+            <Select
+              {...field}
+              value={value}
+              onChange={newValue => {
+                setFieldValue(field.name, newValue.value);
+              }}
+              options={options}
+              placeholder={messages.fields.ticketPriority}
+              error={
+                touched[field.name] && Boolean(errors[field.name])
+                  ? errors[field.name]
+                  : ''
+              }
+              onBlur={() => setFieldTouched(field.name, true)}
+            />
+          );
+        }}
+      />
       {!isClient && (
         <React.Fragment>
-          <Field
-            defaultValue={values.ticketPriority}
-            name="ticketPriority"
-            render={({ field }) => {
-              const { label } = find(options, { value: field.value }) || {};
-              const value = field.value ? { value: field.value, label } : null;
-              return (
-                <Select
-                  {...field}
-                  value={value}
-                  onChange={newValue => {
-                    setFieldValue(field.name, newValue.value);
-                  }}
-                  options={options}
-                  placeholder={messages.fields.ticketPriority}
-                  error={
-                    touched[field.name] && Boolean(errors[field.name])
-                      ? errors[field.name]
-                      : ''
-                  }
-                  onBlur={() => setFieldTouched(field.name, true)}
-                />
-              );
-            }}
-          />
           <Field
             defaultValue={values.technicalId}
             name="technicalId"
@@ -113,6 +113,31 @@ function CreateEditTicketForm(props) {
                   }}
                   options={technicals}
                   placeholder={messages.fields.technicalId}
+                  error={
+                    touched[field.name] && Boolean(errors[field.name])
+                      ? errors[field.name]
+                      : ''
+                  }
+                  onBlur={() => setFieldTouched(field.name, true)}
+                />
+              );
+            }}
+          />
+          <Field
+            defaultValue={values.clientId}
+            name="clientId"
+            render={({ field }) => {
+              const { label } = find(clients, { value: field.value }) || {};
+              const value = field.value ? { value: field.value, label } : null;
+              return (
+                <Select
+                  {...field}
+                  value={value}
+                  onChange={newValue => {
+                    setFieldValue(field.name, newValue.value);
+                  }}
+                  options={clients}
+                  placeholder={messages.fields.clientId}
                   error={
                     touched[field.name] && Boolean(errors[field.name])
                       ? errors[field.name]
@@ -157,6 +182,7 @@ CreateEditTicketForm.propTypes = {
   touched: PropTypes.object,
   errors: PropTypes.object,
   technicals: PropTypes.array,
+  clients: PropTypes.array,
   isClient: PropTypes.bool,
 };
 

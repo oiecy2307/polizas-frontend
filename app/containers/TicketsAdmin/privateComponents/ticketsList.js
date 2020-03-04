@@ -27,6 +27,8 @@ export function TicketsList({ tickets, date }) {
   const displayDate = isToday
     ? `Hoy (${moment(date).format('LL')})`
     : formatedDate;
+
+  console.log('tickets', tickets);
   return (
     <div>
       <DateDetailContainer>

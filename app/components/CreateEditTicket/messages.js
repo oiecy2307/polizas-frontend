@@ -42,6 +42,10 @@ export default language => {
       es: 'Técnico asignado',
       en: 'Assigned technical',
     },
+    clientId: {
+      es: 'Cliente',
+      en: 'Client',
+    },
     dueDate: {
       es: 'Fecha terminación',
       en: 'Due date',
@@ -98,6 +102,7 @@ export default language => {
       ticketDescription: values.ticketDescription[language],
       ticketPriority: values.ticketPriority[language],
       technicalId: values.technicalId[language],
+      clientId: values.clientId[language],
       dueDate: values.dueDate[language],
     },
     required: values.required[language],

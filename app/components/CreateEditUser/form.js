@@ -30,6 +30,10 @@ function CreateEditUserForm(props) {
     },
     {
       value: 'salesman',
+      label: 'Ventas',
+    },
+    {
+      value: 'client',
       label: 'Cliente',
     },
   ]);
@@ -152,6 +156,18 @@ function CreateEditUserForm(props) {
             />
           );
         }}
+      />
+      <Field
+        name="company"
+        defaultValues={values.company}
+        render={({ field }) => (
+          <Input
+            {...field}
+            label={messages.fields.company}
+            helperText={touched.company ? errors.company : ''}
+            error={touched.company && Boolean(errors.company)}
+          />
+        )}
       />
     </Form>
   );

@@ -53,7 +53,7 @@ export function TicketsAdmin({ dispatch }) {
   const [lastDatesSearch, setLastDatesSearch] = useState('');
   const [debtDates, setDebtDates] = useState([]);
   const [onTimeDates, setOnTimeDates] = useState([]);
-  const [isClient] = useState(get(currentUser, 'role', '') === 'salesman');
+  const [isClient] = useState(get(currentUser, 'role', '') === 'client');
 
   const dates = [
     ...debtDates.map(date => ({ value: date, type: 'warning' })),

@@ -25,6 +25,7 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
   const { language } = useContext(GlobalValuesContext);
   const [messages] = useState(getMessages(language));
   const [sTechnicals, setTechnicals] = useState([]);
+  const [sClients, setClients] = useState([]);
 
   useEffect(() => {
     if (!isClient) fetchUsers();
@@ -42,6 +43,14 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
           label: `${t.name} ${t.lastname} (${t.email})`,
         })),
       );
+      const responseClients = await wsGetUsersByType('client');
+      setClients(
+        get(responseClients, 'data.rows', []).map(t => ({
+          ...t,
+          value: t.id,
+          label: `${t.name} ${t.lastname} (${get(t, 'company.name', '')})`,
+        })),
+      );
     } catch (e) {
       dispatch(aOpenSnackbar('Error al obtener usuarios', 'error'));
     } finally {
@@ -53,15 +62,27 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
     try {
       dispatch(aSetLoadingState(true));
       const user = await getCurrentUser();
-      const response = await wsCreateTicket({
+      const bodyAdmin = {
         ...body,
         reporterId: user.id,
         description: body.ticketDescription,
+        clientId: body.clientId,
         status: body.technicalId ? 'assigned' : 'new',
         reportedDate: moment(new Date(), 'DD-MM-YYYY').format(),
         shortName: body.ticketTitle,
         priority: body.ticketPriority,
-      });
+      };
+      const bodyClient = {
+        reporterId: user.id,
+        clientId: user.id,
+        description: body.ticketDescription,
+        status: 'new',
+        priority: body.ticketPriority,
+        reportedDate: moment(new Date(), 'DD-MM-YYYY').format(),
+        dueDate: moment(new Date(), 'DD-MM-YYYY').format(),
+        shortName: body.ticketTitle,
+      };
+      const response = await wsCreateTicket(isClient ? bodyClient : bodyAdmin);
       if (response.error) {
         dispatch(aOpenSnackbar('Error al guardar ticket', 'error'));
       } else {
@@ -84,10 +105,10 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
     // reporterId: '',
     technicalId: '',
     clientId: '',
-    dueDate: '',
+    dueDate: moment(new Date(), 'DD-MM-YYYY').format(),
   };
 
-  const validationSchema = Yup.object({
+  const schemaAdmin = Yup.object({
     ticketTitle: Yup.string(messages.fields.ticketTitle)
       .required(messages.required)
       .max(150, messages.tooLong),
@@ -103,8 +124,28 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
     clientId: Yup.number(),
     dueDate: Yup.date()
       .required(messages.required)
-      .min(moment(new Date(), 'DD-MM-YYYY').format(), messages.errorDate),
+      .min(
+        moment(new Date(), 'DD-MM-YYYY')
+          .add(-1, 'days')
+          .format(),
+        messages.errorDate,
+      ),
   });
+
+  const schemaClient = Yup.object({
+    ticketTitle: Yup.string(messages.fields.ticketTitle)
+      .required(messages.required)
+      .max(150, messages.tooLong),
+    ticketDescription: Yup.string(messages.fields.ticketDescription)
+      .required(messages.required)
+      .max(150, messages.tooLong),
+    ticketPriority: Yup.string(messages.fields.ticketPriority)
+      .required(messages.required)
+      .max(150, messages.tooLong)
+      .matches(textRegex, messages.invalidCharacters),
+  });
+
+  const validationSchema = isClient ? schemaClient : schemaAdmin;
 
   const isEditing = false;
   const dialogTitle = isEditing ? messages.title.edit : messages.title.create;
@@ -139,6 +180,7 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
             disabled={false}
             isEditing={isEditing}
             technicals={sTechnicals}
+            clients={sClients}
             isClient={isClient}
           />
         </Dialog>

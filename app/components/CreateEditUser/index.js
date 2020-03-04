@@ -50,6 +50,7 @@ function CreateEditUser({ open, onClose, callback, dispatch }) {
     username: '',
     password: '',
     role: '',
+    company: '',
   };
 
   const validationSchema = Yup.object({
@@ -80,6 +81,9 @@ function CreateEditUser({ open, onClose, callback, dispatch }) {
       .oneOf([Yup.ref('password'), null], messages.passwordDontMatch),
     role: Yup.string(messages.fields.role)
       .required(messages.required)
+      .max(150, messages.tooLong)
+      .matches(textRegex, messages.invalidCharacters),
+    company: Yup.string(messages.fields.role)
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
   });
