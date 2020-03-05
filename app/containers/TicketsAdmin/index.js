@@ -17,6 +17,8 @@ import { LoggedUser } from 'contexts/logged-user';
 import { wsGetTicketsByStatus, wsGetDatesWithTickets } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import CalendarIcon from '@material-ui/icons/CalendarToday';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import Calendar from 'components/SelectableCalendar';
 import Fab from 'components/Fab';
@@ -41,6 +43,7 @@ export function TicketsAdmin({ dispatch }) {
   useInjectSaga({ key: 'ticketsAdmin', saga });
   const currentUser = useContext(LoggedUser);
 
+  const [isTechnical] = useState(get(currentUser, 'role', '') === 'technical');
   const [optionSelected, setOptionSelected] = useState('new');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [tickets, setTickets] = useState([]);
@@ -50,9 +53,11 @@ export function TicketsAdmin({ dispatch }) {
   const [selectedDate, setSelectedDate] = useState(
     moment(new Date(), 'DD-MM-YYYY').format(),
   );
-  const [lastDatesSearch, setLastDatesSearch] = useState('');
+  // const [lastDatesSearch, setLastDatesSearch] = useState('');
   const [debtDates, setDebtDates] = useState([]);
   const [onTimeDates, setOnTimeDates] = useState([]);
+  const [idTechnical, setIdTechnical] = useState(null);
+  const [idTechnicalFirstTime, setIdTechnicalFirstTime] = useState(true);
   const [isClient] = useState(get(currentUser, 'role', '') === 'client');
 
   const dates = [
@@ -68,6 +73,15 @@ export function TicketsAdmin({ dispatch }) {
     fetchDatesWithTickets(selectedDateMonth);
   }, [selectedDateMonth]);
 
+  useEffect(() => {
+    if (idTechnicalFirstTime) {
+      setIdTechnicalFirstTime(false);
+      return;
+    }
+    fetchTickets(optionSelected, selectedDate);
+    fetchDatesWithTickets(selectedDateMonth);
+  }, [idTechnical]);
+
   async function fetchTickets(status, date) {
     try {
       dispatch(aSetLoadingState(true));
@@ -76,7 +90,7 @@ export function TicketsAdmin({ dispatch }) {
       if (isClient) {
         rTickets = await wsGetTicketsByStatus(status, ldate, currentUser.id);
       } else {
-        rTickets = await wsGetTicketsByStatus(status, ldate);
+        rTickets = await wsGetTicketsByStatus(status, ldate, null, idTechnical);
       }
       if (rTickets.error) {
         dispatch(aOpenSnackbar('Error al consultar tickets', 'error'));
@@ -92,11 +106,12 @@ export function TicketsAdmin({ dispatch }) {
 
   async function fetchDatesWithTickets(date) {
     try {
+      console.log('fetchDatesWithTickets', date, selectedDateMonth);
       const momentDate = moment(date);
       const month = momentDate.month() + 1;
       const year = momentDate.year();
-      const monthYearString = `${month}-${year}`;
-      if (monthYearString === lastDatesSearch) return;
+      // const monthYearString = `${month}-${year}`;
+      // if (monthYearString === lastDatesSearch) return;
       let rDatesWTickets = null;
       if (isClient) {
         rDatesWTickets = await wsGetDatesWithTickets(
@@ -105,12 +120,17 @@ export function TicketsAdmin({ dispatch }) {
           currentUser.id,
         );
       } else {
-        rDatesWTickets = await wsGetDatesWithTickets(month, year);
+        rDatesWTickets = await wsGetDatesWithTickets(
+          month,
+          year,
+          null,
+          idTechnical,
+        );
       }
       if (rDatesWTickets.error) return;
       setDebtDates(get(rDatesWTickets, 'data.onDebt', []));
       setOnTimeDates(get(rDatesWTickets, 'data.onTime', []));
-      setLastDatesSearch(monthYearString);
+      // setLastDatesSearch(monthYearString);
     } catch (e) {
       console.error(e);
     }
@@ -175,6 +195,23 @@ export function TicketsAdmin({ dispatch }) {
           <TicketsList tickets={tickets} date={selectedDate} />
         </LeftSection>
         <div>
+          {isTechnical && (
+            <ColorsExplanation style={{ margin: '0 0 24px' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={Boolean(idTechnical)}
+                    onChange={() =>
+                      setIdTechnical(idTechnical ? null : currentUser.id)
+                    }
+                    value="idTechnical"
+                    color="primary"
+                  />
+                }
+                label="Solo mis tickets asignados"
+              />
+            </ColorsExplanation>
+          )}
           <Calendar
             responsive
             maxResponsive={1190}

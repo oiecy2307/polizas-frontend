@@ -105,16 +105,17 @@ export function MainLayout({ children, history }) {
   }
 
   if (!pageLoaded) return <div />;
+  const isAdmin = currentUser.role === 'admin';
 
   const menu = (
     <React.Fragment>
-      <SidebarItem
+      {/* <SidebarItem
         onClick={handleChangeRoute('/')}
         selected={optionSelected === '/'}
       >
         <SidebarIcon icon="dashboard" />
         <SidebarItemText>{messages.menu.dashboard}</SidebarItemText>
-      </SidebarItem>
+      </SidebarItem> */}
       <SidebarItem
         onClick={handleChangeRoute('/tickets')}
         selected={optionSelected === '/tickets'}
@@ -122,20 +123,22 @@ export function MainLayout({ children, history }) {
         <SidebarIcon icon="tickets" />
         <SidebarItemText>{messages.menu.tickets}</SidebarItemText>
       </SidebarItem>
-      <SidebarItem
+      {/* <SidebarItem
         onClick={handleChangeRoute('/facturas')}
         selected={optionSelected === '/facturas'}
       >
         <SidebarIcon icon="facturas" />
         <SidebarItemText>{messages.menu.invoices}</SidebarItemText>
-      </SidebarItem>
-      <SidebarItem
-        onClick={handleChangeRoute('/usuarios')}
-        selected={optionSelected === '/usuarios'}
-      >
-        <SidebarIcon icon="usuarios" />
-        <SidebarItemText>{messages.menu.users}</SidebarItemText>
-      </SidebarItem>
+      </SidebarItem> */}
+      {isAdmin && (
+        <SidebarItem
+          onClick={handleChangeRoute('/usuarios')}
+          selected={optionSelected === '/usuarios'}
+        >
+          <SidebarIcon icon="usuarios" />
+          <SidebarItemText>{messages.menu.users}</SidebarItemText>
+        </SidebarItem>
+      )}
       <SidebarItem onClick={handleLogOut}>
         <ExitIcon />
         <SidebarItemText>{messages.menu.logout}</SidebarItemText>

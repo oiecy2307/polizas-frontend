@@ -15,12 +15,18 @@ export const wsCreateTicket = async body => {
   });
 };
 
-export const wsGetTicketsByStatus = async (status, date, clientId) => {
+export const wsGetTicketsByStatus = async (
+  status,
+  date,
+  clientId,
+  technicalId,
+) => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
+    const technicalFilter = technicalId ? `&technicalId=${technicalId}` : '';
     const url = clientId
       ? `/tickets?status=${status}&date=${date}&clientId=${clientId}`
-      : `/tickets?status=${status}&date=${date}`;
+      : `/tickets?status=${status}&date=${date}${technicalFilter}`;
     get({
       url,
       headers: {
@@ -32,12 +38,18 @@ export const wsGetTicketsByStatus = async (status, date, clientId) => {
   });
 };
 
-export const wsGetDatesWithTickets = async (month, year, clientId) => {
+export const wsGetDatesWithTickets = async (
+  month,
+  year,
+  clientId,
+  technicalId,
+) => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
+    const technicalFilter = technicalId ? `?technicalId=${technicalId}` : '';
     const url = clientId
       ? `/tickets/by-month/${month}/${year}?clientId=${clientId}`
-      : `/tickets/by-month/${month}/${year}`;
+      : `/tickets/by-month/${month}/${year}${technicalFilter}`;
     get({
       url,
       headers: {
