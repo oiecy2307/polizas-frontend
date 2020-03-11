@@ -106,7 +106,6 @@ export function TicketsAdmin({ dispatch }) {
 
   async function fetchDatesWithTickets(date) {
     try {
-      console.log('fetchDatesWithTickets', date, selectedDateMonth);
       const momentDate = moment(date);
       const month = momentDate.month() + 1;
       const year = momentDate.year();
@@ -192,7 +191,12 @@ export function TicketsAdmin({ dispatch }) {
       </div>
       <Content>
         <LeftSection>
-          <TicketsList tickets={tickets} date={selectedDate} />
+          <TicketsList
+            tickets={tickets}
+            date={selectedDate}
+            onRefresh={handleCallback}
+            dispatch={dispatch}
+          />
         </LeftSection>
         <div>
           {isTechnical && (

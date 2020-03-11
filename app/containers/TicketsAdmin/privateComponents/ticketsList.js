@@ -4,12 +4,15 @@
  *
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment/min/moment-with-locales';
 import { get } from 'lodash';
 
 import ExpandableItem from 'components/ExpandableItem';
+import CloseTicketDialog from 'components/CloseTicketDialog';
+import Button from 'components/Button';
+import { SpaceBetween } from 'utils/globalStyledComponents';
 import {
   DateDetailContainer,
   DateText,
@@ -22,12 +25,45 @@ import {
 
 moment.locale('es');
 
-export function TicketsList({ tickets, date }) {
+export function TicketsList({ tickets, date, onRefresh, dispatch }) {
+  const [ticketSelected, setTicketSelected] = useState(null);
+  const [isCloseTicketDialogOpen, setIsCloseTicketDialogOpen] = useState(false);
   const isToday = moment(date).isSame(new Date(), 'day');
   const formatedDate = moment(date).format('LL');
   const displayDate = isToday
     ? `Hoy (${moment(date).format('LL')})`
     : formatedDate;
+
+  const getButtonText = status => {
+    switch (status) {
+      case 'new':
+        return 'Asignar ticket';
+      case 'assigned':
+        return 'Cerrar ticket';
+      default:
+        return 'Asignar ticket';
+    }
+  };
+
+  const handleButtonClicked = ticket => {
+    setTicketSelected(ticket);
+    switch (ticket.status) {
+      case 'assigned': {
+        setIsCloseTicketDialogOpen(true);
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
+  const handleClose = success => {
+    setIsCloseTicketDialogOpen(false);
+    if (success) {
+      onRefresh();
+    }
+    setTicketSelected(null);
+  };
 
   return (
     <div>
@@ -35,6 +71,7 @@ export function TicketsList({ tickets, date }) {
         <DateText>{displayDate}</DateText>
         {tickets.map(ticket => (
           <ExpandableItem
+            key={ticket.id}
             header={
               <React.Fragment>
                 <IconPurple />
@@ -47,10 +84,25 @@ export function TicketsList({ tickets, date }) {
                 {false && <LabelPurple>{ticket.status}</LabelPurple>}
               </React.Fragment>
             }
-            content={<div>{ticket.description}</div>}
+            content={
+              <SpaceBetween>
+                <div>{ticket.description}</div>
+                {ticket.status !== 'closed' && (
+                  <Button onClick={() => handleButtonClicked(ticket)}>
+                    {getButtonText(ticket.status)}
+                  </Button>
+                )}
+              </SpaceBetween>
+            }
           />
         ))}
       </DateDetailContainer>
+      <CloseTicketDialog
+        open={isCloseTicketDialogOpen}
+        onClose={handleClose}
+        id={get(ticketSelected, 'id', '')}
+        dispatch={dispatch}
+      />
     </div>
   );
 }
@@ -58,6 +110,8 @@ export function TicketsList({ tickets, date }) {
 TicketsList.propTypes = {
   tickets: PropTypes.array,
   date: PropTypes.string,
+  dispatch: PropTypes.func,
+  onRefresh: PropTypes.func,
 };
 
 export default TicketsList;

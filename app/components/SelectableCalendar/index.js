@@ -91,14 +91,15 @@ function SelectableCalendar({
         <span>S</span>
       </DaysName>
       <DaysContainer>
-        {times(startOfMonth, () => (
-          <DayItem />
+        {times(startOfMonth, i => (
+          <DayItem key={i} />
         ))}
         {times(daysInMonth, i => (
           <DayItem
             onClick={handleDateSelected(i)}
             selected={i === currentDayOfMonth - 1}
             variant={handleEvaluateVariant(i)}
+            key={i}
           >
             <span>{i + 1}</span>
           </DayItem>

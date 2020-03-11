@@ -1,4 +1,4 @@
-import { post, getToken, get } from 'utils/http';
+import { post, getToken, get, patch } from 'utils/http';
 
 export const wsCreateTicket = async body => {
   const token = await getToken();
@@ -52,6 +52,21 @@ export const wsGetDatesWithTickets = async (
       : `/tickets/by-month/${month}/${year}${technicalFilter}`;
     get({
       url,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
+
+export const wsCloseTicket = async (id, body) => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    patch({
+      url: `/tickets/close/${id}`,
+      body,
       headers: {
         Authorization: `Bearer ${token}`,
       },
