@@ -11,6 +11,7 @@ import { get } from 'lodash';
 
 import ExpandableItem from 'components/ExpandableItem';
 import CloseTicketDialog from 'components/CloseTicketDialog';
+import AssignTicketDialog from 'components/AssignTicketDialog';
 import Button from 'components/Button';
 import { SpaceBetween } from 'utils/globalStyledComponents';
 import {
@@ -28,6 +29,9 @@ moment.locale('es');
 export function TicketsList({ tickets, date, onRefresh, dispatch }) {
   const [ticketSelected, setTicketSelected] = useState(null);
   const [isCloseTicketDialogOpen, setIsCloseTicketDialogOpen] = useState(false);
+  const [isAssignTicketDialogOpen, setIsAssignTicketDialogOpen] = useState(
+    false,
+  );
   const isToday = moment(date).isSame(new Date(), 'day');
   const formatedDate = moment(date).format('LL');
   const displayDate = isToday
@@ -52,6 +56,10 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
         setIsCloseTicketDialogOpen(true);
         break;
       }
+      case 'new': {
+        setIsAssignTicketDialogOpen(true);
+        break;
+      }
       default:
         break;
     }
@@ -59,6 +67,7 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
 
   const handleClose = success => {
     setIsCloseTicketDialogOpen(false);
+    setIsAssignTicketDialogOpen(false);
     if (success) {
       onRefresh();
     }
@@ -102,6 +111,12 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
         onClose={handleClose}
         id={get(ticketSelected, 'id', '')}
         dispatch={dispatch}
+      />
+      <AssignTicketDialog
+        open={isAssignTicketDialogOpen}
+        onClose={handleClose}
+        dispatch={dispatch}
+        id={get(ticketSelected, 'id', '')}
       />
     </div>
   );

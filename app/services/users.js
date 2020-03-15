@@ -13,3 +13,17 @@ export const wsGetUsersByType = async type => {
       .catch(err => reject(err));
   });
 };
+
+export const wsGetTechnicalsActivity = async () => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    get({
+      url: `/users/technicals-activity`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};

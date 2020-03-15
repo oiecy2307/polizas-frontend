@@ -18,6 +18,15 @@ export const getToken = async () => {
   }
 };
 
+export const getFullName = user => {
+  try {
+    const secondLastName = user.secondLastName ? ` ${user.secondLastName}` : '';
+    return `${user.name} ${user.lastname}${secondLastName}`;
+  } catch (e) {
+    return '';
+  }
+};
+
 export const mediaQuery = '@media (max-width: 768px)';
 
 // export const createUrlForSrc = (imgSrc, format, size) => {

@@ -31,11 +31,7 @@ import Invoices from 'containers/Invoices/Loadable';
 import MainLayout from 'containers/MainLayout';
 import DashboardBackoffice from 'containers/DashboardBackoffice';
 import Users from 'containers/Users/Loadable';
-import {
-  MuiThemeProvider,
-  createMuiTheme,
-  useTheme,
-} from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { makeSelectApp } from './selectors';
@@ -76,8 +72,7 @@ function Alert(props) {
 function App({ app, dispatch }) {
   useInjectReducer({ key: 'appPage', reducer });
   const { loading, snackbar } = app;
-  const themeR = useTheme();
-  const matches = useMediaQuery(themeR.breakpoints.down('sm'));
+  const matches = useMediaQuery('@media (max-width:768px)');
   const globalValues = {
     primaryColor: '#108043',
     language: 'es',
