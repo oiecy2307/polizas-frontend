@@ -27,9 +27,16 @@ const iconStyle = {
 
 moment.locale('es');
 
-function SelectableCalendar({ responsive, maxResponsive }) {
+function SelectableCalendar({
+  responsive,
+  maxResponsive,
+  dates,
+  onChange,
+  onMonthChange,
+}) {
   const [currentDate, setCurrentDate] = useState(moment().format());
   const currentMonth = moment(currentDate).month();
+  const currentDayOfMonth = moment(currentDate).date();
   const daysInMonth = moment()
     .month(currentMonth)
     .daysInMonth();
@@ -40,12 +47,29 @@ function SelectableCalendar({ responsive, maxResponsive }) {
       .format('d'),
   );
   const handleChangeMonth = amount => () => {
-    setCurrentDate(
-      moment(currentDate)
-        .add(amount, 'M')
-        .format(),
-    );
+    const newDate = moment(currentDate)
+      .add(amount, 'M')
+      .format();
+    setCurrentDate(newDate);
+    onMonthChange(newDate);
   };
+  const handleDateSelected = date => () => {
+    const newDate = moment(currentDate)
+      .date(date + 1)
+      .format();
+    setCurrentDate(newDate);
+    onChange(newDate);
+  };
+
+  const handleEvaluateVariant = i => {
+    const date = moment(currentDate)
+      .date(i + 1)
+      .format();
+    const foundDate = dates.find(d => moment(d.value).isSame(date, 'day'));
+    if (!foundDate) return '';
+    return foundDate.type;
+  };
+
   return (
     <Container responsive={responsive} maxResponsive={maxResponsive}>
       <Header>
@@ -67,11 +91,16 @@ function SelectableCalendar({ responsive, maxResponsive }) {
         <span>S</span>
       </DaysName>
       <DaysContainer>
-        {times(startOfMonth, () => (
-          <DayItem />
+        {times(startOfMonth, i => (
+          <DayItem key={i} />
         ))}
         {times(daysInMonth, i => (
-          <DayItem>
+          <DayItem
+            onClick={handleDateSelected(i)}
+            selected={i === currentDayOfMonth - 1}
+            variant={handleEvaluateVariant(i)}
+            key={i}
+          >
             <span>{i + 1}</span>
           </DayItem>
         ))}
@@ -83,11 +112,16 @@ function SelectableCalendar({ responsive, maxResponsive }) {
 SelectableCalendar.propTypes = {
   responsive: PropTypes.bool,
   maxResponsive: PropTypes.number,
+  dates: PropTypes.array,
+  onChange: PropTypes.func,
+  onMonthChange: PropTypes.func,
 };
 
 SelectableCalendar.defaultProps = {
   responsive: false,
   maxResponsive: 768,
+  onChange: () => {},
+  onMonthChange: () => {},
 };
 
 export default memo(SelectableCalendar);

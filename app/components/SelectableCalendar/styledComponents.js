@@ -2,9 +2,42 @@ import styled from 'styled-components';
 
 const daySelectedGreen = `
   border: 2px solid #50B83C;
-  border-radius: 50%;
+  color: white;
+  background: #50B83C;
+`;
+
+const daySelectedRed = `
+  border: 2px solid #DE3618;
+  color: white;
+  background: #DE3618;
+`;
+
+const dayGreen = `
+  border: 2px solid #50B83C;
   color: #50B83C;
 `;
+
+const dayRed = `
+  border: 2px solid #DE3618;
+  color: #DE3618;
+`;
+
+const getVariant = (variant = '', selected = false) => {
+  switch (true) {
+    case variant === 'success' && selected:
+      return daySelectedGreen;
+    case variant === 'success' && !selected:
+      return dayGreen;
+    case variant === 'warning' && selected:
+      return daySelectedRed;
+    case variant === 'warning' && !selected:
+      return dayRed;
+    case selected:
+      return daySelectedGreen;
+    default:
+      return '';
+  }
+};
 
 export const Container = styled.div`
   background-color: #ffffff;
@@ -67,6 +100,7 @@ export const DayItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 
   & span {
     width: 32px;
@@ -74,6 +108,13 @@ export const DayItem = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    ${({ selected }) => selected && daySelectedGreen}
+    ${({ variant, selected }) => getVariant(variant, selected)}
+    border-radius: 50%;
+    transition: all 0.25s;
   }
+
+  /* &:hover > span {
+    background: #d9f7d4;
+    border: 2px solid #d9f7d4;
+  } */
 `;

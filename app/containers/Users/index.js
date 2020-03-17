@@ -92,6 +92,12 @@ export function Users(props) {
           selected={optionSelected === 'salesman'}
           onClick={handleSelectOption('salesman')}
         >
+          {messages.tabs.salesman}
+        </TabButton>
+        <TabButton
+          selected={optionSelected === 'client'}
+          onClick={handleSelectOption('client')}
+        >
           {messages.tabs.clients}
         </TabButton>
       </div>

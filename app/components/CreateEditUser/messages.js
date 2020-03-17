@@ -58,6 +58,10 @@ export default language => {
       es: 'Rol',
       en: 'Role',
     },
+    company: {
+      es: 'Empresa',
+      en: 'Company',
+    },
     required: {
       es: 'Campo requerido',
       en: 'Field required',
@@ -91,8 +95,12 @@ export default language => {
       en: 'Technical',
     },
     salesman: {
+      es: 'Ventas',
+      en: 'Sales',
+    },
+    client: {
       es: 'Cliente',
-      en: 'client',
+      en: 'Client',
     },
   };
 
@@ -118,6 +126,7 @@ export default language => {
       password: values.password[language],
       passwordConfirmation: values.passwordConfirmation[language],
       role: values.role[language],
+      company: values.company[language],
     },
     required: values.required[language],
     invalidCharacters: values.invalidCharacters[language],

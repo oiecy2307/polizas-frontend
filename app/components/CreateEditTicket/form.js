@@ -9,15 +9,19 @@ import PropTypes from 'prop-types';
 import { GlobalValuesContext } from 'contexts/global-values';
 import { Field } from 'formik';
 import { find } from 'lodash';
+import moment from 'moment/min/moment-with-locales';
 
 import Input from 'components/InputText';
 import Select from 'components/Select';
+import Datepicker from 'components/Datepicker';
 
 import { Form } from './styledComponents';
 import getMessages from './messages';
 
 function CreateEditTicketForm(props) {
+  const { technicals, isClient, clients } = props;
   const { language } = useContext(GlobalValuesContext);
+  moment.locale(language);
   const [messages] = useState(getMessages(language));
   const [options] = useState([
     {
@@ -92,6 +96,81 @@ function CreateEditTicketForm(props) {
           );
         }}
       />
+      {!isClient && (
+        <React.Fragment>
+          <Field
+            defaultValue={values.technicalId}
+            name="technicalId"
+            render={({ field }) => {
+              const { label } = find(technicals, { value: field.value }) || {};
+              const value = field.value ? { value: field.value, label } : null;
+              return (
+                <Select
+                  {...field}
+                  value={value}
+                  onChange={newValue => {
+                    setFieldValue(field.name, newValue.value);
+                  }}
+                  options={technicals}
+                  placeholder={messages.fields.technicalId}
+                  error={
+                    touched[field.name] && Boolean(errors[field.name])
+                      ? errors[field.name]
+                      : ''
+                  }
+                  onBlur={() => setFieldTouched(field.name, true)}
+                />
+              );
+            }}
+          />
+          <Field
+            defaultValue={values.clientId}
+            name="clientId"
+            render={({ field }) => {
+              const { label } = find(clients, { value: field.value }) || {};
+              const value = field.value ? { value: field.value, label } : null;
+              return (
+                <Select
+                  {...field}
+                  value={value}
+                  onChange={newValue => {
+                    setFieldValue(field.name, newValue.value);
+                  }}
+                  options={clients}
+                  placeholder={messages.fields.clientId}
+                  error={
+                    touched[field.name] && Boolean(errors[field.name])
+                      ? errors[field.name]
+                      : ''
+                  }
+                  onBlur={() => setFieldTouched(field.name, true)}
+                />
+              );
+            }}
+          />
+          <Field
+            name="dueDate"
+            defaultValues={values.dueDate}
+            render={({ field }) => (
+              <Datepicker
+                {...field}
+                value={values.dueDate}
+                id={messages.fields.dueDate}
+                label={messages.fields.dueDate}
+                language={language}
+                onChange={newValue => {
+                  setFieldValue(
+                    field.name,
+                    moment(newValue, 'DD-MM-YYYY').format(),
+                  );
+                }}
+                helperText={touched.dueDate ? errors.dueDate : ''}
+                error={touched.dueDate && Boolean(errors.dueDate)}
+              />
+            )}
+          />
+        </React.Fragment>
+      )}
     </Form>
   );
 }
@@ -102,6 +181,9 @@ CreateEditTicketForm.propTypes = {
   values: PropTypes.object,
   touched: PropTypes.object,
   errors: PropTypes.object,
+  technicals: PropTypes.array,
+  clients: PropTypes.array,
+  isClient: PropTypes.bool,
 };
 
 export default memo(CreateEditTicketForm);

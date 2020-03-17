@@ -34,6 +34,10 @@ export default language => {
       es: 'Soporte',
       en: 'Technicals',
     },
+    salesman: {
+      es: 'Ventas',
+      en: 'Sales',
+    },
     clients: {
       es: 'Clientes',
       en: 'Clients',
@@ -53,6 +57,7 @@ export default language => {
     tabs: {
       admins: values.admins[language],
       technicalSupport: values.technicalSupport[language],
+      salesman: values.salesman[language],
       clients: values.clients[language],
     },
   });

@@ -62,6 +62,11 @@ const GlobalStyle = createGlobalStyle`
   .text-capitalize {
     text-transform: capitalize;
   }
+  .text-ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 `;
 
 export default GlobalStyle;

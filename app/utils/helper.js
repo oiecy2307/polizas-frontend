@@ -1,22 +1,34 @@
-export const getCurrentUser = () => {
+import { ImmortalDB } from 'immortal-db';
+
+export const getCurrentUser = async () => {
   try {
-    const user = localStorage.getItem('user');
+    const user = JSON.parse(await ImmortalDB.get('user'));
     return user;
   } catch (e) {
     return null;
   }
 };
 
-export const getToken = () => {
+export const getToken = async () => {
   try {
-    const token = localStorage.getItem('token');
+    const token = await ImmortalDB.get('token');
     return token;
   } catch (e) {
     return null;
   }
 };
 
+export const getFullName = user => {
+  try {
+    const secondLastName = user.secondLastName ? ` ${user.secondLastName}` : '';
+    return `${user.name} ${user.lastname}${secondLastName}`;
+  } catch (e) {
+    return '';
+  }
+};
+
 export const mediaQuery = '@media (max-width: 768px)';
+export const mediaQueryS = '@media (max-width: 576px)';
 
 // export const createUrlForSrc = (imgSrc, format, size) => {
 //   const blob = new Blob([imgSrc], { type: getBlobType(format) });
