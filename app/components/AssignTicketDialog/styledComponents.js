@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { mediaQuery } from 'utils/helper';
+import { mediaQuery, mediaQueryS } from 'utils/helper';
 
 export const TechnicalCheckbox = styled.div`
   width: 600px;
@@ -37,6 +37,10 @@ export const PersonalInfo = styled.div`
   & .email {
     color: #b6b6b6;
   }
+
+  ${mediaQueryS} {
+    width: calc(100% - 140px);
+  }
 `;
 
 export const Label = styled.div`
@@ -46,4 +50,8 @@ export const Label = styled.div`
   text-align: center;
   color: ${props => props.color || '#108043'};
   background-color: ${props => props.background || '#E3F1DF'};
+
+  ${mediaQueryS} {
+    width: 86px;
+  }
 `;

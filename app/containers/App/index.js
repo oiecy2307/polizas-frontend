@@ -73,10 +73,12 @@ function App({ app, dispatch }) {
   useInjectReducer({ key: 'appPage', reducer });
   const { loading, snackbar } = app;
   const matches = useMediaQuery('@media (max-width:768px)');
+  const matchesXs = useMediaQuery('@media (max-width:576px)');
   const globalValues = {
     primaryColor: '#108043',
     language: 'es',
     isResponsive: matches,
+    isResponsiveXs: matchesXs,
   };
 
   useEffect(() => {

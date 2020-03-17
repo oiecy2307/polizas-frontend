@@ -4,9 +4,11 @@
  *
  */
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { getFullName } from 'utils/helper';
+import { get } from 'lodash';
+import { GlobalValuesContext } from 'contexts/global-values';
 
 import Avatar from 'components/Avatar';
 import Dialog from 'components/Dialog';
@@ -14,6 +16,7 @@ import Radio from '@material-ui/core/Radio';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { wsGetTechnicalsActivity } from 'services/users';
+import { wsAssignTicket } from 'services/tickets';
 
 import {
   Note,
@@ -22,12 +25,13 @@ import {
   Label,
 } from './styledComponents';
 
-function AssignTicketDialog({ onClose, dispatch, open }) {
+function AssignTicketDialog({ onClose, dispatch, open, id }) {
   const [technicals, setTechnicals] = useState([]);
   const [technicalSelected, setTechnicalSelected] = useState(null);
+  const { isResponsiveXs } = useContext(GlobalValuesContext);
   useEffect(() => {
-    fetchTechnicals();
-  }, []);
+    if (open) fetchTechnicals();
+  }, [open]);
   const fetchTechnicals = async () => {
     try {
       dispatch(aSetLoadingState(true));
@@ -46,9 +50,31 @@ function AssignTicketDialog({ onClose, dispatch, open }) {
     }
   };
 
-  const handleAssignTicket = () => {};
+  const handleAssignTicket = async () => {
+    if (!technicalSelected) return;
+    try {
+      dispatch(aSetLoadingState(true));
+      const body = { technicalId: technicalSelected };
+      const response = await wsAssignTicket(id, body);
+      if (response.error) {
+        dispatch(
+          aOpenSnackbar('Ocurrió un error al asignar el ticket', 'error'),
+        );
+      } else {
+        dispatch(aOpenSnackbar('Ticket asignado', 'success'));
+        onClose(true);
+      }
+    } catch (e) {
+      dispatch(aOpenSnackbar('Ocurrió un error al asignar el ticket', 'error'));
+      onClose(false);
+    } finally {
+      dispatch(aSetLoadingState(false));
+      setTechnicalSelected(null);
+    }
+  };
   const handleClose = () => {
     onClose(false);
+    setTechnicalSelected(null);
   };
   return (
     <Dialog
@@ -67,19 +93,23 @@ function AssignTicketDialog({ onClose, dispatch, open }) {
           key={technical.id}
           onClick={() => setTechnicalSelected(technical.id)}
         >
-          <Avatar src={null} name={technical.name} />
+          {!isResponsiveXs && <Avatar src={null} name={technical.name} />}
           <PersonalInfo>
-            <div className="name">{getFullName(technical)}</div>
-            <div className="email">{technical.email}</div>
+            <div className="name text-ellipsis">{getFullName(technical)}</div>
+            <div className="email text-ellipsis">{technical.email}</div>
           </PersonalInfo>
-          {technical.ticketCount > 0 ? (
+          {get(technical, 'technicalTickets', []).length > 0 ? (
             <Label background="#FBEAE5" color="#DE3618">{`${
-              technical.ticketCount
-            } ${technical.ticketCount === 1 ? 'ticket' : 'tickets'}`}</Label>
+              get(technical, 'technicalTickets', []).length
+            } ${
+              get(technical, 'technicalTickets', []).length === 1
+                ? 'ticket'
+                : 'tickets'
+            }`}</Label>
           ) : (
             <Label>Libre</Label>
           )}
-          <Radio checked={technicalSelected === technical.id} />
+          <Radio color="primary" checked={technicalSelected === technical.id} />
         </TechnicalCheckbox>
       ))}
     </Dialog>
@@ -90,6 +120,7 @@ AssignTicketDialog.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   dispatch: PropTypes.func,
+  id: PropTypes.string,
 };
 
 export default memo(AssignTicketDialog);

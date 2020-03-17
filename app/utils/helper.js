@@ -28,6 +28,7 @@ export const getFullName = user => {
 };
 
 export const mediaQuery = '@media (max-width: 768px)';
+export const mediaQueryS = '@media (max-width: 576px)';
 
 // export const createUrlForSrc = (imgSrc, format, size) => {
 //   const blob = new Blob([imgSrc], { type: getBlobType(format) });

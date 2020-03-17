@@ -75,3 +75,18 @@ export const wsCloseTicket = async (id, body) => {
       .catch(err => reject(err));
   });
 };
+
+export const wsAssignTicket = async (id, body) => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    patch({
+      url: `/tickets/assign-ticket/${id}`,
+      body,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
