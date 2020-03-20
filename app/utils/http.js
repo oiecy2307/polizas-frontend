@@ -1,9 +1,10 @@
 /* eslint-disable */
 import axios from 'axios';
-import { BASE_URL } from 'config';
+import config from 'config';
 import { ImmortalDB } from 'immortal-db';
 
 import history from 'utils/history';
+const { BASE_URL } = config;
 const apiCall = axios.create({
   baseURL: BASE_URL,
 });

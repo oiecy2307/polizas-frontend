@@ -102,6 +102,10 @@ module.exports = require('./webpack.base.babel')({
         // and do not prevent SW to install. Change to `optional` if
         // do not want them to be preloaded at all (cached only when first loaded)
         additional: ['*.chunk.js'],
+        ServiceWorker: {
+          events: true,
+          entry: path.join(process.cwd(), 'app/firebase-messaging-sw.js'), // <-- path for your extended service worker
+        },
       },
 
       // Removes warning for about `additional` section usage

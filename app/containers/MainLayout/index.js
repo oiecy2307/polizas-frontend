@@ -14,6 +14,10 @@ import { GlobalValuesContext } from 'contexts/global-values';
 import { LoggedUser } from 'contexts/logged-user';
 import { ImmortalDB } from 'immortal-db';
 import { get } from 'lodash';
+import firebase from 'firebase';
+import config from 'config';
+import { wsSaveToken, wsLogout } from 'services/auth';
+import { aOpenSnackbar } from 'containers/App/actions';
 
 import LayersIcon from '@material-ui/icons/Layers';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -48,7 +52,7 @@ const iconStyle = {
   cursor: 'pointer',
 };
 
-export function MainLayout({ children, history }) {
+export function MainLayout({ children, history, dispatch }) {
   useInjectReducer({ key: 'mainLayout', reducer });
   useInjectSaga({ key: 'mainLayout', saga });
   const { language } = useContext(GlobalValuesContext);
@@ -61,12 +65,90 @@ export function MainLayout({ children, history }) {
     evaluateToken();
   }, []);
 
+  const saveToken = async (id, token) => {
+    try {
+      const notificationToken = localStorage.getItem('notificationToken');
+      const body = { id, token };
+      if (notificationToken && notificationToken !== token) {
+        const response = wsSaveToken(body);
+        if (!response.error) localStorage.setItem('notificationToken', token);
+      } else if (!notificationToken) {
+        const response = wsSaveToken(body);
+        if (!response.error) localStorage.setItem('notificationToken', token);
+      }
+    } catch (e) {
+      console.log(token); // eslint-disable-line no-console
+    }
+  };
+
   async function evaluateToken() {
     const token = await getToken();
     if (!token) history.push('inicio-sesion');
     const lCurrentUser = await getCurrentUser();
     setCurrentUser(lCurrentUser);
     setPageLoaded(true);
+
+    // TOKEN NOTIFICATION LOGIC
+    console.log('firebase', firebase);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(config.firebaseConfig);
+    }
+    const messaging = firebase.messaging();
+
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        console.log('Notification permission granted.');
+        messaging
+          .getToken()
+          .then(lToken => {
+            console.log('lToken', lToken);
+            saveToken(lCurrentUser.id, lToken);
+          })
+          .catch(err => {
+            console.log('ERROR:', err); // eslint-disable-line no-console
+          });
+      } else {
+        console.log('Unable to get permission to notify.');
+      }
+    });
+
+    // messaging
+    //   .requestPermission()
+    //   .then(() => messaging.getToken())
+    //   .then(token => {
+    //     saveToken(token);
+    //   })
+    //   .catch(err => {
+    //     console.log('ERROR:', err); // eslint-disable-line no-console
+    //   });
+    //
+    // messaging.onTokenRefresh(() => {
+    //   messaging
+    //     .getToken()
+    //     .then(refreshedToken => {
+    //       saveToken(refreshedToken);
+    //     })
+    //     .catch(err => {
+    //       console.log('ERROR:', err); // eslint-disable-line no-console
+    //     });
+    // });
+    //
+    // navigator.serviceWorker.addEventListener('message', event => {
+    //   const message = event.data['firebase-messaging-msg-data'];
+    //   const notify = {
+    //     mensaje: message.notification.title,
+    //     subtitulo: message.notification.body,
+    //     urlImagen: message.data.urlImagen,
+    //     tipoNotificacion: message.data.tipo,
+    //     visto: !message.data.visto,
+    //     id: message.data.id,
+    //   };
+    //   const n = new Notification(
+    //     notify.mensaje.replace(/<\/?[^>]+(>|$)/g, ''),
+    //     // { icon: urlIcon },
+    //   );
+    //   setTimeout(n.close.bind(n), 7000);
+    // });
   }
 
   const optionSelected = children.props.location.pathname;
@@ -99,9 +181,18 @@ export function MainLayout({ children, history }) {
   };
 
   async function handleLogOut() {
-    await ImmortalDB.remove('user');
-    await ImmortalDB.remove('token');
-    history.push('/inicio-sesion');
+    try {
+      const lCurrentUser = await getCurrentUser();
+      await ImmortalDB.remove('user');
+      await ImmortalDB.remove('token');
+      const response = await wsLogout({ id: lCurrentUser.id });
+      history.push('/inicio-sesion');
+      if (response.error) {
+        dispatch(aOpenSnackbar('Error al cerrar sesión', 'error'));
+      }
+    } catch (e) {
+      dispatch(aOpenSnackbar('Error al cerrar sesión', 'error'));
+    }
   }
 
   if (!pageLoaded) return <div />;
@@ -188,6 +279,7 @@ export function MainLayout({ children, history }) {
 }
 
 MainLayout.propTypes = {
+  dispatch: PropTypes.func,
   children: PropTypes.element,
   history: PropTypes.object.isRequired,
 };
