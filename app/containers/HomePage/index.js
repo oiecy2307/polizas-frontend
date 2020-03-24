@@ -58,6 +58,11 @@ function HomePage({ history, dispatch }) {
         } else {
           await ImmortalDB.set('user', JSON.stringify(response.user));
           await ImmortalDB.set('token', response.token);
+          if (response.notificationToken)
+            await ImmortalDB.set(
+              'notificationToken',
+              response.notificationToken,
+            );
           history.push('/');
         }
       }
@@ -65,6 +70,12 @@ function HomePage({ history, dispatch }) {
       dispatch(aOpenSnackbar('Usuario y/o contraseña incorrectos', 'error'));
     }
   }
+
+  const handleKeyPressPassword = e => {
+    if (e.key === 'Enter') {
+      handleLogin();
+    }
+  };
 
   const disabled = !username || !password;
 
@@ -88,6 +99,7 @@ function HomePage({ history, dispatch }) {
             type="password"
             error={false}
             onChange={e => setPassword(e.target.value)}
+            onKeyPress={handleKeyPressPassword}
           />
           <SpaceBetween>
             <span />

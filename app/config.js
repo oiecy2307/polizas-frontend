@@ -1,5 +1,5 @@
-import dev from './config.dev.js';
-import local from './config.local.js';
+import dev from './config.dev';
+import local from './config.local';
 
 const config = (() => {
   switch (process.env.NODE_ENV) {
@@ -8,7 +8,7 @@ const config = (() => {
     case 'development':
       return dev;
     default:
-    return dev;
+      return dev;
   }
 })();
 
