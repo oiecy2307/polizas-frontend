@@ -28,7 +28,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
 });
 
 self.addEventListener('notificationclick', function(event) {
-    let url = 'http://localhost:3000/';
+    let url = 'https://suppdesk-271403.firebaseapp.com';
     event.notification.close(); // Android needs explicit close.
     event.waitUntil(
         clients.matchAll({type: 'window'}).then( windowClients => {

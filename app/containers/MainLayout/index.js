@@ -160,10 +160,14 @@ export function MainLayout({ children, history, dispatch }) {
   async function handleLogOut() {
     try {
       const lCurrentUser = await getCurrentUser();
+      const notificationToken = await ImmortalDB.get('notificationToken');
       await ImmortalDB.remove('user');
       await ImmortalDB.remove('token');
       await ImmortalDB.remove('notificationToken');
-      const response = await wsLogout({ id: lCurrentUser.id });
+      const response = await wsLogout({
+        id: lCurrentUser.id,
+        token: notificationToken,
+      });
       history.push('/inicio-sesion');
       if (response.error) {
         dispatch(aOpenSnackbar('Error al cerrar sesión', 'error'));

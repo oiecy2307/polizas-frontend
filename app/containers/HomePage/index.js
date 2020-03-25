@@ -58,11 +58,6 @@ function HomePage({ history, dispatch }) {
         } else {
           await ImmortalDB.set('user', JSON.stringify(response.user));
           await ImmortalDB.set('token', response.token);
-          if (response.notificationToken)
-            await ImmortalDB.set(
-              'notificationToken',
-              response.notificationToken,
-            );
           history.push('/');
         }
       }
