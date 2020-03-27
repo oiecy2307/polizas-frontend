@@ -17,6 +17,7 @@ import { get } from 'lodash';
 import firebase from 'firebase';
 import config from 'config';
 import { wsSaveToken, wsLogout } from 'services/auth';
+import { wsGetNotificationsCount } from 'services/notifications';
 import { aOpenSnackbar } from 'containers/App/actions';
 
 import LayersIcon from '@material-ui/icons/Layers';
@@ -25,6 +26,7 @@ import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import ExitIcon from '@material-ui/icons/ExitToAppOutlined';
 import Drawer from '@material-ui/core/Drawer';
 import Avatar from 'components/Avatar';
+import NotificationsPop from 'components/NotificationsPop';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
@@ -42,6 +44,7 @@ import {
   Content,
   MobileMenu,
   MenuResponsive,
+  NotificationContainer,
 } from './styledComponents';
 import { SidebarIcon, SidebarItem, SidebarItemText } from './icons';
 import getMessages from './messages';
@@ -60,10 +63,33 @@ export function MainLayout({ children, history, dispatch }) {
   const [pageLoaded, setPageLoaded] = useState(false);
   const [messages] = useState(getMessages(language));
   const [currentUser, setCurrentUser] = useState({});
+  const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
+  const [notificationsCount, setNotificationsCount] = useState(0);
 
   useEffect(() => {
     evaluateToken();
+    fetchNotificationsCount();
+    window.addEventListener('focus', onFocus);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+    };
   }, []);
+
+  const onFocus = () => {
+    fetchNotificationsCount();
+  };
+
+  const fetchNotificationsCount = async () => {
+    try {
+      const response = await wsGetNotificationsCount();
+      if (!response.error) {
+        const count = get(response, 'data', 0);
+        setNotificationsCount(count > 9 ? 9 : count);
+      }
+    } catch (e) {
+      setNotificationsCount(0);
+    }
+  };
 
   const saveToken = async (id, token) => {
     try {
@@ -116,6 +142,7 @@ export function MainLayout({ children, history, dispatch }) {
     });
 
     navigator.serviceWorker.addEventListener('message', event => {
+      fetchNotificationsCount();
       const message = event.data['firebase-messaging-msg-data'];
       const n = new Notification(
         message.data.title.replace(/<\/?[^>]+(>|$)/g, ''),
@@ -177,6 +204,14 @@ export function MainLayout({ children, history, dispatch }) {
     }
   }
 
+  const handleOpenNotifications = event => {
+    setNotificationsAnchorEl(event.currentTarget);
+  };
+
+  const handleGoToDashboard = () => {
+    history.push('/');
+  };
+
   if (!pageLoaded) return <div />;
   const isAdmin = currentUser.role === 'admin';
 
@@ -223,16 +258,24 @@ export function MainLayout({ children, history, dispatch }) {
     <LoggedUser.Provider value={currentUser}>
       <MainContainer>
         <TopBarContainer>
-          <AlignVertical>
+          <AlignVertical
+            onClick={handleGoToDashboard}
+            style={{ cursor: 'pointer' }}
+          >
             <Logo>
               <LayersIcon style={{ ...iconStyle }} />
             </Logo>
             <Suppdesk>Suppdesk</Suppdesk>
           </AlignVertical>
           <AlignVertical>
-            <NotificationsIcon
-              style={{ ...iconStyle, color: '#637381', marginRight: 24 }}
-            />
+            <NotificationContainer onClick={handleOpenNotifications}>
+              <NotificationsIcon
+                style={{ ...iconStyle, color: '#637381', marginRight: 24 }}
+              />
+              {notificationsCount > 0 && (
+                <div className="badge">{notificationsCount}</div>
+              )}
+            </NotificationContainer>
             <Avatar name={get(currentUser, 'name', '')} />
           </AlignVertical>
         </TopBarContainer>
@@ -256,6 +299,11 @@ export function MainLayout({ children, history, dispatch }) {
           <Content>{children}</Content>
         </Flex>
       </MainContainer>
+      <NotificationsPop
+        anchorEl={notificationsAnchorEl}
+        onClose={() => setNotificationsAnchorEl(null)}
+        onRefreshCount={fetchNotificationsCount}
+      />
     </LoggedUser.Provider>
   );
 }

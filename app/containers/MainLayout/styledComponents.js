@@ -110,3 +110,23 @@ export const MobileMenu = styled.div`
     margin-left: 16px;
   }
 `;
+
+export const NotificationContainer = styled.div`
+  position: relative;
+  cursor: pointer;
+
+  & .badge {
+    background: #ff0c3e;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    position: absolute;
+    right: 20px;
+    top: -2px;
+  }
+`;
