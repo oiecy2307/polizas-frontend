@@ -79,3 +79,7 @@ export const FabContainer = styled.div`
   bottom: 24px;
   right: 24px;
 `;
+
+export const Divider = styled.div`
+  margin-top: ${props => props.size}px;
+`;

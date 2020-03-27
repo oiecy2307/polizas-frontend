@@ -18,6 +18,8 @@ import {
 import Popover from '@material-ui/core/Popover';
 import Button from 'components/Button';
 import LayersIcon from '@material-ui/icons/Layers';
+import { Divider } from 'utils/globalStyledComponents';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 // import messages from './messages';
 import { Container, NotificationItem } from './styledComponents';
@@ -102,9 +104,18 @@ function NotificationsPop({ anchorEl, onClose, onRefreshCount }) {
                   </div>
                 </NotificationItem>
               ))}
+              {notifications.length === 0 && (
+                <div style={{ padding: 16 }}>Sin notificaciones</div>
+              )}
             </React.Fragment>
           ) : (
-            <div>Cargando</div>
+            <div style={{ padding: 16 }}>
+              <Skeleton variant="rect" width="100%" height={86} />
+              <Divider size={8} />
+              <Skeleton variant="rect" width="100%" height={86} />
+              <Divider size={8} />
+              <Skeleton variant="rect" width="100%" height={86} />
+            </div>
           )}
         </div>
       </Container>
