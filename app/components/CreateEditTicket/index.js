@@ -114,7 +114,7 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
       .max(150, messages.tooLong),
     ticketDescription: Yup.string(messages.fields.ticketDescription)
       .required(messages.required)
-      .max(150, messages.tooLong),
+      .max(5000, messages.tooLong),
     ticketPriority: Yup.string(messages.fields.ticketPriority)
       .required(messages.required)
       .max(150, messages.tooLong)

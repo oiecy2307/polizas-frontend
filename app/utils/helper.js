@@ -30,6 +30,13 @@ export const getFullName = user => {
 export const mediaQuery = '@media (max-width: 768px)';
 export const mediaQueryS = '@media (max-width: 576px)';
 
+export const minutesToHours = minutes => {
+  const hours = Number.parseInt(minutes / 60, 10);
+  const leftMinutes = Number.parseInt(minutes % 60, 10);
+  return `${hours < 10 && '0'}${hours}:${leftMinutes < 10 &&
+    '0'}${leftMinutes}`;
+};
+
 // export const createUrlForSrc = (imgSrc, format, size) => {
 //   const blob = new Blob([imgSrc], { type: getBlobType(format) });
 //   const urlCreator = window.URL || window.webkitURL;

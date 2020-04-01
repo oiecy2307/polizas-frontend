@@ -6,6 +6,7 @@ export const Image = styled.img`
   height: ${props => props.size}px;
   object-fit: cover;
   margin: 0;
+  flex-shrink: 0;
 `;
 
 export const Name = styled.span`
@@ -19,4 +20,5 @@ export const Name = styled.span`
   border-radius: 50%;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
+  flex-shrink: 0;
 `;

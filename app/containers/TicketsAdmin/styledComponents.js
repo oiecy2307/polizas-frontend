@@ -137,3 +137,28 @@ export const ColorsExplanation = styled.div`
     max-width: unset;
   }
 `;
+
+export const TicketInformation = styled.div`
+  & svg {
+    color: #108043;
+    margin-right: 24px;
+  }
+
+  & > div:not(:last-child) {
+    margin-bottom: 24px;
+  }
+
+  & .row {
+    display: flex;
+    padding-right: 8px;
+  }
+
+  & .row-technical {
+    display: flex;
+    align-items: center;
+  }
+
+  & .row-technical > div {
+    padding-left: 16px;
+  }
+`;

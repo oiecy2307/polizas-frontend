@@ -8,10 +8,20 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment/min/moment-with-locales';
 import { get } from 'lodash';
+import Numeral from 'numeral';
+import { minutesToHours, getFullName } from 'utils/helper';
+
+import DescriptionIcon from '@material-ui/icons/Description';
+import CalendarIcon from '@material-ui/icons/CalendarToday';
+import PhoneIcon from '@material-ui/icons/Call';
+import ClockIcon from '@material-ui/icons/Schedule';
+import Money from '@material-ui/icons/AttachMoney';
 
 import ExpandableItem from 'components/ExpandableItem';
 import CloseTicketDialog from 'components/CloseTicketDialog';
 import AssignTicketDialog from 'components/AssignTicketDialog';
+import Label from 'components/Label';
+import Avatar from 'components/Avatar';
 import Button from 'components/Button';
 import { SpaceBetween } from 'utils/globalStyledComponents';
 import {
@@ -22,6 +32,7 @@ import {
   ItemCompany,
   LabelPurple,
   ItemMainInfo,
+  TicketInformation,
 } from '../styledComponents';
 
 moment.locale('es');
@@ -29,6 +40,7 @@ moment.locale('es');
 export function TicketsList({ tickets, date, onRefresh, dispatch }) {
   const [ticketSelected, setTicketSelected] = useState(null);
   const [isCloseTicketDialogOpen, setIsCloseTicketDialogOpen] = useState(false);
+  const [isPayTicketDialogOpen, setIsPayTicketDialogOpen] = useState(false);
   const [isAssignTicketDialogOpen, setIsAssignTicketDialogOpen] = useState(
     false,
   );
@@ -44,6 +56,8 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
         return 'Asignar ticket';
       case 'assigned':
         return 'Cerrar ticket';
+      case 'closed':
+        return 'Pagar ticket';
       default:
         return 'Asignar ticket';
     }
@@ -60,6 +74,10 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
         setIsAssignTicketDialogOpen(true);
         break;
       }
+      case 'closed': {
+        setIsPayTicketDialogOpen(true);
+        break;
+      }
       default:
         break;
     }
@@ -73,6 +91,8 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
     }
     setTicketSelected(null);
   };
+
+  console.log('isPayTicketDialogOpen', isPayTicketDialogOpen);
 
   return (
     <div>
@@ -94,14 +114,54 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
               </React.Fragment>
             }
             content={
-              <SpaceBetween>
-                <div>{ticket.description}</div>
-                {ticket.status !== 'closed' && (
+              <TicketInformation>
+                <SpaceBetween>
+                  <div className="row">
+                    <DescriptionIcon />
+                    <div>{ticket.description}</div>
+                  </div>
+                  <Label option={ticket.priority} />
+                </SpaceBetween>
+                {!!ticket.timeNeeded && (
+                  <div className="row">
+                    <ClockIcon />
+                    <div>{`${minutesToHours(
+                      ticket.timeNeeded || 0,
+                    )} horas empleadas`}</div>
+                  </div>
+                )}
+                {!!ticket.cost && (
+                  <div className="row">
+                    <Money />
+                    <div>{`El costo de la solución es ${Numeral(
+                      ticket.cost,
+                    ).format('$0,0.00')}`}</div>
+                  </div>
+                )}
+                <div className="row">
+                  <CalendarIcon />
+                  <div>
+                    {`Creado el ${moment(ticket.createdAt).format(
+                      'LL',
+                    )} a las ${moment(ticket.createdAt).format('hh:mm a')}`}
+                  </div>
+                </div>
+                {ticket.technical && (
+                  <div className="row row-technical">
+                    <Avatar name={get(ticket, 'technical.name', '')} />
+                    <div>{getFullName(ticket.technical)}</div>
+                  </div>
+                )}
+                <SpaceBetween>
+                  <div className="row">
+                    <PhoneIcon />
+                    <div>{get(ticket, 'client.phone', '')}</div>
+                  </div>
                   <Button onClick={() => handleButtonClicked(ticket)}>
                     {getButtonText(ticket.status)}
                   </Button>
-                )}
-              </SpaceBetween>
+                </SpaceBetween>
+              </TicketInformation>
             }
           />
         ))}
