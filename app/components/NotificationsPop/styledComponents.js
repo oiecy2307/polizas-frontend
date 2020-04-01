@@ -28,6 +28,12 @@ export const NotificationItem = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  background: ${props => (props.isNew ? '#F1F8EF' : 'white')};
+
+  & .icon-container > svg {
+    color: #108043;
+    font-size: 24px;
+  }
 
   & .icon-container {
     width: 40px;

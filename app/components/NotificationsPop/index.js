@@ -18,11 +18,24 @@ import {
 import Popover from '@material-ui/core/Popover';
 import Button from 'components/Button';
 import LayersIcon from '@material-ui/icons/Layers';
+import DoneIcon from '@material-ui/icons/Done';
+import ContactIcon from '@material-ui/icons/ContactMail';
 import { Divider } from 'utils/globalStyledComponents';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 // import messages from './messages';
 import { Container, NotificationItem } from './styledComponents';
+
+const getIcon = key => {
+  switch (key) {
+    case 'assigned':
+      return <ContactIcon />;
+    case 'finished':
+      return <DoneIcon />;
+    default:
+      return <LayersIcon />;
+  }
+};
 
 function NotificationsPop({ anchorEl, onClose, onRefreshCount }) {
   const [notifications, setNotifications] = useState([]);
@@ -91,9 +104,10 @@ function NotificationsPop({ anchorEl, onClose, onRefreshCount }) {
                 <NotificationItem
                   key={notification.key}
                   onClick={() => handleGoToRoute(notification.urlRedirect)}
+                  isNew={!notification.seen}
                 >
                   <div className="icon-container">
-                    <LayersIcon style={{ color: '#108043', fontSize: 24 }} />
+                    {getIcon(notification.icon)}
                   </div>
                   <div className="content">
                     <div className="title">{notification.title}</div>

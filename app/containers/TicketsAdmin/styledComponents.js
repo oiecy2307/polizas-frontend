@@ -45,11 +45,19 @@ export const PorAsignarItem = styled.div`
   cursor: pointer;
 `;
 
-export const IconPurple = styled.div`
-  background-color: #f6f0fd;
+export const IconGreen = styled.div`
+  background-color: ${props => (props.isRed ? '#fbeae5' : '#e3f1df')};
   border-radius: 50%;
   width: 32px;
   height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & svg {
+    color: ${props => (props.isRed ? '#DE3618' : '#108043')};
+    font-size: 24px;
+  }
 `;
 
 export const IconContainer = styled.div`

@@ -16,6 +16,10 @@ import CalendarIcon from '@material-ui/icons/CalendarToday';
 import PhoneIcon from '@material-ui/icons/Call';
 import ClockIcon from '@material-ui/icons/Schedule';
 import Money from '@material-ui/icons/AttachMoney';
+import LayersIcon from '@material-ui/icons/Layers';
+import DoneIcon from '@material-ui/icons/Done';
+import ContactIcon from '@material-ui/icons/ContactMailOutlined';
+import WarningIcon from '@material-ui/icons/ErrorOutlined';
 
 import ExpandableItem from 'components/ExpandableItem';
 import CloseTicketDialog from 'components/CloseTicketDialog';
@@ -27,7 +31,7 @@ import { SpaceBetween } from 'utils/globalStyledComponents';
 import {
   DateDetailContainer,
   DateText,
-  IconPurple,
+  IconGreen,
   ItemMessage,
   ItemCompany,
   LabelPurple,
@@ -36,6 +40,23 @@ import {
 } from '../styledComponents';
 
 moment.locale('es');
+
+const getIcon = ticket => {
+  console.log('getIcon ticket', ticket);
+  if (ticket.status === 'closed' && !ticket.closed) {
+    return <Money />;
+  }
+  switch (ticket.status) {
+    case 'new':
+      return <WarningIcon />;
+    case 'assigned':
+      return <ContactIcon />;
+    case 'closed':
+      return <DoneIcon />;
+    default:
+      return <LayersIcon />;
+  }
+};
 
 export function TicketsList({ tickets, date, onRefresh, dispatch }) {
   const [ticketSelected, setTicketSelected] = useState(null);
@@ -103,7 +124,9 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
             key={ticket.id}
             header={
               <React.Fragment>
-                <IconPurple />
+                <IconGreen isRed={ticket.status === 'closed' && !ticket.closed}>
+                  {getIcon(ticket)}
+                </IconGreen>
                 <ItemMainInfo>
                   <ItemMessage>{ticket.shortName}</ItemMessage>
                   <ItemCompany>
