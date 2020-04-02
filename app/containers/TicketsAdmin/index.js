@@ -14,7 +14,11 @@ import { get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import { LoggedUser } from 'contexts/logged-user';
 
-import { wsGetTicketsByStatus, wsGetDatesWithTickets } from 'services/tickets';
+import {
+  wsGetTicketsByStatus,
+  wsGetDatesWithTickets,
+  wsGetTicketsBrief,
+} from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import CalendarIcon from '@material-ui/icons/CalendarToday';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -36,6 +40,7 @@ import {
   ColorsExplanation,
   IconCalendarContainer,
   Explanation,
+  ButtonDot,
 } from './styledComponents';
 
 export function TicketsAdmin({ dispatch }) {
@@ -59,6 +64,11 @@ export function TicketsAdmin({ dispatch }) {
   const [idTechnical, setIdTechnical] = useState(null);
   const [idTechnicalFirstTime, setIdTechnicalFirstTime] = useState(true);
   const [isClient] = useState(get(currentUser, 'role', '') === 'client');
+  const [ticketsBrief, setTicketsBrief] = useState({
+    hasNew: false,
+    hasInProgress: false,
+    hasClose: false,
+  });
 
   const dates = [
     ...debtDates.map(date => ({ value: date, type: 'warning' })),
@@ -68,6 +78,10 @@ export function TicketsAdmin({ dispatch }) {
   useEffect(() => {
     fetchTickets(optionSelected, selectedDate);
   }, [optionSelected, selectedDate]);
+
+  useEffect(() => {
+    fetchTicketsBrief(optionSelected, selectedDate);
+  }, [selectedDate]);
 
   useEffect(() => {
     fetchDatesWithTickets(selectedDateMonth);
@@ -81,6 +95,21 @@ export function TicketsAdmin({ dispatch }) {
     fetchTickets(optionSelected, selectedDate);
     fetchDatesWithTickets(selectedDateMonth);
   }, [idTechnical]);
+
+  async function fetchTicketsBrief(status, date) {
+    try {
+      const ldate = moment(date).format();
+      let response = null;
+      if (isClient) {
+        response = await wsGetTicketsBrief(status, ldate, currentUser.id);
+      } else {
+        response = await wsGetTicketsBrief(status, ldate, null, idTechnical);
+      }
+      setTicketsBrief(response.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   async function fetchTickets(status, date) {
     try {
@@ -156,12 +185,14 @@ export function TicketsAdmin({ dispatch }) {
           selected={optionSelected === 'new'}
           onClick={handleSelectOption('new')}
         >
+          {ticketsBrief.hasNew && <ButtonDot />}
           Por asignar
         </TabButton>
         <TabButton
           selected={optionSelected === 'assigned'}
           onClick={handleSelectOption('assigned')}
         >
+          {ticketsBrief.hasInProgress && <ButtonDot />}
           Abiertos
         </TabButton>
         {/* <TabButton
@@ -180,6 +211,7 @@ export function TicketsAdmin({ dispatch }) {
           selected={optionSelected === 'closed'}
           onClick={handleSelectOption('closed')}
         >
+          {ticketsBrief.hasClose && <ButtonDot />}
           Cerrados
         </TabButton>
         {/* <TabButton

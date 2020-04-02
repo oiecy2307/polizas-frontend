@@ -67,6 +67,7 @@ export const TabButton = styled.button`
   transition: 0.25s all;
   margin-right: ${({ noMargin }) => (noMargin ? 0 : 16)}px;
   margin-bottom: ${({ noMargin }) => (noMargin ? 0 : 16)}px;
+  position: relative;
 
   &:hover {
     background: #e3f1df;

@@ -18,7 +18,7 @@ import ClockIcon from '@material-ui/icons/Schedule';
 import Money from '@material-ui/icons/AttachMoney';
 import LayersIcon from '@material-ui/icons/Layers';
 import DoneIcon from '@material-ui/icons/Done';
-import ContactIcon from '@material-ui/icons/ContactMailOutlined';
+import ContactIcon from '@material-ui/icons/ContactMail';
 import WarningIcon from '@material-ui/icons/ErrorOutlined';
 
 import ExpandableItem from 'components/ExpandableItem';
@@ -42,7 +42,6 @@ import {
 moment.locale('es');
 
 const getIcon = ticket => {
-  console.log('getIcon ticket', ticket);
   if (ticket.status === 'closed' && !ticket.closed) {
     return <Money />;
   }

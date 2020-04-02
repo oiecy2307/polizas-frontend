@@ -86,6 +86,9 @@ function CreateEditUser({ open, onClose, callback, dispatch }) {
     company: Yup.string(messages.fields.role)
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
+    phone: Yup.number(messages.fields.role)
+      .typeError(messages.isNotNumber)
+      .max(9999999999999999, messages.tooLong),
   });
 
   const isEditing = false;

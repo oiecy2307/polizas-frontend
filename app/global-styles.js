@@ -72,13 +72,15 @@ const GlobalStyle = createGlobalStyle`
 
   /* total width */
   ::-webkit-scrollbar {
-      background-color:#fff;
-      width:16px
+      background-color: #fff;
+      width: 16px;
+      border-radius: 4px;
   }
 
   /* background of the scrollbar except button or resizer */
   ::-webkit-scrollbar-track {
       background-color:#fff
+      border-radius: 4px;
   }
   ::-webkit-scrollbar-track:hover {
       background-color:#f4f4f4

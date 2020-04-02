@@ -38,6 +38,29 @@ export const wsGetTicketsByStatus = async (
   });
 };
 
+export const wsGetTicketsBrief = async (
+  status,
+  date,
+  clientId,
+  technicalId,
+) => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    const technicalFilter = technicalId ? `&technicalId=${technicalId}` : '';
+    const url = clientId
+      ? `/tickets/day-brief?status=${status}&date=${date}&clientId=${clientId}`
+      : `/tickets/day-brief?status=${status}&date=${date}${technicalFilter}`;
+    get({
+      url,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
+
 export const wsGetDatesWithTickets = async (
   month,
   year,

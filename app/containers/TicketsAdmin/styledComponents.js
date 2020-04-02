@@ -56,7 +56,7 @@ export const IconGreen = styled.div`
 
   & svg {
     color: ${props => (props.isRed ? '#DE3618' : '#108043')};
-    font-size: 24px;
+    font-size: 18px;
   }
 `;
 
@@ -169,4 +169,14 @@ export const TicketInformation = styled.div`
   & .row-technical > div {
     padding-left: 16px;
   }
+`;
+
+export const ButtonDot = styled.span`
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #50b83c;
 `;

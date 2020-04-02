@@ -169,6 +169,18 @@ function CreateEditUserForm(props) {
           />
         )}
       />
+      <Field
+        name="phone"
+        defaultValues={values.phone}
+        render={({ field }) => (
+          <Input
+            {...field}
+            label={messages.fields.phone}
+            helperText={touched.phone ? errors.phone : ''}
+            error={touched.phone && Boolean(errors.phone)}
+          />
+        )}
+      />
     </Form>
   );
 }

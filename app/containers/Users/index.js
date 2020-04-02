@@ -14,12 +14,8 @@ import { get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import { GlobalValuesContext } from 'contexts/global-values';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import { TabButton, Paper, FabContainer } from 'utils/globalStyledComponents';
+import Table from 'components/Table';
+import { TabButton, FabContainer } from 'utils/globalStyledComponents';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import EmptyState from 'components/EmptyState';
@@ -42,6 +38,44 @@ export function Users(props) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { dispatch } = props;
+
+  const columns = [
+    {
+      key: 'name',
+      label: messages.table.name,
+    },
+    {
+      key: 'email',
+      label: messages.table.email,
+    },
+    {
+      key: 'username',
+      label: messages.table.username,
+    },
+    {
+      key: 'date',
+      label: messages.table.date,
+    },
+  ];
+
+  const items = users.map(user => ({
+    id: user.id,
+    name: `${user.name} ${user.lastname} ${user.secondLastName}`,
+    email: user.email,
+    username: user.username,
+    date: moment(user.createdAt).format('LL'),
+  }));
+
+  const optionsMenu = [
+    {
+      option: 'Editar',
+      action: () => {},
+    },
+    {
+      option: 'Eliminar',
+      action: () => {},
+    },
+  ];
 
   useEffect(() => {
     fetchUsers(optionSelected);
@@ -101,8 +135,9 @@ export function Users(props) {
           {messages.tabs.clients}
         </TabButton>
       </div>
-      <Paper>
-        <Table aria-label="simple table">
+      {/*
+          <Paper>
+          <Table aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>{messages.table.name}</TableCell>
@@ -126,7 +161,15 @@ export function Users(props) {
             ))}
           </TableBody>
         </Table>
-      </Paper>
+        </Paper> */}
+      <Table
+        columns={columns}
+        items={items}
+        withMenu
+        optionsMenu={optionsMenu}
+        isClickable={false}
+        showPagination={false}
+      />
       {users.length === 0 && <EmptyState />}
       <FabContainer>
         <Fab
