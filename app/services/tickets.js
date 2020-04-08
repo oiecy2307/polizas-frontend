@@ -113,3 +113,21 @@ export const wsAssignTicket = async (id, body) => {
       .catch(err => reject(err));
   });
 };
+
+export const wsUploadEvidence = async (file, ticketId) => {
+  const token = await getToken();
+  const formData = new FormData();
+  formData.set('file', file);
+  return new Promise((resolve, reject) => {
+    post({
+      url: `/tickets/upload-evidence/${ticketId}`,
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};

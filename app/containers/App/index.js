@@ -27,6 +27,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import HomePage from 'containers/HomePage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import TicketsAdmin from 'containers/TicketsAdmin/Loadable';
+import UserProfile from 'containers/UserProfile';
 import Invoices from 'containers/Invoices/Loadable';
 import MainLayout from 'containers/MainLayout';
 import DashboardBackoffice from 'containers/DashboardBackoffice';
@@ -122,6 +123,12 @@ function App({ app, dispatch }) {
             path="/"
             layout={MainLayout}
             component={DashboardBackoffice}
+          />
+          <AppRoute
+            exact
+            path="/perfil"
+            layout={MainLayout}
+            component={UserProfile}
           />
           <Route exact path="/inicio-sesion" component={HomePage} />
           <Route component={NotFoundPage} />

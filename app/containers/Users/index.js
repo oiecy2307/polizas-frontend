@@ -21,7 +21,7 @@ import AddIcon from '@material-ui/icons/Add';
 import EmptyState from 'components/EmptyState';
 import CreateEditUser from 'components/CreateEditUser';
 
-import { wsGetUsersByType } from 'services/users';
+import { wsGetUsersByType, wsUpdateUser } from 'services/users';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 
 import { useInjectReducer } from 'utils/injectReducer';
@@ -36,6 +36,7 @@ export function Users(props) {
   const [messages] = useState(getMessages(language));
   const [users, setUsers] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [userToEdit, setUserToEdit] = useState(null);
 
   const { dispatch } = props;
 
@@ -64,18 +65,44 @@ export function Users(props) {
     email: user.email,
     username: user.username,
     date: moment(user.createdAt).format('LL'),
+    fullItem: user,
   }));
+
+  const handleOpenEditUser = user => {
+    setUserToEdit(user.fullItem);
+    setDialogOpen(true);
+  };
+
+  const handleDesactivateUser = async user => {
+    try {
+      dispatch(aSetLoadingState(true));
+      const response = await wsUpdateUser(user.id, { role: 'inactive' });
+      if (response.error) {
+        dispatch(aOpenSnackbar('No se pudo desactivar el usuario', 'error'));
+      } else {
+        dispatch(aOpenSnackbar('Usuario desactivado correctamente', 'success'));
+        fetchUsers(optionSelected);
+      }
+    } catch (e) {
+      dispatch(aOpenSnackbar('No se pudo desactivar el usuario', 'error'));
+    } finally {
+      dispatch(aSetLoadingState(false));
+    }
+  };
 
   const optionsMenu = [
     {
       option: 'Editar',
-      action: () => {},
-    },
-    {
-      option: 'Eliminar',
-      action: () => {},
+      action: handleOpenEditUser,
     },
   ];
+
+  if (optionSelected !== 'inactive') {
+    optionsMenu.push({
+      option: 'Desactivar',
+      action: handleDesactivateUser,
+    });
+  }
 
   useEffect(() => {
     fetchUsers(optionSelected);
@@ -134,6 +161,12 @@ export function Users(props) {
         >
           {messages.tabs.clients}
         </TabButton>
+        <TabButton
+          selected={optionSelected === 'inactive'}
+          onClick={handleSelectOption('inactive')}
+        >
+          {messages.tabs.inactive}
+        </TabButton>
       </div>
       {/*
           <Paper>
@@ -182,9 +215,13 @@ export function Users(props) {
       </FabContainer>
       <CreateEditUser
         open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
+        onClose={() => {
+          setDialogOpen(false);
+          setUserToEdit(null);
+        }}
         callback={handleSaveSuccess}
         dispatch={dispatch}
+        userToEdit={userToEdit}
       />
     </div>
   );

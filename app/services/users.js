@@ -1,4 +1,4 @@
-import { get, getToken } from 'utils/http';
+import { get, getToken, patch } from 'utils/http';
 
 export const wsGetUsersByType = async type => {
   const token = await getToken();
@@ -19,6 +19,21 @@ export const wsGetTechnicalsActivity = async () => {
   return new Promise((resolve, reject) => {
     get({
       url: `/users/technicals-activity`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
+
+export const wsUpdateUser = async (id, body) => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    patch({
+      url: `/users/${id}`,
+      body,
       headers: {
         Authorization: `Bearer ${token}`,
       },

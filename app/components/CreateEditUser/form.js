@@ -37,7 +37,14 @@ function CreateEditUserForm(props) {
       label: 'Cliente',
     },
   ]);
-  const { setFieldValue, setFieldTouched, values, touched, errors } = props;
+  const {
+    setFieldValue,
+    setFieldTouched,
+    values,
+    touched,
+    errors,
+    isEditing,
+  } = props;
   return (
     <Form>
       <Field
@@ -101,37 +108,43 @@ function CreateEditUserForm(props) {
           />
         )}
       />
-      <Field
-        name="password"
-        defaultValues={values.password}
-        render={({ field }) => (
-          <Input
-            {...field}
-            type="password"
-            label={messages.fields.password}
-            helperText={touched.password ? errors.password : ''}
-            error={touched.password && Boolean(errors.password)}
+      {!isEditing && (
+        <React.Fragment>
+          <Field
+            name="password"
+            defaultValues={values.password}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="password"
+                label={messages.fields.password}
+                helperText={touched.password ? errors.password : ''}
+                error={touched.password && Boolean(errors.password)}
+              />
+            )}
           />
-        )}
-      />
-      <Field
-        name="passwordConfirmation"
-        defaultValues={values.passwordConfirmation}
-        render={({ field }) => (
-          <Input
-            {...field}
-            type="password"
-            label={messages.fields.passwordConfirmation}
-            helperText={
-              touched.passwordConfirmation ? errors.passwordConfirmation : ''
-            }
-            error={
-              touched.passwordConfirmation &&
-              Boolean(errors.passwordConfirmation)
-            }
+          <Field
+            name="passwordConfirmation"
+            defaultValues={values.passwordConfirmation}
+            render={({ field }) => (
+              <Input
+                {...field}
+                type="password"
+                label={messages.fields.passwordConfirmation}
+                helperText={
+                  touched.passwordConfirmation
+                    ? errors.passwordConfirmation
+                    : ''
+                }
+                error={
+                  touched.passwordConfirmation &&
+                  Boolean(errors.passwordConfirmation)
+                }
+              />
+            )}
           />
-        )}
-      />
+        </React.Fragment>
+      )}
       <Field
         defaultValue={values.role}
         name="role"
@@ -170,14 +183,14 @@ function CreateEditUserForm(props) {
         )}
       />
       <Field
-        name="phone"
-        defaultValues={values.phone}
+        name="phoneNumber"
+        defaultValues={values.phoneNumber}
         render={({ field }) => (
           <Input
             {...field}
-            label={messages.fields.phone}
-            helperText={touched.phone ? errors.phone : ''}
-            error={touched.phone && Boolean(errors.phone)}
+            label={messages.fields.phoneNumber}
+            helperText={touched.phoneNumber ? errors.phoneNumber : ''}
+            error={touched.phoneNumber && Boolean(errors.phoneNumber)}
           />
         )}
       />
@@ -191,6 +204,7 @@ CreateEditUserForm.propTypes = {
   values: PropTypes.object,
   touched: PropTypes.object,
   errors: PropTypes.object,
+  isEditing: PropTypes.bool,
 };
 
 export default memo(CreateEditUserForm);

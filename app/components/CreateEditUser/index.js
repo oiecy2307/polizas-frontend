@@ -9,8 +9,11 @@ import PropTypes from 'prop-types';
 import { GlobalValuesContext } from 'contexts/global-values';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { get } from 'lodash';
+
 import { textRegex } from 'utils/helper';
 import { wRegister } from 'services/auth';
+import { wsUpdateUser } from 'services/users';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 
 import Dialog from 'components/Dialog';
@@ -18,15 +21,22 @@ import Form from './form';
 
 import getMessages from './messages';
 
-function CreateEditUser({ open, onClose, callback, dispatch }) {
+function CreateEditUser({ open, onClose, callback, dispatch, userToEdit }) {
   const { language } = useContext(GlobalValuesContext);
   const [messages] = useState(getMessages(language));
+
+  const isEditing = Boolean(userToEdit);
 
   async function handleCreateUser(values, resetValues) {
     try {
       const body = values;
       dispatch(aSetLoadingState(true));
-      const response = await wRegister(body);
+      let response = null;
+      if (isEditing) {
+        response = await wsUpdateUser(userToEdit.id, body);
+      } else {
+        response = await wRegister(body);
+      }
       if (response.error) {
         dispatch(aOpenSnackbar('Error al guardar el usuario', 'error'));
       } else {
@@ -43,14 +53,15 @@ function CreateEditUser({ open, onClose, callback, dispatch }) {
   }
 
   const defaultValues = {
-    name: '',
-    lastname: '',
-    secondLastName: '',
-    email: '',
-    username: '',
+    name: get(userToEdit, 'name', ''),
+    lastname: get(userToEdit, 'lastname', ''),
+    secondLastName: get(userToEdit, 'secondLastName', ''),
+    email: get(userToEdit, 'email', ''),
+    username: get(userToEdit, 'username', ''),
     password: '',
-    role: '',
-    company: '',
+    role: get(userToEdit, 'role', ''),
+    company: get(userToEdit, 'company', ''),
+    phoneNumber: get(userToEdit, 'phoneNumber', ''),
   };
 
   const validationSchema = Yup.object({
@@ -73,11 +84,11 @@ function CreateEditUser({ open, onClose, callback, dispatch }) {
       .required(messages.required)
       .max(150, messages.tooLong),
     password: Yup.string(messages.fields.password)
-      .required(messages.required)
+      [isEditing ? 'notRequired' : 'required'](messages.required)
       .min(8, messages.tooShort)
       .max(150, messages.tooLong),
     passwordConfirmation: Yup.string()
-      .required(messages.required)
+      [isEditing ? 'notRequired' : 'required'](messages.required)
       .oneOf([Yup.ref('password'), null], messages.passwordDontMatch),
     role: Yup.string(messages.fields.role)
       .required(messages.required)
@@ -86,13 +97,14 @@ function CreateEditUser({ open, onClose, callback, dispatch }) {
     company: Yup.string(messages.fields.role)
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
-    phone: Yup.number(messages.fields.role)
+    phoneNumber: Yup.number(messages.fields.role)
       .typeError(messages.isNotNumber)
       .max(9999999999999999, messages.tooLong),
   });
 
-  const isEditing = false;
   const dialogTitle = isEditing ? messages.title.edit : messages.title.create;
+
+  if (!open) return <div style={{ display: 'none ' }} />;
 
   return (
     <Formik
@@ -131,6 +143,7 @@ CreateEditUser.propTypes = {
   onClose: PropTypes.func,
   callback: PropTypes.func,
   dispatch: PropTypes.func,
+  userToEdit: PropTypes.object,
 };
 
 export default memo(CreateEditUser);

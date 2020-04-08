@@ -58,7 +58,7 @@ export default language => {
       es: 'Rol',
       en: 'Role',
     },
-    phone: {
+    phoneNumber: {
       es: 'Número de teléfono',
       en: 'Phone number',
     },
@@ -134,7 +134,7 @@ export default language => {
       password: values.password[language],
       passwordConfirmation: values.passwordConfirmation[language],
       role: values.role[language],
-      phone: values.phone[language],
+      phoneNumber: values.phoneNumber[language],
       company: values.company[language],
     },
     required: values.required[language],

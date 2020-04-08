@@ -171,13 +171,13 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
                 {ticket.technical && (
                   <div className="row row-technical">
                     <Avatar name={get(ticket, 'technical.name', '')} />
-                    <div>{getFullName(ticket.technical)}</div>
+                    <div>{getFullName(ticket.technical)} (asignado)</div>
                   </div>
                 )}
                 <SpaceBetween>
                   <div className="row">
                     <PhoneIcon />
-                    <div>{get(ticket, 'client.phone', '')}</div>
+                    <div>{get(ticket, 'client.phoneNumber', '')} (cliente)</div>
                   </div>
                   <Button onClick={() => handleButtonClicked(ticket)}>
                     {getButtonText(ticket.status)}
