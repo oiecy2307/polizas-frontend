@@ -1,4 +1,4 @@
-import { post, getToken, get, patch } from 'utils/http';
+import { post, getToken, get, patch, postFile } from 'utils/http';
 
 export const wsCreateTicket = async body => {
   const token = await getToken();
@@ -114,18 +114,19 @@ export const wsAssignTicket = async (id, body) => {
   });
 };
 
-export const wsUploadEvidence = async (file, ticketId) => {
+export const wsUploadEvidence = async (file, ticketId, uploadProgress) => {
   const token = await getToken();
   const formData = new FormData();
   formData.set('file', file);
   return new Promise((resolve, reject) => {
-    post({
+    postFile({
       url: `/tickets/upload-evidence/${ticketId}`,
       body: formData,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data',
       },
+      uploadProgress,
     })
       .then(response => resolve(response))
       .catch(err => reject(err));

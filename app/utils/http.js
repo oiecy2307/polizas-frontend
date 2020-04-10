@@ -48,7 +48,7 @@ export const post = (data) => {
   return new Promise ((resolve, reject) => {
     if(data.headers) {
       apiCall
-      .post(data.url, data.body, {headers: data.headers})
+      .post(data.url, data.body, { headers: data.headers })
       .then(response => {
         resolve(response.data);
       })
@@ -58,6 +58,29 @@ export const post = (data) => {
     } else {
       apiCall
       .post(data.url, data.body)
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(err => {
+        reject(err);
+      });
+    }
+  });
+};
+
+export const postFile = (data) => {
+  console.log('POSTFILEPOSTFILEPOSTFILE', data.uploadProgress);
+  return new Promise ((resolve, reject) => {
+    if (data.headers) {
+      apiCall
+      .post(
+        data.url,
+        data.body,
+        {
+          headers: data.headers,
+          onUploadProgress: data.uploadProgress,
+        }
+      )
       .then(response => {
         resolve(response.data);
       })

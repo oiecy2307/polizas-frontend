@@ -27,7 +27,9 @@ export function UserProfile() {
   const handleChangeFiles = async () => {
     const files = Array.from(filesRef.current.files);
     try {
-      const response = await wsUploadEvidence(files[0], 1);
+      const response = await wsUploadEvidence(files[0], 1, e =>
+        console.log('this is the progress', e),
+      );
       console.log('response', response);
     } catch (e) {
       console.error(e);

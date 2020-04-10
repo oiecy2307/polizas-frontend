@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { mediaQuery } from 'utils/helper';
 
 export const Form = styled.div`
-  width: 560px;
+  width: 604px;
   max-width: 100%;
   margin: 0 auto;
 

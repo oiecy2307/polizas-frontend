@@ -10,6 +10,7 @@ import { GlobalValuesContext } from 'contexts/global-values';
 import { Field } from 'formik';
 import { find } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
+import UploadEvidence from 'components/UploadEvidence';
 
 import Input from 'components/InputText';
 import Select from 'components/Select';
@@ -71,6 +72,10 @@ function CreateEditTicketForm(props) {
           />
         )}
       />
+      <h5>Adjuntar evidencia</h5>
+      <div style={{ display: ' flex' }}>
+        <UploadEvidence />
+      </div>
       <Field
         defaultValue={values.ticketPriority}
         name="ticketPriority"
