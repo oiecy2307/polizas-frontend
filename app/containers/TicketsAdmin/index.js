@@ -50,7 +50,7 @@ export function TicketsAdmin({ dispatch }) {
 
   const [isTechnical] = useState(get(currentUser, 'role', '') === 'technical');
   const [optionSelected, setOptionSelected] = useState('new');
-  const [dialogOpen, setDialogOpen] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [selectedDateMonth, setSelectedDateMonth] = useState(
     moment(new Date(), 'DD-MM-YYYY').format(),

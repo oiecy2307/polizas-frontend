@@ -34,3 +34,11 @@ export const Logo = styled.div`
   justify-content: center;
   animation: ${transform} 1s alternate infinite;
 `;
+
+export const LinearContainer = styled.div`
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 9;
+`;

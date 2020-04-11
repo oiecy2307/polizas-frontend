@@ -134,7 +134,7 @@ function App({ app, dispatch }) {
           <Route component={NotFoundPage} />
         </Switch>
         <GlobalStyle />
-        {loading && <Loader />}
+        {loading && <Loader linear />}
         <Snackbar
           open={snackbar.open}
           autoHideDuration={3000}

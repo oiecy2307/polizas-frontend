@@ -40,11 +40,34 @@ export const Container = styled.div`
   & .absolute {
     position: absolute;
   }
+
+  & .delete {
+    background: black;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.25s;
+  }
+
+  & .delete svg {
+    font-size: 40px;
+    color: white;
+  }
+
+  & .delete:hover {
+    opacity: 0.9;
+  }
 `;
 
 export const Input = styled.input`
   display: none;
 `;
+
+export const Div = styled.div``;
 
 export const Layer = styled.div`
   position: absolute;

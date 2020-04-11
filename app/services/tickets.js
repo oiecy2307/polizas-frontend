@@ -114,13 +114,13 @@ export const wsAssignTicket = async (id, body) => {
   });
 };
 
-export const wsUploadEvidence = async (file, ticketId, uploadProgress) => {
+export const wsUploadEvidence = async (file, uploadProgress) => {
   const token = await getToken();
   const formData = new FormData();
   formData.set('file', file);
   return new Promise((resolve, reject) => {
     postFile({
-      url: `/tickets/upload-evidence/${ticketId}`,
+      url: `/tickets/upload-evidence`,
       body: formData,
       headers: {
         Authorization: `Bearer ${token}`,

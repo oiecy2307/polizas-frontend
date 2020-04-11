@@ -5,7 +5,7 @@
  */
 
 import React, { memo, useState, useEffect } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import UploadFile from 'components/UploadFile';
 import { wsUploadEvidence } from 'services/tickets';
 import { Container } from './styledComponents';
@@ -31,7 +31,7 @@ const getDataUrl = file =>
     reader.readAsDataURL(file);
   });
 
-function UploadEvidence() {
+function UploadEvidence({ onFilesUploaded, dispatch }) {
   const [files, setFiles] = useState([]);
   const [filesToServer, setFilesToServer] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -42,8 +42,10 @@ function UploadEvidence() {
     }
   }, [filesToServer]);
 
-  console.log('filesfilesfiles', files);
-  console.log('uploadedFiles', uploadedFiles);
+  useEffect(() => {
+    onFilesUploaded(uploadedFiles.map(f => f.file.id));
+  }, [uploadedFiles]);
+
   const handleFilesSelected = async newFiles => {
     const lNewFiles = [];
     const filesLocalUrls = await Promise.all(newFiles.map(f => getDataUrl(f)));
@@ -68,7 +70,6 @@ function UploadEvidence() {
       const index = toUpdateFiles.findIndex(f => f.key === file.key);
       toUpdateFiles[index] = {
         ...file,
-        loading: loaded < total,
         progress: parseInt((loaded / total) * 100, 10),
       };
       return toUpdateFiles;
@@ -78,25 +79,54 @@ function UploadEvidence() {
   const handleUploadFiles = async filesToUpload => {
     try {
       filesToUpload.forEach(file => {
-        wsUploadEvidence(file.file, 1, e =>
-          handleUpdateFileState(file, e),
-        ).then(response => setUploadedFiles(uf => [...uf, response.data]));
+        wsUploadEvidence(file.file, e => handleUpdateFileState(file, e)).then(
+          response => {
+            setUploadedFiles(uf => [...uf, { ...file, ...response.data }]);
+            setFiles(sFiles => {
+              const toUpdateFiles = [...sFiles];
+              const index = toUpdateFiles.findIndex(f => f.key === file.key);
+              toUpdateFiles[index] = {
+                ...file,
+                loading: false,
+              };
+              return toUpdateFiles;
+            });
+          },
+        );
       });
     } catch (e) {
       console.error(e);
     }
   };
 
+  const handleDeleteFile = file => {
+    setFiles(sFiles => {
+      const nFiles = [...sFiles];
+      return nFiles.filter(f => f.key !== file.key);
+    });
+    setUploadedFiles(sUploadedFiles => {
+      const nUploadedFiles = [...sUploadedFiles];
+      return nUploadedFiles.filter(f => f.key !== file.key);
+    });
+  };
+
   return (
     <Container>
       {files.map(f => (
-        <UploadFile key={f.key} {...f} />
+        <UploadFile key={f.key} {...f} onDelete={() => handleDeleteFile(f)} />
       ))}
-      <UploadFile isAction onFilesSelected={handleFilesSelected} />
+      <UploadFile
+        dispatch={dispatch}
+        isAction
+        onFilesSelected={handleFilesSelected}
+      />
     </Container>
   );
 }
 
-UploadEvidence.propTypes = {};
+UploadEvidence.propTypes = {
+  onFilesUploaded: PropTypes.array,
+  dispatch: PropTypes.func,
+};
 
 export default memo(UploadEvidence);

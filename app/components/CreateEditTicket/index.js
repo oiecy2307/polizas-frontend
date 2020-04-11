@@ -71,6 +71,7 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
         reportedDate: moment(new Date(), 'DD-MM-YYYY').format(),
         shortName: body.ticketTitle,
         priority: body.ticketPriority,
+        evidence: body.evidence,
       };
       const bodyClient = {
         reporterId: user.id,
@@ -81,6 +82,7 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
         reportedDate: moment(new Date(), 'DD-MM-YYYY').format(),
         dueDate: moment(new Date(), 'DD-MM-YYYY').format(),
         shortName: body.ticketTitle,
+        evidence: body.evidence,
       };
       const response = await wsCreateTicket(isClient ? bodyClient : bodyAdmin);
       if (response.error) {
@@ -106,6 +108,7 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
     technicalId: '',
     clientId: '',
     dueDate: moment(new Date(), 'DD-MM-YYYY').format(),
+    evidence: [],
   };
 
   const schemaAdmin = Yup.object({
@@ -130,6 +133,7 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
           .format(),
         messages.errorDate,
       ),
+    evidence: Yup.array(),
   });
 
   const schemaClient = Yup.object({
@@ -182,6 +186,7 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
             technicals={sTechnicals}
             clients={sClients}
             isClient={isClient}
+            dispatch={dispatch}
           />
         </Dialog>
       )}
