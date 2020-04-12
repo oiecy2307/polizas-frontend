@@ -30,7 +30,7 @@ function CloseTicketDialog({ open, onClose, dispatch, id }) {
       resetValues();
       onClose(!response.error);
     } catch (e) {
-      dispatch(aOpenSnackbar('', 'error'));
+      dispatch(aOpenSnackbar('No se pudo cerrar el ticket', 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
     }

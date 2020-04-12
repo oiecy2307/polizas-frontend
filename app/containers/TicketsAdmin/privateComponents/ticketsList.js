@@ -16,6 +16,7 @@ import CalendarIcon from '@material-ui/icons/CalendarToday';
 import PhoneIcon from '@material-ui/icons/Call';
 import ClockIcon from '@material-ui/icons/Schedule';
 import Money from '@material-ui/icons/AttachMoney';
+import Invoice from '@material-ui/icons/ReceiptOutlined';
 import LayersIcon from '@material-ui/icons/Layers';
 import DoneIcon from '@material-ui/icons/Done';
 import ContactIcon from '@material-ui/icons/ContactMail';
@@ -24,6 +25,7 @@ import WarningIcon from '@material-ui/icons/ErrorOutlined';
 import ExpandableItem from 'components/ExpandableItem';
 import CloseTicketDialog from 'components/CloseTicketDialog';
 import AssignTicketDialog from 'components/AssignTicketDialog';
+import PayTicketDialog from 'components/PayTicketDialog';
 import Label from 'components/Label';
 import Avatar from 'components/Avatar';
 import Button from 'components/Button';
@@ -42,7 +44,7 @@ import {
 moment.locale('es');
 
 const getIcon = ticket => {
-  if (ticket.status === 'closed' && !ticket.closed) {
+  if (ticket.status === 'closed' && !ticket.paid) {
     return <Money />;
   }
   switch (ticket.status) {
@@ -106,13 +108,12 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
   const handleClose = success => {
     setIsCloseTicketDialogOpen(false);
     setIsAssignTicketDialogOpen(false);
+    setIsPayTicketDialogOpen(false);
     if (success) {
       onRefresh();
     }
     setTicketSelected(null);
   };
-
-  console.log('isPayTicketDialogOpen', isPayTicketDialogOpen);
 
   return (
     <div>
@@ -123,7 +124,7 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
             key={ticket.id}
             header={
               <React.Fragment>
-                <IconGreen isRed={ticket.status === 'closed' && !ticket.closed}>
+                <IconGreen isRed={ticket.status === 'closed' && !ticket.paid}>
                   {getIcon(ticket)}
                 </IconGreen>
                 <ItemMainInfo>
@@ -168,6 +169,20 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
                     )} a las ${moment(ticket.createdAt).format('hh:mm a')}`}
                   </div>
                 </div>
+                {ticket.paid && (
+                  <div className="row">
+                    <Money />
+                    <div>{`Se pagaron ${Numeral(ticket.totalPaid || 0).format(
+                      '$0,0.00',
+                    )} el ${moment(ticket.paidDate).format('LL')} `}</div>
+                  </div>
+                )}
+                {!!ticket.invoice && (
+                  <div className="row">
+                    <Invoice />
+                    <div>{`El número de factura es ${ticket.invoice}`}</div>
+                  </div>
+                )}
                 {ticket.technical && (
                   <div className="row row-technical">
                     <Avatar name={get(ticket, 'technical.name', '')} />
@@ -191,14 +206,20 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
       <CloseTicketDialog
         open={isCloseTicketDialogOpen}
         onClose={handleClose}
-        id={get(ticketSelected, 'id', '')}
+        id={get(ticketSelected, 'id', '').toString()}
         dispatch={dispatch}
       />
       <AssignTicketDialog
         open={isAssignTicketDialogOpen}
         onClose={handleClose}
         dispatch={dispatch}
-        id={get(ticketSelected, 'id', '')}
+        id={get(ticketSelected, 'id', '').toString()}
+      />
+      <PayTicketDialog
+        open={isPayTicketDialogOpen}
+        onClose={handleClose}
+        dispatch={dispatch}
+        id={get(ticketSelected, 'id', '').toString()}
       />
     </div>
   );
