@@ -11,12 +11,13 @@ import { Field } from 'formik';
 import { find } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import UploadEvidence from 'components/UploadEvidence';
+import Label from 'components/Label';
 
 import Input from 'components/InputText';
 import Select from 'components/Select';
 import Datepicker from 'components/Datepicker';
 
-import { Form } from './styledComponents';
+import { Form, PriorityOptions } from './styledComponents';
 import getMessages from './messages';
 
 function CreateEditTicketForm(props) {
@@ -24,20 +25,6 @@ function CreateEditTicketForm(props) {
   const { language } = useContext(GlobalValuesContext);
   moment.locale(language);
   const [messages] = useState(getMessages(language));
-  const [options] = useState([
-    {
-      value: 'low',
-      label: messages.levels.lowLevel,
-    },
-    {
-      value: 'medium',
-      label: messages.levels.mediumLevel,
-    },
-    {
-      value: 'high',
-      label: messages.levels.highLevel,
-    },
-  ]);
 
   const { setFieldValue, setFieldTouched, values, touched, errors } = props;
   return (
@@ -72,35 +59,34 @@ function CreateEditTicketForm(props) {
           />
         )}
       />
-      <h5>Adjuntar evidencia</h5>
+      <h4>{messages.fields.evidence}</h4>
       <UploadEvidence
         onFilesUploaded={files => setFieldValue('evidence', files)}
         dispatch={dispatch}
       />
+      <h4>{messages.fields.ticketPriority}</h4>
       <Field
         defaultValue={values.ticketPriority}
         name="ticketPriority"
-        render={({ field }) => {
-          const { label } = find(options, { value: field.value }) || {};
-          const value = field.value ? { value: field.value, label } : null;
-          return (
-            <Select
-              {...field}
-              value={value}
-              onChange={newValue => {
-                setFieldValue(field.name, newValue.value);
-              }}
-              options={options}
-              placeholder={messages.fields.ticketPriority}
-              error={
-                touched[field.name] && Boolean(errors[field.name])
-                  ? errors[field.name]
-                  : ''
-              }
-              onBlur={() => setFieldTouched(field.name, true)}
+        render={({ field }) => (
+          <PriorityOptions>
+            <Label
+              option={field.value === 'low' ? 'low' : 'unselected'}
+              defaultText={messages.levels.lowLevel}
+              onClick={() => setFieldValue(field.name, 'low')}
             />
-          );
-        }}
+            <Label
+              option={field.value === 'medium' ? 'medium' : 'unselected'}
+              defaultText={messages.levels.mediumLevel}
+              onClick={() => setFieldValue(field.name, 'medium')}
+            />
+            <Label
+              option={field.value === 'high' ? 'high' : 'unselected'}
+              defaultText={messages.levels.highLevel}
+              onClick={() => setFieldValue(field.name, 'high')}
+            />
+          </PriorityOptions>
+        )}
       />
       {!isClient && (
         <React.Fragment>

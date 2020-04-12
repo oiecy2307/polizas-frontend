@@ -11,3 +11,11 @@ export const Form = styled.div`
     margin: 0;
   }
 `;
+
+export const PriorityOptions = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+  max-width: 100%;
+  margin-bottom: 32px;
+`;

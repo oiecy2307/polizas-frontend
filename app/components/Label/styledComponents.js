@@ -9,4 +9,6 @@ export const Container = styled.div`
   border-radius: 12px;
   max-height: 32px;
   flex-shrink: 0;
+  cursor: ${props => (props.clickable ? 'pointer' : 'default')};
+  transition: all 0.25s;
 `;

@@ -38,6 +38,10 @@ export default language => {
       es: 'Nivel de urgencia',
       en: 'Priority level',
     },
+    evidence: {
+      es: 'Adjuntar evidencia',
+      en: 'Upload evidence',
+    },
     technicalId: {
       es: 'Técnico asignado',
       en: 'Assigned technical',
@@ -101,6 +105,7 @@ export default language => {
       ticketTitle: values.ticketTitle[language],
       ticketDescription: values.ticketDescription[language],
       ticketPriority: values.ticketPriority[language],
+      evidence: values.evidence[language],
       technicalId: values.technicalId[language],
       clientId: values.clientId[language],
       dueDate: values.dueDate[language],

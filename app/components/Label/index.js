@@ -10,7 +10,7 @@ import { Container } from './styledComponents';
 // import { FormattedMessage } from 'react-intl';
 // import messages from './messages';
 
-function Label({ option }) {
+function Label({ option, defaultText, onClick }) {
   const [color, background, text] = (() => {
     switch (option) {
       case 'low':
@@ -19,12 +19,18 @@ function Label({ option }) {
         return ['#8A6116', '#FCF1CD', 'Nivel medio'];
       case 'high':
         return ['#DE3618', '#FBEAE5', 'Nivel alto'];
+      case 'unselected':
       default:
-        return ['#8A6116', '#FCF1CD'];
+        return ['#454F5B', '#DFE3E8', defaultText || ''];
     }
   })();
   return (
-    <Container color={color} background={background}>
+    <Container
+      color={color}
+      background={background}
+      onClick={onClick}
+      clickable={option === 'unselected'}
+    >
       {text}
     </Container>
   );
@@ -32,6 +38,14 @@ function Label({ option }) {
 
 Label.propTypes = {
   option: PropTypes.string,
+  defaultText: PropTypes.string,
+  onClick: PropTypes.func,
+};
+
+Label.defaultProps = {
+  option: 'unselected',
+  defaultText: '',
+  onClick: () => {},
 };
 
 export default memo(Label);
