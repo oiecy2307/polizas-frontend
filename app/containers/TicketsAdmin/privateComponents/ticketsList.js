@@ -59,7 +59,7 @@ const getIcon = ticket => {
   }
 };
 
-export function TicketsList({ tickets, date, onRefresh, dispatch }) {
+export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
   const [ticketSelected, setTicketSelected] = useState(null);
   const [isCloseTicketDialogOpen, setIsCloseTicketDialogOpen] = useState(false);
   const [isPayTicketDialogOpen, setIsPayTicketDialogOpen] = useState(false);
@@ -194,9 +194,11 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
                     <PhoneIcon />
                     <div>{get(ticket, 'client.phoneNumber', '')} (cliente)</div>
                   </div>
-                  <Button onClick={() => handleButtonClicked(ticket)}>
-                    {getButtonText(ticket.status)}
-                  </Button>
+                  {!isClient && (
+                    <Button onClick={() => handleButtonClicked(ticket)}>
+                      {getButtonText(ticket.status)}
+                    </Button>
+                  )}
                 </SpaceBetween>
               </TicketInformation>
             }
@@ -230,6 +232,7 @@ TicketsList.propTypes = {
   date: PropTypes.string,
   dispatch: PropTypes.func,
   onRefresh: PropTypes.func,
+  isClient: PropTypes.bool,
 };
 
 export default TicketsList;

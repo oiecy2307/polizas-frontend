@@ -8,6 +8,7 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import moment from 'moment/min/moment-with-locales';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { wsPayTicket } from 'services/tickets';
@@ -36,7 +37,7 @@ function PayTicketDialog({ open, onClose, dispatch, id }) {
 
   const defaultValues = {
     paid: false,
-    paidDate: '',
+    paidDate: moment(new Date(), 'DD-MM-YYYY').format(),
     totalPaid: '',
     invoice: '',
   };

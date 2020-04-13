@@ -228,6 +228,7 @@ export function TicketsAdmin({ dispatch }) {
             date={selectedDate}
             onRefresh={handleCallback}
             dispatch={dispatch}
+            isClient={isClient}
           />
         </LeftSection>
         <div>
