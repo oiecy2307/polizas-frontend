@@ -32,6 +32,7 @@ import Invoices from 'containers/Invoices/Loadable';
 import MainLayout from 'containers/MainLayout';
 import DashboardBackoffice from 'containers/DashboardBackoffice';
 import Users from 'containers/Users/Loadable';
+import TicketDetail from 'containers/TicketDetail/Loadable';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -129,6 +130,12 @@ function App({ app, dispatch }) {
             path="/perfil"
             layout={MainLayout}
             component={UserProfile}
+          />
+          <AppRoute
+            exact
+            path="/tickets/:id"
+            layout={MainLayout}
+            component={TicketDetail}
           />
           <Route exact path="/inicio-sesion" component={HomePage} />
           <Route component={NotFoundPage} />

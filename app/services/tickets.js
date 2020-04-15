@@ -147,3 +147,18 @@ export const wsUploadEvidence = async (file, uploadProgress) => {
       .catch(err => reject(err));
   });
 };
+
+export const wsGetTicketById = async id => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    const url = `/tickets/by-id/${id}`;
+    get({
+      url,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};

@@ -11,17 +11,42 @@ import { Container } from './styledComponents';
 // import messages from './messages';
 
 function Label({ option, defaultText, onClick }) {
-  const [color, background, text] = (() => {
+  const [color, background] = (() => {
     switch (option) {
       case 'low':
-        return ['#108043', '#E3F1DF', 'Nivel bajo'];
+      case 'new':
+      case 'paid':
+        return ['#108043', '#E3F1DF'];
       case 'medium':
-        return ['#8A6116', '#FCF1CD', 'Nivel medio'];
+      case 'assigned':
+        return ['#8A6116', '#FCF1CD'];
       case 'high':
-        return ['#DE3618', '#FBEAE5', 'Nivel alto'];
+      case 'closed':
+        return ['#DE3618', '#FBEAE5'];
       case 'unselected':
       default:
-        return ['#454F5B', '#DFE3E8', defaultText || ''];
+        return ['#454F5B', '#DFE3E8'];
+    }
+  })();
+  const text = (() => {
+    switch (option) {
+      case 'low':
+        return 'Nivel bajo';
+      case 'new':
+        return 'Nuevo';
+      case 'paid':
+        return 'Pagado';
+      case 'medium':
+        return 'Nivel medio';
+      case 'assigned':
+        return 'Asignado';
+      case 'high':
+        return 'Nivel alto';
+      case 'closed':
+        return 'Pendiente de pago';
+      case 'unselected':
+      default:
+        return defaultText || '';
     }
   })();
   return (
