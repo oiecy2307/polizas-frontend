@@ -10,6 +10,7 @@ import moment from 'moment/min/moment-with-locales';
 import { get } from 'lodash';
 import Numeral from 'numeral';
 import { minutesToHours, getFullName } from 'utils/helper';
+import history from 'utils/history';
 
 import DescriptionIcon from '@material-ui/icons/Description';
 import CalendarIcon from '@material-ui/icons/CalendarToday';
@@ -128,7 +129,11 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
                   {getIcon(ticket)}
                 </IconGreen>
                 <ItemMainInfo>
-                  <ItemMessage>{ticket.shortName}</ItemMessage>
+                  <ItemMessage
+                    onClick={() => history.push(`/tickets/${ticket.id}`)}
+                  >
+                    {ticket.shortName}
+                  </ItemMessage>
                   <ItemCompany>
                     {get(ticket, 'client.company.name', '-')}
                   </ItemCompany>

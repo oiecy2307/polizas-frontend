@@ -11,16 +11,18 @@ import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 import { get, times } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
+import { getFullName, getIsImage } from 'utils/helper';
 
 import { wsGetTicketById } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 
 import Button from 'components/Button';
 import Label from 'components/Label';
+import Avatar from 'components/Avatar';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { Container, TopSection, Header } from './styledComponents';
+import { Container, TopSection, Header, Body } from './styledComponents';
 
 moment.locale('es');
 
@@ -97,6 +99,10 @@ export function TicketDetail({ dispatch, match }) {
   const status = get(ticket, 'paid', false)
     ? 'paid'
     : get(ticket, 'status', 'new');
+  const technicalName = getFullName(get(ticket, 'technical', {}));
+  const reporterName = getFullName(get(ticket, 'reporter', {}));
+  const clientName = getFullName(get(ticket, 'client', {}));
+  const evidence = get(ticket, 'evidence', []);
 
   return (
     <Container>
@@ -120,6 +126,51 @@ export function TicketDetail({ dispatch, match }) {
           <Label option={status} />
         </div>
       </Header>
+      <Body>
+        {reporterName && (
+          <React.Fragment>
+            <h5>Creado por</h5>
+            <div className="user">
+              <Avatar name={reporterName} />
+              <span className="name">{reporterName}</span>
+            </div>
+          </React.Fragment>
+        )}
+        {clientName && (
+          <React.Fragment>
+            <h5>Cliente</h5>
+            <div className="user">
+              <Avatar name={clientName} />
+              <span className="name">{clientName}</span>
+            </div>
+          </React.Fragment>
+        )}
+        {technicalName && (
+          <React.Fragment>
+            <h5>Técnico asignado</h5>
+            <div className="user">
+              <Avatar name={technicalName} />
+              <span className="name">{technicalName}</span>
+            </div>
+          </React.Fragment>
+        )}
+        {evidence.length > 0 && (
+          <React.Fragment>
+            <h5>Evidencia</h5>
+            <div className="evidence">
+              {evidence.map(e => (
+                <a href={e.url} key={e.id} target="_blank">
+                  {getIsImage(e.fileName) ? (
+                    <img src={e.url} alt={e.fileName} />
+                  ) : (
+                    <div className="data-type">{e.fileName}</div>
+                  )}
+                </a>
+              ))}
+            </div>
+          </React.Fragment>
+        )}
+      </Body>
     </Container>
   );
 }

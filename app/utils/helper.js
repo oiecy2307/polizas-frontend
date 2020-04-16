@@ -27,6 +27,16 @@ export const getFullName = user => {
   }
 };
 
+export const getFileType = fileName => {
+  const stringSections = fileName.split('.');
+  return stringSections[stringSections.length - 1];
+};
+
+export const getIsImage = fileName => {
+  const type = getFileType(fileName);
+  return type === 'png' || type === 'jpg' || type === 'jpge';
+};
+
 export const mediaQuery = '@media (max-width: 768px)';
 export const mediaQueryS = '@media (max-width: 576px)';
 

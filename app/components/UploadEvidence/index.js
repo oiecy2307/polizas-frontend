@@ -6,14 +6,11 @@
 
 import React, { memo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { getFileType } from 'utils/helper';
+
 import UploadFile from 'components/UploadFile';
 import { wsUploadEvidence } from 'services/tickets';
 import { Container } from './styledComponents';
-
-const getFileType = fileName => {
-  const stringSections = fileName.split('.');
-  return stringSections[stringSections.length - 1];
-};
 
 const getDataUrl = file =>
   new Promise(resolve => {

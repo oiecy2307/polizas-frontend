@@ -8,8 +8,17 @@ export const Container = styled.div`
   border-radius: 12px;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
 
-  & h4 {
+  & h4,
+  h5 {
     margin: 0;
+  }
+
+  & h5 {
+    margin-bottom: 16px;
+  }
+
+  & h5:not(:first-child) {
+    margin-top: 24px;
   }
 `;
 
@@ -45,5 +54,38 @@ export const Header = styled.div`
   & .description {
     padding-right: 16px;
     text-align: justify;
+  }
+`;
+
+export const Body = styled.div`
+  padding: 16px 24px;
+  background: #f9fafb;
+
+  & .user {
+    display: flex;
+    align-items: center;
+  }
+
+  & .user .name {
+    margin-left: 16px;
+  }
+
+  & .evidence img {
+    max-width: 100%;
+    margin-bottom: 16px;
+  }
+
+  & .evidence .data-type {
+    max-width: 100%;
+    width: 400px;
+    border-radius: 12px;
+    background: #f4f6f8;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 160px;
+    margin-bottom: 16px;
+    text-align: center;
   }
 `;
