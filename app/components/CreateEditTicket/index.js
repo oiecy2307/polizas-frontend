@@ -12,20 +12,30 @@ import * as Yup from 'yup';
 import { get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
-import { wsCreateTicket } from 'services/tickets';
+import { wsCreateTicket, wsUpdateTicket } from 'services/tickets';
 import { wsGetUsersByType } from 'services/users';
 import { getCurrentUser, textRegex } from 'utils/helper';
 
+import FormikDebugger from 'components/FormikDebugger';
 import Dialog from 'components/Dialog';
 import Form from './form';
 
 import getMessages from './messages';
 
-function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
+function CreateEditTicket({
+  open,
+  onClose,
+  callback,
+  dispatch,
+  isClient,
+  ticketToEdit,
+}) {
   const { language } = useContext(GlobalValuesContext);
   const [messages] = useState(getMessages(language));
   const [sTechnicals, setTechnicals] = useState([]);
   const [sClients, setClients] = useState([]);
+
+  const isEditing = Boolean(ticketToEdit);
 
   useEffect(() => {
     if (!isClient) fetchUsers();
@@ -84,7 +94,13 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
         shortName: body.ticketTitle,
         evidence: body.evidence,
       };
-      const response = await wsCreateTicket(isClient ? bodyClient : bodyAdmin);
+      const finalBody = isClient ? bodyClient : bodyAdmin;
+      let response = null;
+      if (isEditing) {
+        response = await wsUpdateTicket(ticketToEdit.id, finalBody);
+      } else {
+        response = await wsCreateTicket(finalBody);
+      }
       if (response.error) {
         dispatch(aOpenSnackbar('Error al guardar ticket', 'error'));
       } else {
@@ -101,13 +117,16 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
   }
 
   const defaultValues = {
-    ticketTitle: '',
-    ticketDescription: '',
-    ticketPriority: '',
+    ticketTitle: get(ticketToEdit, 'shortName', ''),
+    ticketDescription: get(ticketToEdit, 'description', ''),
+    ticketPriority: get(ticketToEdit, 'priority', ''),
     // reporterId: '',
-    technicalId: '',
-    clientId: '',
-    dueDate: moment(new Date(), 'DD-MM-YYYY').format(),
+    technicalId: get(ticketToEdit, 'technicalId', ''),
+    clientId: get(ticketToEdit, 'clientId', ''),
+    dueDate: moment(
+      get(ticketToEdit, 'dueDate', 'new Date()'),
+      'DD-MM-YYYY',
+    ).format(),
     evidence: [],
   };
 
@@ -122,17 +141,20 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
       .required(messages.required)
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
-    // reporterId: Yup.number().required(messages.required),
     technicalId: Yup.number(),
     clientId: Yup.number(),
-    dueDate: Yup.date()
-      .required(messages.required)
-      .min(
-        moment(new Date(), 'DD-MM-YYYY')
-          .add(-1, 'days')
-          .format(),
-        messages.errorDate,
-      ),
+    dueDate: Yup.date().when('clientId', {
+      is: () => isEditing,
+      then: Yup.date().required(messages.required),
+      otherwise: Yup.date()
+        .required(messages.required)
+        .min(
+          moment(new Date(), 'DD-MM-YYYY')
+            .add(-1, 'days')
+            .format(),
+          messages.errorDate,
+        ),
+    }),
     evidence: Yup.array(),
   });
 
@@ -151,7 +173,6 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
 
   const validationSchema = isClient ? schemaClient : schemaAdmin;
 
-  const isEditing = false;
   const dialogTitle = isEditing ? messages.title.edit : messages.title.create;
 
   return (
@@ -187,7 +208,9 @@ function CreateEditTicket({ open, onClose, callback, dispatch, isClient }) {
             clients={sClients}
             isClient={isClient}
             dispatch={dispatch}
+            defaultEvidence={get(ticketToEdit, 'evidence', [])}
           />
+          <FormikDebugger />
         </Dialog>
       )}
     />
@@ -200,6 +223,7 @@ CreateEditTicket.propTypes = {
   callback: PropTypes.func,
   dispatch: PropTypes.func,
   isClient: PropTypes.bool,
+  ticketToEdit: PropTypes.object,
 };
 
 CreateEditTicket.defaultProps = {

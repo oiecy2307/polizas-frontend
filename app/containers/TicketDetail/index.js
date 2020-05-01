@@ -15,6 +15,7 @@ import { getFullName, getIsImage } from 'utils/helper';
 
 import { wsGetTicketById } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
+import CreateEditTicket from 'components/CreateEditTicket';
 
 import Button from 'components/Button';
 import Label from 'components/Label';
@@ -30,6 +31,7 @@ export function TicketDetail({ dispatch, match }) {
   const [ticket, setTicket] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [editingOpen, setEditingOpen] = useState(false);
 
   useEffect(() => {
     fetchTicket();
@@ -55,6 +57,18 @@ export function TicketDetail({ dispatch, match }) {
       dispatch(aSetLoadingState(false));
       setInitialLoading(false);
     }
+  };
+
+  const handleTicketSaved = () => {
+    fetchTicket();
+  };
+
+  const handleOpen = () => {
+    setEditingOpen(true);
+  };
+
+  const handleClose = () => {
+    setEditingOpen(false);
   };
 
   if (notFound) {
@@ -117,7 +131,7 @@ export function TicketDetail({ dispatch, match }) {
             <div>{`Creado ${moment(createdAt).fromNow()}`}</div>
           </Tooltip>
         </div>
-        <Button>Editar ticket</Button>
+        <Button onClick={handleOpen}>Editar ticket</Button>
       </TopSection>
       <Header>
         <div className="description">{description}</div>
@@ -171,6 +185,14 @@ export function TicketDetail({ dispatch, match }) {
           </React.Fragment>
         )}
       </Body>
+      <CreateEditTicket
+        open={editingOpen}
+        onClose={handleClose}
+        callback={handleTicketSaved}
+        dispatch={dispatch}
+        isClient={false}
+        ticketToEdit={ticket}
+      />
     </Container>
   );
 }

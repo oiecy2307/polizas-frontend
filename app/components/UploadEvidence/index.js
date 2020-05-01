@@ -28,10 +28,24 @@ const getDataUrl = file =>
     reader.readAsDataURL(file);
   });
 
-function UploadEvidence({ onFilesUploaded, dispatch }) {
+function UploadEvidence({ onFilesUploaded, dispatch, defaultEvidence }) {
   const [files, setFiles] = useState([]);
   const [filesToServer, setFilesToServer] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  useEffect(() => {
+    const newEvidence = defaultEvidence.map(f => ({
+      image: f.url,
+      key: f.fileName,
+      loading: false,
+      name: f.fileName,
+      progress: 0,
+      type: getFileType(f.fileName),
+      file: f,
+    }));
+    setFiles(newEvidence);
+    setUploadedFiles(newEvidence);
+  }, [defaultEvidence]);
 
   useEffect(() => {
     if (filesToServer.length) {
@@ -92,7 +106,7 @@ function UploadEvidence({ onFilesUploaded, dispatch }) {
         );
       });
     } catch (e) {
-      console.error(e);
+      // ERROR HANDLER
     }
   };
 
@@ -122,8 +136,9 @@ function UploadEvidence({ onFilesUploaded, dispatch }) {
 }
 
 UploadEvidence.propTypes = {
-  onFilesUploaded: PropTypes.array,
+  onFilesUploaded: PropTypes.func,
   dispatch: PropTypes.func,
+  defaultEvidence: PropTypes.array,
 };
 
 export default memo(UploadEvidence);

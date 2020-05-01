@@ -162,3 +162,18 @@ export const wsGetTicketById = async id => {
       .catch(err => reject(err));
   });
 };
+
+export const wsUpdateTicket = async (id, body) => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    patch({
+      url: `/tickets/by-id/${id}`,
+      body,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};

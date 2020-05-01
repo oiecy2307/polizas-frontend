@@ -21,7 +21,7 @@ import { Form, PriorityOptions } from './styledComponents';
 import getMessages from './messages';
 
 function CreateEditTicketForm(props) {
-  const { technicals, isClient, clients, dispatch } = props;
+  const { technicals, isClient, clients, dispatch, defaultEvidence } = props;
   const { language } = useContext(GlobalValuesContext);
   moment.locale(language);
   const [messages] = useState(getMessages(language));
@@ -63,6 +63,7 @@ function CreateEditTicketForm(props) {
       <UploadEvidence
         onFilesUploaded={files => setFieldValue('evidence', files)}
         dispatch={dispatch}
+        defaultEvidence={defaultEvidence}
       />
       <h4>{messages.fields.ticketPriority}</h4>
       <Field
@@ -177,6 +178,7 @@ CreateEditTicketForm.propTypes = {
   clients: PropTypes.array,
   isClient: PropTypes.bool,
   dispatch: PropTypes.func,
+  defaultEvidence: PropTypes.array,
 };
 
 export default memo(CreateEditTicketForm);
