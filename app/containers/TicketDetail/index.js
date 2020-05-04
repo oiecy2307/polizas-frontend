@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -12,6 +12,7 @@ import { compose } from 'redux';
 import { get, times } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import { getFullName, getIsImage } from 'utils/helper';
+import { LoggedUser } from 'contexts/logged-user';
 
 import { wsGetTicketById } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
@@ -22,16 +23,21 @@ import Label from 'components/Label';
 import Avatar from 'components/Avatar';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Tooltip from '@material-ui/core/Tooltip';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import { Container, TopSection, Header, Body } from './styledComponents';
 
 moment.locale('es');
 
 export function TicketDetail({ dispatch, match }) {
+  const currentUser = useContext(LoggedUser);
   const [ticket, setTicket] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [editingOpen, setEditingOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isClient] = useState(get(currentUser, 'role', '') === 'client');
 
   useEffect(() => {
     fetchTicket();
@@ -71,11 +77,26 @@ export function TicketDetail({ dispatch, match }) {
     setEditingOpen(false);
   };
 
+  const handleOpenMenu = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(false);
+  };
+
+  const handleChangeStatus = () => () => {
+    handleCloseMenu();
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'popover-statuses' : undefined;
+
   if (notFound) {
     return (
       <div>
         <Helmet>
-          <title>TicketDetail</title>
+          <title>Detalle ticket</title>
           <meta name="description" content="Description of TicketDetail" />
         </Helmet>
         <h1>404</h1>
@@ -88,7 +109,7 @@ export function TicketDetail({ dispatch, match }) {
     return (
       <div>
         <Helmet>
-          <title>TicketDetail</title>
+          <title>Detalle ticket</title>
           <meta name="description" content="Description of TicketDetail" />
         </Helmet>
         {times(10, i => (
@@ -118,26 +139,62 @@ export function TicketDetail({ dispatch, match }) {
   const clientName = getFullName(get(ticket, 'client', {}));
   const evidence = get(ticket, 'evidence', []);
 
+  const statusesAvailable = (() => {
+    const { status: ticketStatus } = ticket;
+
+    if (ticketStatus === 'closed') {
+      return [
+        <MenuItem onClick={handleChangeStatus('assigned')}>Asignado</MenuItem>,
+        <MenuItem onClick={handleChangeStatus('new')}>Por asignar</MenuItem>,
+        <MenuItem onClick={handleChangeStatus('cancelled')}>
+          Cancelado
+        </MenuItem>,
+      ];
+    }
+
+    if (ticketStatus === 'assigned') {
+      return [
+        <MenuItem onClick={handleChangeStatus('new')}>Por asignar</MenuItem>,
+        <MenuItem onClick={handleChangeStatus('closed')}>Cerrado</MenuItem>,
+        <MenuItem onClick={handleChangeStatus('cancelled')}>
+          Cancelado
+        </MenuItem>,
+      ];
+    }
+
+    if (ticketStatus === 'new') {
+      return [
+        <MenuItem onClick={handleChangeStatus('cancelled')}>
+          Cancelado
+        </MenuItem>,
+      ];
+    }
+
+    return [];
+  })();
+
   return (
     <Container>
       <Helmet>
-        <title>TicketDetail</title>
+        <title>{shortName || 'Detalle ticket'}</title>
         <meta name="description" content="Description of TicketDetail" />
       </Helmet>
       <TopSection>
         <div>
           <h4>{shortName}</h4>
           <Tooltip title={moment(createdAt).format('LL')}>
-            <div>{`Creado ${moment(createdAt).fromNow()}`}</div>
+            <div style={{ width: 'fit-content' }}>
+              {`Creado ${moment(createdAt).fromNow()}`}
+            </div>
           </Tooltip>
         </div>
-        <Button onClick={handleOpen}>Editar ticket</Button>
+        {!isClient && <Button onClick={handleOpen}>Editar ticket</Button>}
       </TopSection>
       <Header>
         <div className="description">{description}</div>
         <div className="labels">
           <Label option={priority} />
-          <Label option={status} />
+          <Label onClick={handleOpenMenu} option={status} />
         </div>
       </Header>
       <Body>
@@ -159,15 +216,17 @@ export function TicketDetail({ dispatch, match }) {
             </div>
           </React.Fragment>
         )}
-        {technicalName && (
-          <React.Fragment>
-            <h5>Técnico asignado</h5>
+        <React.Fragment>
+          <h5>Técnico asignado</h5>
+          {technicalName ? (
             <div className="user">
               <Avatar name={technicalName} />
               <span className="name">{technicalName}</span>
             </div>
-          </React.Fragment>
-        )}
+          ) : (
+            !isClient && <Button>Asignar ticket</Button>
+          )}
+        </React.Fragment>
         {evidence.length > 0 && (
           <React.Fragment>
             <h5>Evidencia</h5>
@@ -185,14 +244,27 @@ export function TicketDetail({ dispatch, match }) {
           </React.Fragment>
         )}
       </Body>
-      <CreateEditTicket
-        open={editingOpen}
-        onClose={handleClose}
-        callback={handleTicketSaved}
-        dispatch={dispatch}
-        isClient={false}
-        ticketToEdit={ticket}
-      />
+      {!isClient && (
+        <React.Fragment>
+          <CreateEditTicket
+            open={editingOpen}
+            onClose={handleClose}
+            callback={handleTicketSaved}
+            dispatch={dispatch}
+            isClient={false}
+            ticketToEdit={ticket}
+          />
+          <Menu
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleCloseMenu}
+            keepMounted
+          >
+            {statusesAvailable}
+          </Menu>
+        </React.Fragment>
+      )}
     </Container>
   );
 }

@@ -20,6 +20,10 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'product-sans', 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
 
+  a {
+    text-decoration: none;
+  }
+
   #app {
     background-color: #fafafa;
     min-height: 100%;

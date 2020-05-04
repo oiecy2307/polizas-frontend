@@ -10,7 +10,7 @@ import moment from 'moment/min/moment-with-locales';
 import { get } from 'lodash';
 import Numeral from 'numeral';
 import { minutesToHours, getFullName } from 'utils/helper';
-import history from 'utils/history';
+import { Link } from 'react-router-dom';
 
 import DescriptionIcon from '@material-ui/icons/Description';
 import CalendarIcon from '@material-ui/icons/CalendarToday';
@@ -129,11 +129,9 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
                   {getIcon(ticket)}
                 </IconGreen>
                 <ItemMainInfo>
-                  <ItemMessage
-                    onClick={() => history.push(`/tickets/${ticket.id}`)}
-                  >
-                    {ticket.shortName}
-                  </ItemMessage>
+                  <Link to={`/tickets/${ticket.id}`}>
+                    <ItemMessage>{ticket.shortName}</ItemMessage>
+                  </Link>
                   <ItemCompany>
                     {get(ticket, 'client.company.name', '-')}
                   </ItemCompany>

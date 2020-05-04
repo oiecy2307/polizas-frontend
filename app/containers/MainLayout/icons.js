@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 export const SidebarContainer = styled.section`
   min-height: 100vh;
@@ -20,7 +21,36 @@ export const Subtitle = styled.div`
   padding-left: 8px;
 `;
 
-export const SidebarItem = styled.span`
+export const SidebarItem = styled(Link)`
+  width: 100%;
+  padding: 10px 16px;
+  align-items: center;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  transition: background 0.25s;
+  cursor: pointer;
+  background: ${({ selected }) => (selected ? '#E3F1DF' : 'none')};
+  text-decoration: none;
+  display: ${({ active }) => (active ? 'flex' : 'none')};
+  display: flex;
+  color: ${({ selected }) => (selected ? '#108043' : '#454F5B')};
+
+  &:hover {
+    background: #e3f1df;
+    color: #108043;
+  }
+
+  & svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  & ${SidebarIcon} {
+    fill: ${({ selected }) => (selected ? '#108043' : '#454F5B')} !important;
+  }
+`;
+
+export const SidebarItemWOLink = styled.span`
   width: 100%;
   padding: 10px 16px;
   align-items: center;
@@ -66,7 +96,7 @@ const Path = styled.path`
   }
 `;
 
-export const SidebarIcon = ({ selected = false, icon }) => {
+export const SidebarIcon = ({ icon }) => {
   switch (icon) {
     case 'bar-icon':
     default:
@@ -378,5 +408,4 @@ export const SidebarIcon = ({ selected = false, icon }) => {
 
 SidebarIcon.propTypes = {
   icon: PropTypes.string,
-  selected: PropTypes.bool,
 };

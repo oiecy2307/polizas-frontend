@@ -210,7 +210,7 @@ function CreateEditTicket({
             dispatch={dispatch}
             defaultEvidence={get(ticketToEdit, 'evidence', [])}
           />
-          <FormikDebugger />
+          {false && <FormikDebugger />}
         </Dialog>
       )}
     />

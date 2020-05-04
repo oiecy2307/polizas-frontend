@@ -47,7 +47,12 @@ import {
   MenuResponsive,
   NotificationContainer,
 } from './styledComponents';
-import { SidebarIcon, SidebarItem, SidebarItemText } from './icons';
+import {
+  SidebarIcon,
+  SidebarItem,
+  SidebarItemWOLink,
+  SidebarItemText,
+} from './icons';
 import getMessages from './messages';
 
 const iconStyle = {
@@ -110,8 +115,11 @@ export function MainLayout({ children, history, dispatch }) {
 
   async function evaluateToken() {
     const token = await getToken();
-    if (!token) history.push('inicio-sesion');
     const lCurrentUser = await getCurrentUser();
+    if (!token || !lCurrentUser) {
+      history.push('/inicio-sesion');
+      return;
+    }
     setCurrentUser(lCurrentUser);
     setPageLoaded(true);
 
@@ -166,8 +174,7 @@ export function MainLayout({ children, history, dispatch }) {
     }
   })();
 
-  const handleChangeRoute = route => () => {
-    history.push(`${route}`);
+  const handleChangeRoute = () => {
     setMenuOpen(false);
   };
   const handleChangeMenuState = () => {
@@ -226,7 +233,8 @@ export function MainLayout({ children, history, dispatch }) {
         <SidebarItemText>{messages.menu.dashboard}</SidebarItemText>
       </SidebarItem> */}
       <SidebarItem
-        onClick={handleChangeRoute('/tickets')}
+        onClick={handleChangeRoute}
+        to="/tickets"
         selected={optionSelected === '/tickets'}
       >
         <SidebarIcon icon="tickets" />
@@ -241,17 +249,18 @@ export function MainLayout({ children, history, dispatch }) {
       </SidebarItem> */}
       {isAdmin && (
         <SidebarItem
-          onClick={handleChangeRoute('/usuarios')}
+          onClick={handleChangeRoute}
+          to="/usuarios"
           selected={optionSelected === '/usuarios'}
         >
           <SidebarIcon icon="usuarios" />
           <SidebarItemText>{messages.menu.users}</SidebarItemText>
         </SidebarItem>
       )}
-      <SidebarItem onClick={handleLogOut}>
+      <SidebarItemWOLink onClick={handleLogOut}>
         <ExitIcon />
         <SidebarItemText>{messages.menu.logout}</SidebarItemText>
-      </SidebarItem>
+      </SidebarItemWOLink>
     </React.Fragment>
   );
 
