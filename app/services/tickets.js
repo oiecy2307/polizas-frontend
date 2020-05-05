@@ -177,3 +177,18 @@ export const wsUpdateTicket = async (id, body) => {
       .catch(err => reject(err));
   });
 };
+
+export const wsUpdateStatusTicket = async (id, body) => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    patch({
+      url: `/tickets/change-status/${id}`,
+      body,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};

@@ -14,9 +14,10 @@ import moment from 'moment/min/moment-with-locales';
 import { getFullName, getIsImage } from 'utils/helper';
 import { LoggedUser } from 'contexts/logged-user';
 
-import { wsGetTicketById } from 'services/tickets';
+import { wsGetTicketById, wsUpdateStatusTicket } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import CreateEditTicket from 'components/CreateEditTicket';
+import AssignTicketDialog from 'components/AssignTicketDialog';
 
 import Button from 'components/Button';
 import Label from 'components/Label';
@@ -26,7 +27,14 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import { Container, TopSection, Header, Body } from './styledComponents';
+import {
+  Container,
+  TopSection,
+  Header,
+  Body,
+  Div,
+  Canceled,
+} from './styledComponents';
 
 moment.locale('es');
 
@@ -36,6 +44,7 @@ export function TicketDetail({ dispatch, match }) {
   const [notFound, setNotFound] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [editingOpen, setEditingOpen] = useState(false);
+  const [openAssign, setOpenAssign] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isClient] = useState(get(currentUser, 'role', '') === 'client');
 
@@ -78,15 +87,40 @@ export function TicketDetail({ dispatch, match }) {
   };
 
   const handleOpenMenu = event => {
+    if (isClient || isCancelled) return;
     setAnchorEl(event.currentTarget);
   };
 
   const handleCloseMenu = () => {
-    setAnchorEl(false);
+    setAnchorEl(null);
   };
 
-  const handleChangeStatus = () => () => {
-    handleCloseMenu();
+  const handleChangeStatus = async status => {
+    try {
+      handleCloseMenu();
+      dispatch(aSetLoadingState(true));
+      const response = await wsUpdateStatusTicket(ticket.id, { status });
+      if (!response || response.error) {
+        dispatch(aOpenSnackbar('No se pudo actualizar estatus', 'error'));
+      } else {
+        dispatch(aOpenSnackbar('Estatus cambiado con éxito', 'success'));
+        fetchTicket();
+      }
+    } catch (e) {
+      dispatch(aOpenSnackbar('No se pudo actualizar estatus', 'error'));
+    } finally {
+      dispatch(aSetLoadingState(false));
+    }
+  };
+
+  const handleOpenAssignDialog = () => {
+    if (isClient || isCancelled) return;
+    setOpenAssign(true);
+  };
+
+  const handleCloseAssignDialog = isSuccess => {
+    setOpenAssign(false);
+    if (isSuccess) fetchTicket();
   };
 
   const open = Boolean(anchorEl);
@@ -138,15 +172,23 @@ export function TicketDetail({ dispatch, match }) {
   const reporterName = getFullName(get(ticket, 'reporter', {}));
   const clientName = getFullName(get(ticket, 'client', {}));
   const evidence = get(ticket, 'evidence', []);
+  const isCancelled = get(ticket, 'status', '') === 'cancelled';
 
   const statusesAvailable = (() => {
     const { status: ticketStatus } = ticket;
 
     if (ticketStatus === 'closed') {
       return [
-        <MenuItem onClick={handleChangeStatus('assigned')}>Asignado</MenuItem>,
-        <MenuItem onClick={handleChangeStatus('new')}>Por asignar</MenuItem>,
-        <MenuItem onClick={handleChangeStatus('cancelled')}>
+        <MenuItem onClick={() => handleChangeStatus('assigned')} key="assigned">
+          Asignado
+        </MenuItem>,
+        <MenuItem onClick={() => handleChangeStatus('new')} key="new">
+          Por asignar
+        </MenuItem>,
+        <MenuItem
+          onClick={() => handleChangeStatus('cancelled')}
+          key="cancelled"
+        >
           Cancelado
         </MenuItem>,
       ];
@@ -154,9 +196,16 @@ export function TicketDetail({ dispatch, match }) {
 
     if (ticketStatus === 'assigned') {
       return [
-        <MenuItem onClick={handleChangeStatus('new')}>Por asignar</MenuItem>,
-        <MenuItem onClick={handleChangeStatus('closed')}>Cerrado</MenuItem>,
-        <MenuItem onClick={handleChangeStatus('cancelled')}>
+        <MenuItem onClick={() => handleChangeStatus('new')} key="new">
+          Por asignar
+        </MenuItem>,
+        <MenuItem onClick={() => handleChangeStatus('closed')} key="closed">
+          Cerrado
+        </MenuItem>,
+        <MenuItem
+          onClick={() => handleChangeStatus('cancelled')}
+          key="cancelled"
+        >
           Cancelado
         </MenuItem>,
       ];
@@ -164,7 +213,10 @@ export function TicketDetail({ dispatch, match }) {
 
     if (ticketStatus === 'new') {
       return [
-        <MenuItem onClick={handleChangeStatus('cancelled')}>
+        <MenuItem
+          onClick={() => handleChangeStatus('cancelled')}
+          key="cancelled"
+        >
           Cancelado
         </MenuItem>,
       ];
@@ -174,98 +226,120 @@ export function TicketDetail({ dispatch, match }) {
   })();
 
   return (
-    <Container>
+    <React.Fragment>
       <Helmet>
         <title>{shortName || 'Detalle ticket'}</title>
         <meta name="description" content="Description of TicketDetail" />
       </Helmet>
-      <TopSection>
-        <div>
-          <h4>{shortName}</h4>
-          <Tooltip title={moment(createdAt).format('LL')}>
-            <div style={{ width: 'fit-content' }}>
-              {`Creado ${moment(createdAt).fromNow()}`}
-            </div>
-          </Tooltip>
-        </div>
-        {!isClient && <Button onClick={handleOpen}>Editar ticket</Button>}
-      </TopSection>
-      <Header>
-        <div className="description">{description}</div>
-        <div className="labels">
-          <Label option={priority} />
-          <Label onClick={handleOpenMenu} option={status} />
-        </div>
-      </Header>
-      <Body>
-        {reporterName && (
-          <React.Fragment>
-            <h5>Creado por</h5>
-            <div className="user">
-              <Avatar name={reporterName} />
-              <span className="name">{reporterName}</span>
-            </div>
-          </React.Fragment>
-        )}
-        {clientName && (
-          <React.Fragment>
-            <h5>Cliente</h5>
-            <div className="user">
-              <Avatar name={clientName} />
-              <span className="name">{clientName}</span>
-            </div>
-          </React.Fragment>
-        )}
-        <React.Fragment>
-          <h5>Técnico asignado</h5>
-          {technicalName ? (
-            <div className="user">
-              <Avatar name={technicalName} />
-              <span className="name">{technicalName}</span>
-            </div>
-          ) : (
-            !isClient && <Button>Asignar ticket</Button>
+      {isCancelled && <Canceled>Ticket cancelado</Canceled>}
+      <Container>
+        <TopSection>
+          <div>
+            <h4>{shortName}</h4>
+            <Tooltip title={moment(createdAt).format('LL')}>
+              <div style={{ width: 'fit-content' }}>
+                {`Creado ${moment(createdAt).fromNow()}`}
+              </div>
+            </Tooltip>
+          </div>
+          {!isClient && !isCancelled && (
+            <Button onClick={handleOpen}>Editar ticket</Button>
           )}
-        </React.Fragment>
-        {evidence.length > 0 && (
+        </TopSection>
+        <Header>
+          <div className="description">{description}</div>
+          <div className="labels">
+            <Label option={priority} />
+            <Label onClick={handleOpenMenu} option={status} />
+          </div>
+        </Header>
+        <Body>
+          {reporterName && (
+            <React.Fragment>
+              <h5>Creado por</h5>
+              <div className="user">
+                <Avatar name={reporterName} />
+                <span className="name">{reporterName}</span>
+              </div>
+            </React.Fragment>
+          )}
+          {clientName && (
+            <React.Fragment>
+              <h5>Cliente</h5>
+              <div className="user">
+                <Avatar name={clientName} />
+                <span className="name">{clientName}</span>
+              </div>
+            </React.Fragment>
+          )}
           <React.Fragment>
-            <h5>Evidencia</h5>
-            <div className="evidence">
-              {evidence.map(e => (
-                <a href={e.url} key={e.id} target="_blank">
-                  {getIsImage(e.fileName) ? (
-                    <img src={e.url} alt={e.fileName} />
-                  ) : (
-                    <div className="data-type">{e.fileName}</div>
-                  )}
-                </a>
-              ))}
-            </div>
+            <h5>Técnico asignado</h5>
+            {technicalName ? (
+              <Div
+                className="user"
+                clickable={!isClient && !isCancelled}
+                onClick={handleOpenAssignDialog}
+              >
+                <Avatar name={technicalName} />
+                <span className="name">{technicalName}</span>
+              </Div>
+            ) : (
+              !isClient &&
+              !isCancelled && (
+                <Button onClick={handleOpenAssignDialog} variant="text">
+                  Asignar ticket
+                </Button>
+              )
+            )}
+          </React.Fragment>
+          {evidence.length > 0 && (
+            <React.Fragment>
+              <h5>Evidencia</h5>
+              <div className="evidence">
+                {evidence.map(e => (
+                  <a href={e.url} key={e.id} target="_blank">
+                    {getIsImage(e.fileName) ? (
+                      <img src={e.url} alt={e.fileName} />
+                    ) : (
+                      <div className="data-type">{e.fileName}</div>
+                    )}
+                  </a>
+                ))}
+              </div>
+            </React.Fragment>
+          )}
+        </Body>
+        {!isClient && (
+          <React.Fragment>
+            <CreateEditTicket
+              open={editingOpen}
+              onClose={handleClose}
+              callback={handleTicketSaved}
+              dispatch={dispatch}
+              isClient={false}
+              ticketToEdit={ticket}
+            />
+            <Menu
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleCloseMenu}
+              keepMounted
+            >
+              {statusesAvailable}
+            </Menu>
           </React.Fragment>
         )}
-      </Body>
-      {!isClient && (
-        <React.Fragment>
-          <CreateEditTicket
-            open={editingOpen}
-            onClose={handleClose}
-            callback={handleTicketSaved}
+        {!isClient && (
+          <AssignTicketDialog
+            open={openAssign}
+            onClose={handleCloseAssignDialog}
             dispatch={dispatch}
-            isClient={false}
-            ticketToEdit={ticket}
+            id={ticket.id.toString()}
           />
-          <Menu
-            id={id}
-            open={open}
-            anchorEl={anchorEl}
-            onClose={handleCloseMenu}
-            keepMounted
-          >
-            {statusesAvailable}
-          </Menu>
-        </React.Fragment>
-      )}
-    </Container>
+        )}
+      </Container>
+    </React.Fragment>
   );
 }
 

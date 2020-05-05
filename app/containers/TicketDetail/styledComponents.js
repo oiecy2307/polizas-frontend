@@ -51,6 +51,10 @@ export const Header = styled.div`
     margin-bottom: 16px;
   }
 
+  & .labels > div :last-child {
+    cursor: pointer;
+  }
+
   & .description {
     padding-right: 16px;
     text-align: justify;
@@ -88,4 +92,18 @@ export const Body = styled.div`
     margin-bottom: 16px;
     text-align: center;
   }
+`;
+
+export const Div = styled.div`
+  cursor: ${props => (props.clickable ? 'pointer' : 'default')};
+`;
+
+export const Canceled = styled.div`
+  padding: 16px;
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 24px;
+  background: #fbeae5;
+  color: #de3618;
+  border-radius: 12px;
 `;

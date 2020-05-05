@@ -27,9 +27,13 @@ export const getFullName = user => {
   }
 };
 
-export const getFileType = fileName => {
-  const stringSections = fileName.split('.');
-  return stringSections[stringSections.length - 1];
+export const getFileType = (fileName = '') => {
+  try {
+    const stringSections = fileName.split('.');
+    return stringSections[stringSections.length - 1];
+  } catch (e) {
+    return '';
+  }
 };
 
 export const getIsImage = fileName => {

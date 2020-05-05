@@ -69,7 +69,6 @@ export const post = (data) => {
 };
 
 export const postFile = (data) => {
-  console.log('POSTFILEPOSTFILEPOSTFILE', data.uploadProgress);
   return new Promise ((resolve, reject) => {
     if (data.headers) {
       apiCall

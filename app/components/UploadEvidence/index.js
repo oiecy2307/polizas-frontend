@@ -34,6 +34,7 @@ function UploadEvidence({ onFilesUploaded, dispatch, defaultEvidence }) {
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
   useEffect(() => {
+    if (!defaultEvidence || !defaultEvidence.length) return;
     const newEvidence = defaultEvidence.map(f => ({
       image: f.url,
       key: f.fileName,
@@ -45,7 +46,7 @@ function UploadEvidence({ onFilesUploaded, dispatch, defaultEvidence }) {
     }));
     setFiles(newEvidence);
     setUploadedFiles(newEvidence);
-  }, [defaultEvidence]);
+  }, []);
 
   useEffect(() => {
     if (filesToServer.length) {

@@ -24,6 +24,7 @@ function Label({ option, defaultText, onClick }) {
       case 'closed':
         return ['#DE3618', '#FBEAE5'];
       case 'unselected':
+      case 'cancelled':
       default:
         return ['#454F5B', '#DFE3E8'];
     }
@@ -44,6 +45,8 @@ function Label({ option, defaultText, onClick }) {
         return 'Nivel alto';
       case 'closed':
         return 'Pendiente de pago';
+      case 'cancelled':
+        return 'Cancelado';
       case 'unselected':
       default:
         return defaultText || '';
