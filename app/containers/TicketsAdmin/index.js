@@ -68,6 +68,7 @@ export function TicketsAdmin({ dispatch }) {
     hasNew: false,
     hasInProgress: false,
     hasClose: false,
+    hasCancelled: false,
   });
 
   const dates = [
@@ -107,7 +108,7 @@ export function TicketsAdmin({ dispatch }) {
       }
       setTicketsBrief(response.data);
     } catch (e) {
-      console.error(e);
+      // ERROR HANDLER
     }
   }
 
@@ -160,7 +161,7 @@ export function TicketsAdmin({ dispatch }) {
       setOnTimeDates(get(rDatesWTickets, 'data.onTime', []));
       // setLastDatesSearch(monthYearString);
     } catch (e) {
-      console.error(e);
+      // ERROR HANDLER
     }
   }
 
@@ -195,18 +196,6 @@ export function TicketsAdmin({ dispatch }) {
           {ticketsBrief.hasInProgress && <ButtonDot />}
           Abiertos
         </TabButton>
-        {/* <TabButton
-          selected={optionSelected === 'in-progress'}
-          onClick={handleSelectOption('in-progress')}
-        >
-          En progreso
-        </TabButton> */}
-        {/* <TabButton
-          selected={optionSelected === 'finished'}
-          onClick={handleSelectOption('finished')}
-        >
-          Terminados
-        </TabButton> */}
         <TabButton
           selected={optionSelected === 'closed'}
           onClick={handleSelectOption('closed')}
@@ -214,12 +203,13 @@ export function TicketsAdmin({ dispatch }) {
           {ticketsBrief.hasClose && <ButtonDot />}
           Cerrados
         </TabButton>
-        {/* <TabButton
+        <TabButton
           selected={optionSelected === 'cancelled'}
           onClick={handleSelectOption('cancelled')}
         >
-          Cancelado
-        </TabButton> */}
+          {ticketsBrief.hasCancelled && <ButtonDot />}
+          Cancelados
+        </TabButton>
       </div>
       <Content>
         <LeftSection>

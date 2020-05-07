@@ -77,6 +77,7 @@ function NotificationsPop({ anchorEl, onClose, onRefreshCount }) {
 
   const open = Boolean(anchorEl);
   const id = 'notifications-pop';
+
   return (
     <Popover
       id={id}
@@ -102,7 +103,7 @@ function NotificationsPop({ anchorEl, onClose, onRefreshCount }) {
             <React.Fragment>
               {notifications.map(notification => (
                 <NotificationItem
-                  key={notification.key}
+                  key={notification.id}
                   onClick={() => handleGoToRoute(notification.urlRedirect)}
                   isNew={!notification.seen}
                 >

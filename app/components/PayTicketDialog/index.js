@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment/min/moment-with-locales';
+import { get } from 'lodash';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { wsPayTicket } from 'services/tickets';
@@ -16,7 +17,7 @@ import { wsPayTicket } from 'services/tickets';
 import Dialog from 'components/Dialog';
 import Form from './form';
 
-function PayTicketDialog({ open, onClose, dispatch, id }) {
+function PayTicketDialog({ open, onClose, dispatch, id, defaultTicket }) {
   const handlePayTicket = async (body, resetValues) => {
     try {
       dispatch(aSetLoadingState(true));
@@ -36,10 +37,13 @@ function PayTicketDialog({ open, onClose, dispatch, id }) {
   };
 
   const defaultValues = {
-    paid: false,
-    paidDate: moment(new Date(), 'DD-MM-YYYY').format(),
-    totalPaid: '',
-    invoice: '',
+    paid: get(defaultTicket, 'paid', false),
+    paidDate: moment(
+      get(defaultTicket, 'paidDate', new Date()) || new Date(),
+      'DD-MM-YYYY',
+    ).format(),
+    totalPaid: get(defaultTicket, 'totalPaid', '') || '',
+    invoice: get(defaultTicket, 'Invoice', '') || '',
   };
 
   const validationSchema = Yup.object({
@@ -98,6 +102,7 @@ PayTicketDialog.propTypes = {
   dispatch: PropTypes.func,
   id: PropTypes.string,
   onClose: PropTypes.func,
+  defaultTicket: PropTypes.object,
 };
 
 export default memo(PayTicketDialog);

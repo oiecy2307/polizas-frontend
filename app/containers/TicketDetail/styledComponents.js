@@ -102,8 +102,9 @@ export const Canceled = styled.div`
   padding: 16px;
   text-align: center;
   font-size: 16px;
-  margin-bottom: 24px;
   background: #fbeae5;
   color: #de3618;
   border-radius: 12px;
+  margin: 0 auto 24px;
+  max-width: 800px;
 `;

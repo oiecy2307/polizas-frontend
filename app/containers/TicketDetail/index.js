@@ -18,6 +18,9 @@ import { wsGetTicketById, wsUpdateStatusTicket } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import CreateEditTicket from 'components/CreateEditTicket';
 import AssignTicketDialog from 'components/AssignTicketDialog';
+import Fab from 'components/Fab';
+import CloseTicketDialog from 'components/CloseTicketDialog';
+import PayTicketDialog from 'components/PayTicketDialog';
 
 import Button from 'components/Button';
 import Label from 'components/Label';
@@ -26,6 +29,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import EditIcon from '@material-ui/icons/Edit';
 
 import {
   Container,
@@ -44,9 +48,13 @@ export function TicketDetail({ dispatch, match }) {
   const [notFound, setNotFound] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [editingOpen, setEditingOpen] = useState(false);
-  const [openAssign, setOpenAssign] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isClient] = useState(get(currentUser, 'role', '') === 'client');
+  const [isCloseTicketDialogOpen, setIsCloseTicketDialogOpen] = useState(false);
+  const [isPayTicketDialogOpen, setIsPayTicketDialogOpen] = useState(false);
+  const [isAssignTicketDialogOpen, setIsAssignTicketDialogOpen] = useState(
+    false,
+  );
 
   useEffect(() => {
     fetchTicket();
@@ -113,19 +121,6 @@ export function TicketDetail({ dispatch, match }) {
     }
   };
 
-  const handleOpenAssignDialog = () => {
-    if (isClient || isCancelled) return;
-    setOpenAssign(true);
-  };
-
-  const handleCloseAssignDialog = isSuccess => {
-    setOpenAssign(false);
-    if (isSuccess) fetchTicket();
-  };
-
-  const open = Boolean(anchorEl);
-  const id = open ? 'popover-statuses' : undefined;
-
   if (notFound) {
     return (
       <div>
@@ -174,6 +169,58 @@ export function TicketDetail({ dispatch, match }) {
   const evidence = get(ticket, 'evidence', []);
   const isCancelled = get(ticket, 'status', '') === 'cancelled';
 
+  const buttonText = (() => {
+    switch (status) {
+      case 'new':
+        return 'Asignar ticket';
+      case 'assigned':
+        return 'Cerrar ticket';
+      case 'paid':
+      case 'closed':
+        return 'Pagar ticket';
+      default:
+        return 'Asignar ticket';
+    }
+  })();
+
+  const handleOpenAssignDialog = () => {
+    if (isClient || isCancelled) return;
+    setIsAssignTicketDialogOpen(true);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'popover-statuses' : undefined;
+
+  const handleButtonClicked = () => {
+    if (isClient || isCancelled) return;
+    switch (ticket.status) {
+      case 'assigned': {
+        setIsCloseTicketDialogOpen(true);
+        break;
+      }
+      case 'new': {
+        setIsAssignTicketDialogOpen(true);
+        break;
+      }
+      case 'paid':
+      case 'closed': {
+        setIsPayTicketDialogOpen(true);
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
+  const handleCloseModals = success => {
+    setIsCloseTicketDialogOpen(false);
+    setIsAssignTicketDialogOpen(false);
+    setIsPayTicketDialogOpen(false);
+    if (success) {
+      fetchTicket();
+    }
+  };
+
   const statusesAvailable = (() => {
     const { status: ticketStatus } = ticket;
 
@@ -198,9 +245,6 @@ export function TicketDetail({ dispatch, match }) {
       return [
         <MenuItem onClick={() => handleChangeStatus('new')} key="new">
           Por asignar
-        </MenuItem>,
-        <MenuItem onClick={() => handleChangeStatus('closed')} key="closed">
-          Cerrado
         </MenuItem>,
         <MenuItem
           onClick={() => handleChangeStatus('cancelled')}
@@ -243,7 +287,7 @@ export function TicketDetail({ dispatch, match }) {
             </Tooltip>
           </div>
           {!isClient && !isCancelled && (
-            <Button onClick={handleOpen}>Editar ticket</Button>
+            <Button onClick={handleButtonClicked}>{buttonText}</Button>
           )}
         </TopSection>
         <Header>
@@ -309,7 +353,7 @@ export function TicketDetail({ dispatch, match }) {
             </React.Fragment>
           )}
         </Body>
-        {!isClient && (
+        {!isClient && !isCancelled && (
           <React.Fragment>
             <CreateEditTicket
               open={editingOpen}
@@ -328,15 +372,27 @@ export function TicketDetail({ dispatch, match }) {
             >
               {statusesAvailable}
             </Menu>
+            <Fab onClick={handleOpen} icon={<EditIcon />} />
+            <CloseTicketDialog
+              open={isCloseTicketDialogOpen}
+              onClose={handleCloseModals}
+              dispatch={dispatch}
+              id={get(ticket, 'id', '').toString()}
+            />
+            <AssignTicketDialog
+              open={isAssignTicketDialogOpen}
+              onClose={handleCloseModals}
+              dispatch={dispatch}
+              id={get(ticket, 'id', '').toString()}
+            />
+            <PayTicketDialog
+              open={isPayTicketDialogOpen}
+              onClose={handleCloseModals}
+              dispatch={dispatch}
+              id={get(ticket, 'id', '').toString()}
+              defaultTicket={ticket}
+            />
           </React.Fragment>
-        )}
-        {!isClient && (
-          <AssignTicketDialog
-            open={openAssign}
-            onClose={handleCloseAssignDialog}
-            dispatch={dispatch}
-            id={ticket.id.toString()}
-          />
         )}
       </Container>
     </React.Fragment>

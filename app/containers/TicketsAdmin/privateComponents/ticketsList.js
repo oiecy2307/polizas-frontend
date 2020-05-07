@@ -197,7 +197,7 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
                     <PhoneIcon />
                     <div>{get(ticket, 'client.phoneNumber', '')} (cliente)</div>
                   </div>
-                  {!isClient && (
+                  {!isClient && ticket.status !== 'cancelled' && (
                     <Button onClick={() => handleButtonClicked(ticket)}>
                       {getButtonText(ticket.status)}
                     </Button>
