@@ -1,4 +1,11 @@
-import { post, getToken, get, patch, postFile } from 'utils/http';
+import {
+  post,
+  getToken,
+  get,
+  patch,
+  postFile,
+  deleteRequest,
+} from 'utils/http';
 
 export const wsCreateTicket = async body => {
   const token = await getToken();
@@ -184,6 +191,49 @@ export const wsUpdateStatusTicket = async (id, body) => {
     patch({
       url: `/tickets/change-status/${id}`,
       body,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
+
+export const wsGetTicketComments = async id => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    get({
+      url: `/tickets/${id}/comments`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
+
+export const wsCreateComment = async (id, body) => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    post({
+      url: `/tickets/${id}/comments`,
+      body,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
+
+export const wsDeleteComment = async id => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    deleteRequest({
+      url: `/tickets/comments/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -84,3 +84,8 @@ export const FabContainer = styled.div`
 export const Divider = styled.div`
   margin-top: ${props => props.size}px;
 `;
+
+export const FloatRight = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;

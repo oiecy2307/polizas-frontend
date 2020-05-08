@@ -19,13 +19,21 @@ import {
 } from 'utils/helper';
 import { LoggedUser } from 'contexts/logged-user';
 
-import { wsGetTicketById, wsUpdateStatusTicket } from 'services/tickets';
+import {
+  wsGetTicketById,
+  wsUpdateStatusTicket,
+  wsGetTicketComments,
+  wsCreateComment,
+  wsDeleteComment,
+} from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import CreateEditTicket from 'components/CreateEditTicket';
 import AssignTicketDialog from 'components/AssignTicketDialog';
 import Fab from 'components/Fab';
 import CloseTicketDialog from 'components/CloseTicketDialog';
 import PayTicketDialog from 'components/PayTicketDialog';
+import Input from 'components/InputText';
+import CommentItem from 'components/CommentItem';
 
 import Button from 'components/Button';
 import Label from 'components/Label';
@@ -36,6 +44,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import EditIcon from '@material-ui/icons/Edit';
 
+import { Divider, FloatRight } from 'utils/globalStyledComponents';
 import {
   Container,
   TopSection,
@@ -60,9 +69,12 @@ export function TicketDetail({ dispatch, match }) {
   const [isAssignTicketDialogOpen, setIsAssignTicketDialogOpen] = useState(
     false,
   );
+  const [comments, setComments] = useState([]);
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
     fetchTicket();
+    fetchComments();
   }, []);
 
   const fetchTicket = async () => {
@@ -84,6 +96,16 @@ export function TicketDetail({ dispatch, match }) {
     } finally {
       dispatch(aSetLoadingState(false));
       setInitialLoading(false);
+    }
+  };
+
+  const fetchComments = async () => {
+    try {
+      const id = get(match, 'params.id', null);
+      const response = await wsGetTicketComments(id);
+      setComments(get(response, 'data', []) || []);
+    } catch (e) {
+      // ERROR HANDLER
     }
   };
 
@@ -121,6 +143,45 @@ export function TicketDetail({ dispatch, match }) {
       }
     } catch (e) {
       dispatch(aOpenSnackbar('No se pudo actualizar estatus', 'error'));
+    } finally {
+      dispatch(aSetLoadingState(false));
+    }
+  };
+
+  const handleSaveComment = async () => {
+    try {
+      const id = get(match, 'params.id', null);
+      dispatch(aSetLoadingState(true));
+      const response = await wsCreateComment(id, {
+        text: comment,
+      });
+      if (response.error) {
+        dispatch(aOpenSnackbar('No fue posible comentar', 'error'));
+      } else {
+        dispatch(aOpenSnackbar('Comentario guardado', 'success'));
+        setComment('');
+        fetchComments();
+      }
+    } catch (e) {
+      dispatch(aOpenSnackbar('No fue posible comentar', 'error'));
+    } finally {
+      dispatch(aSetLoadingState(false));
+    }
+  };
+
+  const handleDeleteComment = async commentId => {
+    try {
+      dispatch(aSetLoadingState(true));
+      const response = await wsDeleteComment(commentId);
+      if (response.error) {
+        dispatch(aOpenSnackbar('No fue posible eliminar comentario', 'error'));
+      } else {
+        dispatch(aOpenSnackbar('Comentario eliminado', 'success'));
+        setComment('');
+        fetchComments();
+      }
+    } catch (e) {
+      dispatch(aOpenSnackbar('No fue posible eliminar comentario', 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
     }
@@ -202,7 +263,7 @@ export function TicketDetail({ dispatch, match }) {
   };
 
   const open = Boolean(anchorEl);
-  const id = open ? 'popover-statuses' : undefined;
+  const idPopover = open ? 'popover-statuses' : undefined;
 
   const handleButtonClicked = () => {
     if (isClient || isCancelled) return;
@@ -421,7 +482,7 @@ export function TicketDetail({ dispatch, match }) {
               />
             )}
             <Menu
-              id={id}
+              id={idPopover}
               open={open}
               anchorEl={anchorEl}
               onClose={handleCloseMenu}
@@ -453,6 +514,33 @@ export function TicketDetail({ dispatch, match }) {
             )}
           </React.Fragment>
         )}
+      </Container>
+      <Divider size="24" />
+      <Container>
+        <Body>
+          <h4>Comentarios</h4>
+          <Divider size="24" />
+          {comments.map(c => (
+            <CommentItem comment={c} onDelete={handleDeleteComment} />
+          ))}
+          <Divider size="24" />
+          <Input
+            multiline
+            rows={4}
+            label="Escribe un comentario"
+            value={comment}
+            onChange={e => setComment(e.target.value)}
+          />
+          <FloatRight>
+            <Button
+              variant="text"
+              onClick={handleSaveComment}
+              disabled={!comment}
+            >
+              Comentar
+            </Button>
+          </FloatRight>
+        </Body>
       </Container>
     </React.Fragment>
   );
