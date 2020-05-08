@@ -11,7 +11,12 @@ import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 import { get, times } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
-import { getFullName, getIsImage } from 'utils/helper';
+import {
+  getFullName,
+  getIsImage,
+  minutesToHours,
+  toMoneyFormat,
+} from 'utils/helper';
 import { LoggedUser } from 'contexts/logged-user';
 
 import { wsGetTicketById, wsUpdateStatusTicket } from 'services/tickets';
@@ -168,6 +173,14 @@ export function TicketDetail({ dispatch, match }) {
   const clientName = getFullName(get(ticket, 'client', {}));
   const evidence = get(ticket, 'evidence', []);
   const isCancelled = get(ticket, 'status', '') === 'cancelled';
+  const finishedDate = get(ticket, 'finishedDate', '');
+  const timeNeeded = get(ticket, 'timeNeeded', '');
+  const cost = get(ticket, 'cost', '');
+  const paid = get(ticket, 'paid', null);
+  const totalPaid = get(ticket, 'totalPaid', '');
+  const paidDate = get(ticket, 'paidDate', '');
+  const invoice = get(ticket, 'invoice', '');
+  const showPaidInfo = paid !== null;
 
   const buttonText = (() => {
     switch (status) {
@@ -336,6 +349,48 @@ export function TicketDetail({ dispatch, match }) {
               )
             )}
           </React.Fragment>
+          {finishedDate && (
+            <React.Fragment>
+              <h5>Fecha de terminación</h5>
+              <div>{moment(finishedDate).format('LL')}</div>
+            </React.Fragment>
+          )}
+          {timeNeeded && (
+            <React.Fragment>
+              <h5>Tiempo requerido</h5>
+              <div>{minutesToHours(timeNeeded)} horas</div>
+            </React.Fragment>
+          )}
+          {cost && (
+            <React.Fragment>
+              <h5>Costo al terminar</h5>
+              <div>{toMoneyFormat(cost)}</div>
+            </React.Fragment>
+          )}
+          {showPaidInfo && (
+            <React.Fragment>
+              <h5>Está pagado</h5>
+              <div>{paid ? 'Sí' : 'No'}</div>
+              {totalPaid && paid && (
+                <React.Fragment>
+                  <h5>Total pagado</h5>
+                  <div>{toMoneyFormat(totalPaid)}</div>
+                </React.Fragment>
+              )}
+              {paidDate && paid && (
+                <React.Fragment>
+                  <h5>Fecha de pago</h5>
+                  <div>{moment(paidDate).format('LL')}</div>
+                </React.Fragment>
+              )}
+              {invoice && paid && (
+                <React.Fragment>
+                  <h5>Número de factura</h5>
+                  <div>{invoice}</div>
+                </React.Fragment>
+              )}
+            </React.Fragment>
+          )}
           {evidence.length > 0 && (
             <React.Fragment>
               <h5>Evidencia</h5>
@@ -355,14 +410,16 @@ export function TicketDetail({ dispatch, match }) {
         </Body>
         {!isClient && !isCancelled && (
           <React.Fragment>
-            <CreateEditTicket
-              open={editingOpen}
-              onClose={handleClose}
-              callback={handleTicketSaved}
-              dispatch={dispatch}
-              isClient={false}
-              ticketToEdit={ticket}
-            />
+            {editingOpen && (
+              <CreateEditTicket
+                open={editingOpen}
+                onClose={handleClose}
+                callback={handleTicketSaved}
+                dispatch={dispatch}
+                isClient={false}
+                ticketToEdit={ticket}
+              />
+            )}
             <Menu
               id={id}
               open={open}
@@ -385,13 +442,15 @@ export function TicketDetail({ dispatch, match }) {
               dispatch={dispatch}
               id={get(ticket, 'id', '').toString()}
             />
-            <PayTicketDialog
-              open={isPayTicketDialogOpen}
-              onClose={handleCloseModals}
-              dispatch={dispatch}
-              id={get(ticket, 'id', '').toString()}
-              defaultTicket={ticket}
-            />
+            {isPayTicketDialogOpen && (
+              <PayTicketDialog
+                open={isPayTicketDialogOpen}
+                onClose={handleCloseModals}
+                dispatch={dispatch}
+                id={get(ticket, 'id', '').toString()}
+                defaultTicket={ticket}
+              />
+            )}
           </React.Fragment>
         )}
       </Container>

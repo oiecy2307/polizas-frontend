@@ -1,4 +1,5 @@
 import { ImmortalDB } from 'immortal-db';
+import Numeral from 'numeral';
 
 export const getCurrentUser = async () => {
   try {
@@ -47,9 +48,12 @@ export const mediaQueryS = '@media (max-width: 576px)';
 export const minutesToHours = minutes => {
   const hours = Number.parseInt(minutes / 60, 10);
   const leftMinutes = Number.parseInt(minutes % 60, 10);
-  return `${hours < 10 && '0'}${hours}:${leftMinutes < 10 &&
-    '0'}${leftMinutes}`;
+  return `${hours < 10 ? '0' : ''}${hours}:${
+    leftMinutes < 10 ? '0' : ''
+  }${leftMinutes}`;
 };
+
+export const toMoneyFormat = number => Numeral(number).format('$0,0.00');
 
 // export const createUrlForSrc = (imgSrc, format, size) => {
 //   const blob = new Blob([imgSrc], { type: getBlobType(format) });
