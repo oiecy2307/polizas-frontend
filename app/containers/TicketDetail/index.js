@@ -521,7 +521,11 @@ export function TicketDetail({ dispatch, match }) {
           <h4>Comentarios</h4>
           <Divider size="24" />
           {comments.map(c => (
-            <CommentItem comment={c} onDelete={handleDeleteComment} />
+            <CommentItem
+              key={c.id}
+              comment={c}
+              onDelete={handleDeleteComment}
+            />
           ))}
           <Divider size="24" />
           <Input

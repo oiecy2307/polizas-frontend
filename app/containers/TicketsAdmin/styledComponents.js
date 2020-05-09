@@ -1,5 +1,12 @@
 import styled from 'styled-components';
 
+export const ButtonsSection = styled.div`
+  @media (max-width: 1190px) {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+`;
+
 export const Content = styled.div`
   display: flex;
   justify-content: space-between;
@@ -8,6 +15,8 @@ export const Content = styled.div`
   @media (max-width: 1190px) {
     flex-direction: column-reverse;
     align-items: center;
+    max-width: 560px;
+    margin: 8px auto;
     & > div {
       margin-bottom: 24px;
     }

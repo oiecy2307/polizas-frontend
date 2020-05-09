@@ -25,6 +25,7 @@ import LayersIcon from '@material-ui/icons/Layers';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import ExitIcon from '@material-ui/icons/ExitToAppOutlined';
+import AccountCircleIcon from '@material-ui/icons/AccountCircleOutlined';
 import Drawer from '@material-ui/core/Drawer';
 import Avatar from 'components/Avatar';
 import NotificationsPop from 'components/NotificationsPop';
@@ -257,6 +258,14 @@ export function MainLayout({ children, history, dispatch }) {
           <SidebarItemText>{messages.menu.users}</SidebarItemText>
         </SidebarItem>
       )}
+      <SidebarItem
+        onClick={handleChangeRoute}
+        to={`/perfil/${currentUser.id}`}
+        selected={optionSelected === `/perfil/${currentUser.id}`}
+      >
+        <AccountCircleIcon />
+        <SidebarItemText>{messages.menu.profile}</SidebarItemText>
+      </SidebarItem>
       <SidebarItemWOLink onClick={handleLogOut}>
         <ExitIcon />
         <SidebarItemText>{messages.menu.logout}</SidebarItemText>

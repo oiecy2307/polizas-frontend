@@ -41,6 +41,7 @@ import {
   IconCalendarContainer,
   Explanation,
   ButtonDot,
+  ButtonsSection,
 } from './styledComponents';
 
 export function TicketsAdmin({ dispatch }) {
@@ -181,7 +182,7 @@ export function TicketsAdmin({ dispatch }) {
         <title>Tickets</title>
         <meta name="description" content="Description of TicketsAdmin" />
       </Helmet>
-      <div>
+      <ButtonsSection>
         <TabButton
           selected={optionSelected === 'new'}
           onClick={handleSelectOption('new')}
@@ -210,7 +211,7 @@ export function TicketsAdmin({ dispatch }) {
           {ticketsBrief.hasCancelled && <ButtonDot />}
           Cancelados
         </TabButton>
-      </div>
+      </ButtonsSection>
       <Content>
         <LeftSection>
           <TicketsList

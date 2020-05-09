@@ -15,7 +15,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import { Container } from './styledComponents';
 
-function CommentItem({ comment, onDelete }) {
+function CommentItem({ comment, onDelete, ...restProps }) {
   const [currentUser, setCurrentUser] = useState({});
 
   useEffect(() => {
@@ -30,7 +30,7 @@ function CommentItem({ comment, onDelete }) {
   const time = moment(get(comment, 'createdAt', new Date())).fromNow();
   const canDelete = currentUser.id === get(comment, 'user.id', '');
   return (
-    <Container>
+    <Container {...restProps}>
       <Avatar src={get(comment, 'user.image', '')} name={userFullName} />
       <div className="content">
         <div className="header">

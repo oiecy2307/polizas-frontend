@@ -44,6 +44,7 @@ export const getIsImage = fileName => {
 
 export const mediaQuery = '@media (max-width: 768px)';
 export const mediaQueryS = '@media (max-width: 576px)';
+export const mediaQueryL = '@media (max-width: 1190px)';
 
 export const minutesToHours = minutes => {
   const hours = Number.parseInt(minutes / 60, 10);

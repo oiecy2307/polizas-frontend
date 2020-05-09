@@ -127,7 +127,7 @@ function App({ app, dispatch }) {
           />
           <AppRoute
             exact
-            path="/perfil"
+            path="/perfil/:id"
             layout={MainLayout}
             component={UserProfile}
           />

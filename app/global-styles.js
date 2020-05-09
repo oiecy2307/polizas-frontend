@@ -103,6 +103,11 @@ const GlobalStyle = createGlobalStyle`
 
   /* set button(top and bottom of the scrollbar) */
   ::-webkit-scrollbar-button {display:none}
+
+  .shadow {
+    background-color: #ffffff;
+    box-shadow: 0 1px 5px 0 rgba(0,0,0,0.1);
+  }
 `;
 
 export default GlobalStyle;
