@@ -44,6 +44,7 @@ function CreateEditUserForm(props) {
     touched,
     errors,
     isEditing,
+    fromProfile,
   } = props;
   return (
     <Form>
@@ -83,19 +84,21 @@ function CreateEditUserForm(props) {
           />
         )}
       />
-      <Field
-        name="email"
-        defaultValues={values.email}
-        render={({ field }) => (
-          <Input
-            {...field}
-            type="email"
-            label={messages.fields.email}
-            helperText={touched.email ? errors.email : ''}
-            error={touched.email && Boolean(errors.email)}
-          />
-        )}
-      />
+      {!fromProfile && (
+        <Field
+          name="email"
+          defaultValues={values.email}
+          render={({ field }) => (
+            <Input
+              {...field}
+              type="email"
+              label={messages.fields.email}
+              helperText={touched.email ? errors.email : ''}
+              error={touched.email && Boolean(errors.email)}
+            />
+          )}
+        />
+      )}
       <Field
         name="username"
         defaultValues={values.username}
@@ -145,43 +148,47 @@ function CreateEditUserForm(props) {
           />
         </React.Fragment>
       )}
-      <Field
-        defaultValue={values.role}
-        name="role"
-        render={({ field }) => {
-          const { label } = find(options, { value: field.value }) || {};
-          const value = field.value ? { value: field.value, label } : null;
-          return (
-            <Select
-              {...field}
-              value={value}
-              onChange={newValue => {
-                setFieldValue(field.name, newValue.value);
-              }}
-              options={options}
-              placeholder={messages.fields.role}
-              error={
-                touched[field.name] && Boolean(errors[field.name])
-                  ? errors[field.name]
-                  : ''
-              }
-              onBlur={() => setFieldTouched(field.name, true)}
-            />
-          );
-        }}
-      />
-      <Field
-        name="company"
-        defaultValues={values.company}
-        render={({ field }) => (
-          <Input
-            {...field}
-            label={messages.fields.company}
-            helperText={touched.company ? errors.company : ''}
-            error={touched.company && Boolean(errors.company)}
+      {!fromProfile && (
+        <React.Fragment>
+          <Field
+            defaultValue={values.role}
+            name="role"
+            render={({ field }) => {
+              const { label } = find(options, { value: field.value }) || {};
+              const value = field.value ? { value: field.value, label } : null;
+              return (
+                <Select
+                  {...field}
+                  value={value}
+                  onChange={newValue => {
+                    setFieldValue(field.name, newValue.value);
+                  }}
+                  options={options}
+                  placeholder={messages.fields.role}
+                  error={
+                    touched[field.name] && Boolean(errors[field.name])
+                      ? errors[field.name]
+                      : ''
+                  }
+                  onBlur={() => setFieldTouched(field.name, true)}
+                />
+              );
+            }}
           />
-        )}
-      />
+          <Field
+            name="company"
+            defaultValues={values.company}
+            render={({ field }) => (
+              <Input
+                {...field}
+                label={messages.fields.company}
+                helperText={touched.company ? errors.company : ''}
+                error={touched.company && Boolean(errors.company)}
+              />
+            )}
+          />
+        </React.Fragment>
+      )}
       <Field
         name="phoneNumber"
         defaultValues={values.phoneNumber}
@@ -205,6 +212,7 @@ CreateEditUserForm.propTypes = {
   touched: PropTypes.object,
   errors: PropTypes.object,
   isEditing: PropTypes.bool,
+  fromProfile: PropTypes.bool,
 };
 
 export default memo(CreateEditUserForm);

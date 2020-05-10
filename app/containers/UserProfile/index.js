@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo, useEffect, useState, useRef } from 'react';
+import React, { memo, useEffect, useState, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -14,14 +14,19 @@ import { get, times } from 'lodash';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { getFullName } from 'utils/helper';
 import moment from 'moment/min/moment-with-locales';
+import { LoggedUser } from 'contexts/logged-user';
 
 import { wsGetUserProfile, wsUploadImagePicture } from 'services/profile';
 
 import Avatar from 'components/Avatar';
 import Button from 'components/Button';
+import Fab from 'components/Fab';
+import CreateEditUser from 'components/CreateEditUser';
+import ChangePasswordDialog from 'components/ChangePasswordDialog';
 
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import Skeleton from '@material-ui/lab/Skeleton';
+import EditIcon from '@material-ui/icons/Edit';
 
 import { useInjectReducer } from 'utils/injectReducer';
 import makeSelectUserProfile from './selectors';
@@ -39,6 +44,12 @@ export function UserProfile({ match, dispatch }) {
   const [profile, setProfile] = useState({});
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+
+  const currentUser = useContext(LoggedUser);
+  const isMyOwnProfile = currentUser.id === get(match, 'params.id', '');
+
   useEffect(() => {
     fetchUserProfile();
   }, []);
@@ -95,6 +106,10 @@ export function UserProfile({ match, dispatch }) {
     filesRef.current.click();
   };
 
+  const handleOpenEditUser = () => {
+    setEditDialogOpen(true);
+  };
+
   if (notFound) {
     return (
       <div>
@@ -110,10 +125,10 @@ export function UserProfile({ match, dispatch }) {
   if (loading) {
     return (
       <Content>
-        <div>
-          <Helmet>
-            <title>Perfil</title>
-          </Helmet>
+        <Helmet>
+          <title>Perfil</title>
+        </Helmet>
+        <PersonalInfoContainer className="shadow">
           {times(10, i => (
             <React.Fragment key={i}>
               <Skeleton
@@ -125,7 +140,20 @@ export function UserProfile({ match, dispatch }) {
               />
             </React.Fragment>
           ))}
-        </div>
+        </PersonalInfoContainer>
+        <ComplementInfo className="shadow">
+          {times(10, i => (
+            <React.Fragment key={i}>
+              <Skeleton
+                animation="wave"
+                height="40px"
+                width="100%"
+                variant="text"
+                key={i}
+              />
+            </React.Fragment>
+          ))}
+        </ComplementInfo>
       </Content>
     );
   }
@@ -149,9 +177,11 @@ export function UserProfile({ match, dispatch }) {
         <h4>Perfil</h4>
         <div className="picture-container">
           <Avatar type="" name={name} size={120} src={image} />
-          <Span onClick={handleOpenFileInput} className="add-picture">
-            <CameraAltIcon />
-          </Span>
+          {isMyOwnProfile && (
+            <Span onClick={handleOpenFileInput} className="add-picture">
+              <CameraAltIcon />
+            </Span>
+          )}
         </div>
         <h5>Nombre</h5>
         <div>{name}</div>
@@ -167,15 +197,50 @@ export function UserProfile({ match, dispatch }) {
         <div>{email}</div>
         <h5>Username</h5>
         <div>{username}</div>
-        <h5>Contraseña</h5>
-        <div>
-          <Button variant="text">Cambiar</Button>
-        </div>
+        {isMyOwnProfile && (
+          <React.Fragment>
+            <h5>Contraseña</h5>
+            <div>
+              <Button
+                variant="text"
+                onClick={() => setPasswordDialogOpen(true)}
+              >
+                Cambiar
+              </Button>
+            </div>
+          </React.Fragment>
+        )}
       </PersonalInfoContainer>
       <ComplementInfo className="shadow">
         <h4>Últimos tickets</h4>
       </ComplementInfo>
-      <Input ref={filesRef} type="file" value="" onChange={handleChangeFiles} />
+      {isMyOwnProfile && (
+        <React.Fragment>
+          <Input
+            ref={filesRef}
+            type="file"
+            value=""
+            onChange={handleChangeFiles}
+          />
+          <Fab onClick={handleOpenEditUser} icon={<EditIcon />} />
+          <CreateEditUser
+            open={editDialogOpen}
+            onClose={() => {
+              setEditDialogOpen(false);
+            }}
+            callback={fetchUserProfile}
+            dispatch={dispatch}
+            userToEdit={profile}
+            fromProfile
+          />
+          <ChangePasswordDialog
+            open={passwordDialogOpen}
+            onClose={() => setPasswordDialogOpen(false)}
+            callback={() => {}}
+            dispatch={dispatch}
+          />
+        </React.Fragment>
+      )}
     </Content>
   );
 }

@@ -14,6 +14,7 @@ import { get } from 'lodash';
 import { textRegex } from 'utils/helper';
 import { wRegister } from 'services/auth';
 import { wsUpdateUser } from 'services/users';
+import { wsUpdateProfileInfo } from 'services/profile';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 
 import Dialog from 'components/Dialog';
@@ -21,7 +22,14 @@ import Form from './form';
 
 import getMessages from './messages';
 
-function CreateEditUser({ open, onClose, callback, dispatch, userToEdit }) {
+function CreateEditUser({
+  open,
+  onClose,
+  callback,
+  dispatch,
+  userToEdit,
+  fromProfile,
+}) {
   const { language } = useContext(GlobalValuesContext);
   const [messages] = useState(getMessages(language));
 
@@ -32,7 +40,9 @@ function CreateEditUser({ open, onClose, callback, dispatch, userToEdit }) {
       const body = values;
       dispatch(aSetLoadingState(true));
       let response = null;
-      if (isEditing) {
+      if (fromProfile) {
+        response = await wsUpdateProfileInfo(body);
+      } else if (isEditing) {
         response = await wsUpdateUser(userToEdit.id, body);
       } else {
         response = await wRegister(body);
@@ -60,7 +70,7 @@ function CreateEditUser({ open, onClose, callback, dispatch, userToEdit }) {
     username: get(userToEdit, 'username', ''),
     password: '',
     role: get(userToEdit, 'role', ''),
-    company: get(userToEdit, 'company', ''),
+    company: get(userToEdit, 'company.name', ''),
     phoneNumber: get(userToEdit, 'phoneNumber', ''),
   };
 
@@ -131,7 +141,12 @@ function CreateEditUser({ open, onClose, callback, dispatch, userToEdit }) {
           onPositiveAction={() => p.handleSubmit(p.values)}
           disabled={!p.isValid || p.isSubmitting}
         >
-          <Form {...p} disabled={false} isEditing={isEditing} />
+          <Form
+            {...p}
+            disabled={false}
+            isEditing={isEditing}
+            fromProfile={fromProfile}
+          />
         </Dialog>
       )}
     />
@@ -144,6 +159,7 @@ CreateEditUser.propTypes = {
   callback: PropTypes.func,
   dispatch: PropTypes.func,
   userToEdit: PropTypes.object,
+  fromProfile: PropTypes.bool,
 };
 
 export default memo(CreateEditUser);
