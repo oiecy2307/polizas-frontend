@@ -188,7 +188,10 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
                 )}
                 {ticket.technical && (
                   <div className="row row-technical">
-                    <Avatar name={get(ticket, 'technical.name', '')} />
+                    <Avatar
+                      name={get(ticket, 'technical.name', '')}
+                      src={get(ticket, 'technical.image', '')}
+                    />
                     <div>{getFullName(ticket.technical)} (asignado)</div>
                   </div>
                 )}

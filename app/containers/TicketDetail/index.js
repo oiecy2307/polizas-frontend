@@ -230,8 +230,11 @@ export function TicketDetail({ dispatch, match }) {
     ? 'paid'
     : get(ticket, 'status', 'new');
   const technicalName = getFullName(get(ticket, 'technical', {}));
+  const technicalImg = get(ticket, 'technical.image', {});
   const reporterName = getFullName(get(ticket, 'reporter', {}));
+  const reporterImg = get(ticket, 'reporter.image', {});
   const clientName = getFullName(get(ticket, 'client', {}));
+  const clientImg = get(ticket, 'client.image', {});
   const evidence = get(ticket, 'evidence', []);
   const isCancelled = get(ticket, 'status', '') === 'cancelled';
   const finishedDate = get(ticket, 'finishedDate', '');
@@ -343,6 +346,9 @@ export function TicketDetail({ dispatch, match }) {
     return [];
   })();
 
+  const showClosedInfo =
+    ticket.status !== 'new' && ticket.status !== 'assigned';
+
   return (
     <React.Fragment>
       <Helmet>
@@ -376,7 +382,7 @@ export function TicketDetail({ dispatch, match }) {
             <React.Fragment>
               <h5>Creado por</h5>
               <div className="user">
-                <Avatar name={reporterName} />
+                <Avatar name={reporterName} src={reporterImg} />
                 <span className="name">{reporterName}</span>
               </div>
             </React.Fragment>
@@ -385,7 +391,7 @@ export function TicketDetail({ dispatch, match }) {
             <React.Fragment>
               <h5>Cliente</h5>
               <div className="user">
-                <Avatar name={clientName} />
+                <Avatar name={clientName} src={clientImg} />
                 <span className="name">{clientName}</span>
               </div>
             </React.Fragment>
@@ -398,7 +404,7 @@ export function TicketDetail({ dispatch, match }) {
                 clickable={!isClient && !isCancelled}
                 onClick={handleOpenAssignDialog}
               >
-                <Avatar name={technicalName} />
+                <Avatar name={technicalName} src={technicalImg} />
                 <span className="name">{technicalName}</span>
               </Div>
             ) : (
@@ -416,35 +422,35 @@ export function TicketDetail({ dispatch, match }) {
               <div>{moment(finishedDate).format('LL')}</div>
             </React.Fragment>
           )}
-          {timeNeeded && (
+          {showClosedInfo && timeNeeded !== null && (
             <React.Fragment>
               <h5>Tiempo requerido</h5>
               <div>{minutesToHours(timeNeeded)} horas</div>
             </React.Fragment>
           )}
-          {cost && (
+          {showClosedInfo && cost !== null && (
             <React.Fragment>
               <h5>Costo al terminar</h5>
               <div>{toMoneyFormat(cost)}</div>
             </React.Fragment>
           )}
-          {showPaidInfo && (
+          {showPaidInfo && showClosedInfo && (
             <React.Fragment>
               <h5>Está pagado</h5>
               <div>{paid ? 'Sí' : 'No'}</div>
-              {totalPaid && paid && (
+              {paid && totalPaid && (
                 <React.Fragment>
                   <h5>Total pagado</h5>
                   <div>{toMoneyFormat(totalPaid)}</div>
                 </React.Fragment>
               )}
-              {paidDate && paid && (
+              {paid && paidDate && (
                 <React.Fragment>
                   <h5>Fecha de pago</h5>
                   <div>{moment(paidDate).format('LL')}</div>
                 </React.Fragment>
               )}
-              {invoice && paid && (
+              {paid && invoice && (
                 <React.Fragment>
                   <h5>Número de factura</h5>
                   <div>{invoice}</div>

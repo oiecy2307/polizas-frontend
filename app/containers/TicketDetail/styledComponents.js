@@ -15,6 +15,7 @@ export const Container = styled.div`
 
   & h5 {
     margin-bottom: 16px;
+    color: #108043;
   }
 
   & h5:not(:first-child) {

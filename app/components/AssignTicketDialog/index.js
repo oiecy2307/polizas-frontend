@@ -93,7 +93,9 @@ function AssignTicketDialog({ onClose, dispatch, open, id }) {
           key={technical.id}
           onClick={() => setTechnicalSelected(technical.id)}
         >
-          {!isResponsiveXs && <Avatar src={null} name={technical.name} />}
+          {!isResponsiveXs && (
+            <Avatar src={technical.image} name={technical.name} />
+          )}
           <PersonalInfo>
             <div className="name text-ellipsis">{getFullName(technical)}</div>
             <div className="email text-ellipsis">{technical.email}</div>

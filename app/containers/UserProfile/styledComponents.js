@@ -16,6 +16,7 @@ export const Content = styled.div`
 
   h5 {
     margin: 24px 0 16px;
+    color: #108043;
   }
 `;
 

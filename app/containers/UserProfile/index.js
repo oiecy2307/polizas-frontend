@@ -48,7 +48,8 @@ export function UserProfile({ match, dispatch }) {
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
 
   const currentUser = useContext(LoggedUser);
-  const isMyOwnProfile = currentUser.id === get(match, 'params.id', '');
+  const isMyOwnProfile =
+    currentUser.id.toString() === get(match, 'params.id', '').toString();
 
   useEffect(() => {
     fetchUserProfile();
@@ -117,7 +118,7 @@ export function UserProfile({ match, dispatch }) {
           <title>Perfil</title>
         </Helmet>
         <h1>404</h1>
-        <h1>No se encontró el ticket</h1>
+        <h1>No se encontró el perfil</h1>
       </div>
     );
   }

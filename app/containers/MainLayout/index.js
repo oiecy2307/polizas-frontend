@@ -295,7 +295,10 @@ export function MainLayout({ children, history, dispatch }) {
                 <div className="badge">{notificationsCount}</div>
               )}
             </NotificationContainer>
-            <Avatar name={get(currentUser, 'name', '')} />
+            <Avatar
+              name={get(currentUser, 'name', '')}
+              src={get(currentUser, 'image', '')}
+            />
           </AlignVertical>
         </TopBarContainer>
         <MobileMenu>
