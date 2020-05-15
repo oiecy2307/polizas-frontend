@@ -73,6 +73,8 @@ export const Content = styled.div`
   width: calc(100% - 236px);
   min-height: calc(100vh - 64px);
   padding: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
   @media (max-width: 768px) {
     width: 100%;
     padding: 24px 16px;

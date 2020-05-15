@@ -1,5 +1,6 @@
 export default {
   BASE_URL: 'http://localhost:8080/api',
+  FRONTEND_URL: 'http://localhost:3000',
   firebaseConfig: {
     apiKey: 'AIzaSyAG7ZgehdL2vQKVxAmfVWUilDFKr2eHAzw',
     authDomain: 'suppdesk-271403.firebaseapp.com',

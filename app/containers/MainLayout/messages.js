@@ -26,6 +26,10 @@ export default language => {
       es: 'Usuarios',
       en: 'Users',
     },
+    invitations: {
+      es: 'Invitaciones',
+      en: 'Invitations',
+    },
     profile: {
       es: 'Mi perfil',
       en: 'My profile',
@@ -45,6 +49,7 @@ export default language => {
       tickets: values.tickets[language],
       invoices: values.invoices[language],
       users: values.users[language],
+      invitations: values.invitations[language],
       profile: values.profile[language],
       logout: values.logout[language],
     },

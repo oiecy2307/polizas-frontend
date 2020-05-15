@@ -1,5 +1,6 @@
 export default {
   BASE_URL: 'https://suppdesk-271403.appspot.com/api',
+  FRONTEND_URL: 'https://suppdesk-271403.firebaseapp.com',
   firebaseConfig: {
     apiKey: 'AIzaSyAG7ZgehdL2vQKVxAmfVWUilDFKr2eHAzw',
     authDomain: 'suppdesk-271403.firebaseapp.com',
