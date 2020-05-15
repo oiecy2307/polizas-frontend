@@ -59,3 +59,33 @@ export const wsRegisterWInvitation = body =>
       .then(response => resolve(response))
       .catch(err => reject(err));
   });
+
+export const wsRequestRecovery = body =>
+  new Promise((resolve, reject) => {
+    post({
+      url: `/auth/send-request-password`,
+      body,
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+
+export const wsValidateRequest = body =>
+  new Promise((resolve, reject) => {
+    post({
+      url: `/auth/validate-recovery-token`,
+      body,
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+
+export const wsChangePassword = body =>
+  new Promise((resolve, reject) => {
+    post({
+      url: `/auth/change-password`,
+      body,
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });

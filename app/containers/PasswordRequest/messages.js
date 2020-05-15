@@ -1,11 +1,11 @@
 /*
- * HomePage Messages
+ * PasswordRequest Messages
  *
- * This contains all the text for the HomePage container.
+ * This contains all the text for the PasswordRequest container.
  */
 import { defineMessages } from 'react-intl';
 
-export const scope = 'app.containers.HomePage';
+export const scope = 'app.containers.PasswordRequest';
 
 export default language => {
   const values = {
@@ -15,8 +15,9 @@ export default language => {
     },
     welcomeMessage: {
       es:
-        'Por favor ingresa los siguientes datos para poder acceder a nuestro sistema de soporte.',
-      en: 'Please, fill the next fields to access our support system',
+        'Ingresa tu dirección de correo y te enviaremos un correo con el link para recuperar tu contraseña.',
+      en:
+        "Write your email account and we'll send you an email with a link to recover your password",
     },
     email: {
       es: 'Correo',
@@ -27,8 +28,8 @@ export default language => {
       en: 'Password',
     },
     login: {
-      es: 'Ingresar',
-      en: 'Log in',
+      es: 'Enviar correo',
+      en: 'Send email',
     },
   };
   return defineMessages({

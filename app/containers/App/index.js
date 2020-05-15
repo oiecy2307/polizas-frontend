@@ -25,7 +25,9 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import HomePage from 'containers/HomePage/Loadable';
+import PasswordRequest from 'containers/PasswordRequest/Loadable';
 import Register from 'containers/Register/Loadable';
+import RecoverPassword from 'containers/RecoverPassword/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import TicketsAdmin from 'containers/TicketsAdmin/Loadable';
 import UserProfile from 'containers/UserProfile';
@@ -147,6 +149,16 @@ function App({ app, dispatch }) {
           />
           <Route exact path="/inicio-sesion" component={HomePage} />
           <Route exact path="/registro/:token" component={Register} />
+          <Route
+            exact
+            path="/recuperar-contrasena/:token"
+            component={RecoverPassword}
+          />
+          <Route
+            exact
+            path="/solicitar-contrasena"
+            component={PasswordRequest}
+          />
           <Route component={NotFoundPage} />
         </Switch>
         <GlobalStyle />

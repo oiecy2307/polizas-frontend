@@ -99,18 +99,20 @@ function CreateEditUserForm(props) {
           )}
         />
       )}
-      <Field
-        name="username"
-        defaultValues={values.username}
-        render={({ field }) => (
-          <Input
-            {...field}
-            label={messages.fields.username}
-            helperText={touched.username ? errors.username : ''}
-            error={touched.username && Boolean(errors.username)}
-          />
-        )}
-      />
+      {false && (
+        <Field
+          name="username"
+          defaultValues={values.username}
+          render={({ field }) => (
+            <Input
+              {...field}
+              label={messages.fields.username}
+              helperText={touched.username ? errors.username : ''}
+              error={touched.username && Boolean(errors.username)}
+            />
+          )}
+        />
+      )}
       {!isEditing && (
         <React.Fragment>
           <Field

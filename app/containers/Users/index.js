@@ -15,9 +15,7 @@ import moment from 'moment/min/moment-with-locales';
 import { GlobalValuesContext } from 'contexts/global-values';
 
 import Table from 'components/Table';
-import { TabButton, FabContainer } from 'utils/globalStyledComponents';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import { TabButton } from 'utils/globalStyledComponents';
 import EmptyState from 'components/EmptyState';
 import CreateEditUser from 'components/CreateEditUser';
 
@@ -48,10 +46,6 @@ export function Users(props) {
     {
       key: 'email',
       label: messages.table.email,
-    },
-    {
-      key: 'username',
-      label: messages.table.username,
     },
     {
       key: 'date',
@@ -204,15 +198,6 @@ export function Users(props) {
         showPagination={false}
       />
       {users.length === 0 && <EmptyState />}
-      <FabContainer>
-        <Fab
-          color="primary"
-          aria-label="add"
-          onClick={() => setDialogOpen(true)}
-        >
-          <AddIcon />
-        </Fab>
-      </FabContainer>
       <CreateEditUser
         open={dialogOpen}
         onClose={() => {

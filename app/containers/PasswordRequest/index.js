@@ -1,5 +1,5 @@
 /*
- * HomePage
+ * PasswordRequest
  *
  * This is the first thing users see of our App, at the '/' route
  *
@@ -9,19 +9,15 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { wLogin } from 'services/auth';
+import { wsRequestRecovery } from 'services/auth';
 import { aOpenSnackbar } from 'containers/App/actions';
 import { getToken } from 'utils/helper';
 import { GlobalValuesContext } from 'contexts/global-values';
-import { ImmortalDB } from 'immortal-db';
+import { isEmail } from 'validator';
 
 import Input from 'components/InputText';
 import LayersIcon from '@material-ui/icons/Layers';
-import {
-  SpaceBetween,
-  LabelButton,
-  Button,
-} from 'utils/globalStyledComponents';
+import { SpaceBetween, Button } from 'utils/globalStyledComponents';
 import {
   MainContainer,
   FormSection,
@@ -32,11 +28,10 @@ import {
 } from './styledComponents';
 import getMessages from './messages';
 
-function HomePage({ history, dispatch }) {
+function PasswordRequest({ history, dispatch }) {
   const { language } = useContext(GlobalValuesContext);
   const [messages] = useState(getMessages(language));
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
 
   useEffect(() => {
     evaluateToken();
@@ -47,36 +42,22 @@ function HomePage({ history, dispatch }) {
     if (token) history.push('/');
   }
 
-  async function handleLogin() {
+  async function handleRequestPasswordChange() {
     try {
-      if (username && password) {
-        const response = await wLogin({ username, password });
+      if (username) {
+        const response = await wsRequestRecovery({ email: username });
         if (response.error) {
-          dispatch(
-            aOpenSnackbar('Usuario y/o contraseña incorrectos', 'error'),
-          );
+          dispatch(aOpenSnackbar('No se pudo enviar la solicitud', 'error'));
         } else {
-          await ImmortalDB.set('user', JSON.stringify(response.user));
-          await ImmortalDB.set('token', response.token);
-          history.push('/');
+          dispatch(aOpenSnackbar('Solicitud enviada a tu correo', 'success'));
         }
       }
     } catch (e) {
-      dispatch(aOpenSnackbar('Usuario y/o contraseña incorrectos', 'error'));
+      dispatch(aOpenSnackbar('No se pudo enviar la solicitud', 'error'));
     }
   }
 
-  const handleGoToPasswordRequest = () => {
-    history.push('/solicitar-contrasena');
-  };
-
-  const handleKeyPressPassword = e => {
-    if (e.key === 'Enter') {
-      handleLogin();
-    }
-  };
-
-  const disabled = !username || !password;
+  const disabled = !isEmail(username);
 
   return (
     <MainContainer>
@@ -93,18 +74,9 @@ function HomePage({ history, dispatch }) {
             error={false}
             onChange={e => setUsername(e.target.value)}
           />
-          <Input
-            label={messages.password}
-            type="password"
-            error={false}
-            onChange={e => setPassword(e.target.value)}
-            onKeyPress={handleKeyPressPassword}
-          />
           <SpaceBetween>
-            <LabelButton onClick={handleGoToPasswordRequest}>
-              Olvidé mi contraseña
-            </LabelButton>
-            <Button disabled={disabled} onClick={() => handleLogin()}>
+            <span />
+            <Button disabled={disabled} onClick={handleRequestPasswordChange}>
               {messages.login}
             </Button>
           </SpaceBetween>
@@ -114,7 +86,7 @@ function HomePage({ history, dispatch }) {
   );
 }
 
-HomePage.propTypes = {
+PasswordRequest.propTypes = {
   history: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
@@ -127,4 +99,4 @@ function mapDispatchToProps(dispatch) {
 
 const withConnect = connect(mapDispatchToProps);
 
-export default compose(withConnect)(HomePage);
+export default compose(withConnect)(PasswordRequest);

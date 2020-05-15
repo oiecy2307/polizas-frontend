@@ -67,7 +67,7 @@ function CreateEditUser({
     lastname: get(userToEdit, 'lastname', ''),
     secondLastName: get(userToEdit, 'secondLastName', ''),
     email: get(userToEdit, 'email', ''),
-    username: get(userToEdit, 'username', ''),
+    // username: get(userToEdit, 'username', ''),
     password: '',
     role: get(userToEdit, 'role', ''),
     company: get(userToEdit, 'company.name', ''),
@@ -90,9 +90,9 @@ function CreateEditUser({
       .email(messages.emailError)
       .max(200, messages.tooLong)
       .required(messages.required),
-    username: Yup.string(messages.fields.username)
-      .required(messages.required)
-      .max(150, messages.tooLong),
+    // username: Yup.string(messages.fields.username)
+    //   .required(messages.required)
+    //   .max(150, messages.tooLong),
     password: Yup.string(messages.fields.password)
       [isEditing ? 'notRequired' : 'required'](messages.required)
       .min(8, messages.tooShort)
