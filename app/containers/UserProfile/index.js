@@ -184,20 +184,48 @@ export function UserProfile({ match, dispatch }) {
             </Span>
           )}
         </div>
-        <h5>Nombre</h5>
-        <div>{name}</div>
-        <h5>Empresa</h5>
-        <div>{company}</div>
-        <h5>Teléfono</h5>
-        <div>{phoneNumber}</div>
-        <h5>Rol</h5>
-        <div>{role}</div>
-        <h5>Miembro desde</h5>
-        <div>{createdAt}</div>
-        <h5>Correo</h5>
-        <div>{email}</div>
-        <h5>Username</h5>
-        <div>{username}</div>
+        {name && (
+          <React.Fragment>
+            <h5>Nombre</h5>
+            <div>{name}</div>
+          </React.Fragment>
+        )}
+        {company && (
+          <React.Fragment>
+            <h5>Empresa</h5>
+            <div>{company}</div>
+          </React.Fragment>
+        )}
+        {phoneNumber && (
+          <React.Fragment>
+            <h5>Teléfono</h5>
+            <div>{phoneNumber}</div>
+          </React.Fragment>
+        )}
+        {role && (
+          <React.Fragment>
+            <h5>Rol</h5>
+            <div>{role}</div>
+          </React.Fragment>
+        )}
+        {createdAt && (
+          <React.Fragment>
+            <h5>Miembro desde</h5>
+            <div>{createdAt}</div>
+          </React.Fragment>
+        )}
+        {email && (
+          <React.Fragment>
+            <h5>Correo</h5>
+            <div>{email}</div>
+          </React.Fragment>
+        )}
+        {username && (
+          <React.Fragment>
+            <h5>Username</h5>
+            <div>{username}</div>
+          </React.Fragment>
+        )}
         {isMyOwnProfile && (
           <React.Fragment>
             <h5>Contraseña</h5>

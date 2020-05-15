@@ -15,7 +15,30 @@ import LayersIcon from '@material-ui/icons/Layers';
 import { Form, Logo, H1, P } from './styledComponents';
 
 function RegisterForm(props) {
-  const { values, touched, errors, email, disabled } = props;
+  const {
+    values,
+    touched,
+    errors,
+    email,
+    disabled,
+    isExpired,
+    handleSubmit,
+  } = props;
+  if (isExpired) {
+    return (
+      <Form>
+        <div className="form">
+          <div className="top">
+            <Logo>
+              <LayersIcon style={{ color: '#108043', fontSize: 32 }} />
+            </Logo>
+            <H1>Bienvenido a Suppdesk</H1>
+            <P>Solicita una nueva invitación al administrador</P>
+          </div>
+        </div>
+      </Form>
+    );
+  }
   return (
     <Form>
       <div className="form">
@@ -69,18 +92,20 @@ function RegisterForm(props) {
             />
           )}
         />
-        <Field
-          name="username"
-          defaultValues={values.username}
-          render={({ field }) => (
-            <Input
-              {...field}
-              label="Username"
-              helperText={touched.username ? errors.username : ''}
-              error={touched.username && Boolean(errors.username)}
-            />
-          )}
-        />
+        {false && (
+          <Field
+            name="username"
+            defaultValues={values.username}
+            render={({ field }) => (
+              <Input
+                {...field}
+                label="Username"
+                helperText={touched.username ? errors.username : ''}
+                error={touched.username && Boolean(errors.username)}
+              />
+            )}
+          />
+        )}
         <Field
           name="password"
           defaultValues={values.password}
@@ -126,7 +151,7 @@ function RegisterForm(props) {
         />
         <SpaceBetween>
           <span />
-          <Button disabled={disabled} type="submit">
+          <Button disabled={disabled} onClick={() => handleSubmit(values)}>
             Registrarme
           </Button>
         </SpaceBetween>
@@ -145,6 +170,8 @@ RegisterForm.propTypes = {
   fromProfile: PropTypes.bool,
   email: PropTypes.string,
   disabled: PropTypes.bool,
+  isExpired: PropTypes.bool,
+  handleSubmit: PropTypes.func,
 };
 
 export default memo(RegisterForm);

@@ -49,3 +49,13 @@ export const wsDecodeInvitation = body =>
       .then(response => resolve(response))
       .catch(err => reject(err));
   });
+
+export const wsRegisterWInvitation = body =>
+  new Promise((resolve, reject) => {
+    post({
+      url: `/auth/register-w-invitation`,
+      body,
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });

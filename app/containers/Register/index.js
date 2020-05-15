@@ -12,15 +12,20 @@ import { compose } from 'redux';
 import * as Yup from 'yup';
 import { get } from 'lodash';
 import { textRegex, getToken } from 'utils/helper';
+import { ImmortalDB } from 'immortal-db';
 
 import { Formik } from 'formik';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
-import { wsDecodeInvitation } from 'services/auth';
+import { wsDecodeInvitation, wsRegisterWInvitation } from 'services/auth';
+
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import Form from './form';
 
 export function Register({ dispatch, match, history }) {
   const [email, setEmail] = useState('');
+  const [tokenExpired, setTokenExpired] = useState('');
 
   useEffect(() => {
     handleValidateToken();
@@ -41,24 +46,39 @@ export function Register({ dispatch, match, history }) {
     } catch (e) {
       const error =
         get(e, 'data.message', 'Ocurrió un error, intente de nuevo') || '';
-      dispatch(aOpenSnackbar(error, 'error'));
+      if (error === 'jwt expired' || error === 'Token expirado') {
+        setTokenExpired('La invitación caducó, solicite una nueva');
+        return;
+      }
+      setTokenExpired(error);
     } finally {
       dispatch(aSetLoadingState(false));
     }
   };
 
-  const handleRegister = async (body, resetValues) => {
+  const handleRegister = async (body, resetValues, setSubmitting) => {
     try {
+      const token = get(match, 'params.token', '');
       dispatch(aSetLoadingState(true));
-      // const response = await wsPayTicket(id, body);
-      dispatch(aOpenSnackbar('Cambios guardados', 'success'));
-      resetValues();
+      const response = await wsRegisterWInvitation({
+        ...body,
+        phone: body.phoneNumber,
+        token,
+      });
+      if (response) {
+        dispatch(aOpenSnackbar('Registro con éxito', 'success'));
+        resetValues();
+        await ImmortalDB.set('user', JSON.stringify(response.user));
+        await ImmortalDB.set('token', response.token);
+        history.push('/');
+      }
     } catch (e) {
       const error =
         get(e, 'data.message', '') || 'No fue posible completar el registro';
       dispatch(aOpenSnackbar(error, 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
+      setSubmitting(false);
     }
   };
 
@@ -83,9 +103,7 @@ export function Register({ dispatch, match, history }) {
     secondLastName: Yup.string('Apellido materno')
       .max(150, 'El texto es muy largo')
       .matches(textRegex, 'Texto no válido'),
-    username: Yup.string('Username')
-      .required('Campo requerido')
-      .max(150, 'El texto es muy largo'),
+    username: Yup.string('Username').max(150, 'El texto es muy largo'),
     password: Yup.string('Contraseña')
       .required('Campo requerido')
       .min(8, 'Deben ser al menos 8 caracteres')
@@ -98,6 +116,10 @@ export function Register({ dispatch, match, history }) {
       .max(9999999999999999, 'El texto es muy largo'),
   });
 
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
   return (
     <div>
       <Helmet>
@@ -105,14 +127,24 @@ export function Register({ dispatch, match, history }) {
       </Helmet>
       <Formik
         onSubmit={(values, actions) => {
-          handleRegister(values, actions.resetForm);
+          handleRegister(values, actions.resetForm, actions.setSubmitting);
         }}
         validationSchema={validationSchema}
         initialValues={defaultValues}
         render={p => (
-          <Form {...p} email={email} disabled={!p.isValid || p.isSubmitting} />
+          <Form
+            {...p}
+            email={email}
+            disabled={!p.isValid || p.isSubmitting}
+            isExpired={tokenExpired}
+          />
         )}
       />
+      <Snackbar open={tokenExpired} onClose={() => {}}>
+        <Alert onClose={() => {}} severity="error">
+          {tokenExpired}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

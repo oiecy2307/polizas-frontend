@@ -53,7 +53,7 @@ function NewInvitationDialog({
       setBusy(true);
       const response = await wsSendInvitation({
         email,
-        role: 'admin',
+        role: get(role, 'value', 'technical'),
       });
       if (response.error) {
         dispatch(
