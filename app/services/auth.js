@@ -39,3 +39,13 @@ export const wsLogout = body =>
       .then(response => resolve(response))
       .catch(err => reject(err));
   });
+
+export const wsDecodeInvitation = body =>
+  new Promise((resolve, reject) => {
+    post({
+      url: `/auth/decode-invitation`,
+      body,
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });

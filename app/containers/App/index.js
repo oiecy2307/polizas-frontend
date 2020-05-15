@@ -25,6 +25,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import HomePage from 'containers/HomePage/Loadable';
+import Register from 'containers/Register/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import TicketsAdmin from 'containers/TicketsAdmin/Loadable';
 import UserProfile from 'containers/UserProfile';
@@ -145,6 +146,7 @@ function App({ app, dispatch }) {
             component={Invitations}
           />
           <Route exact path="/inicio-sesion" component={HomePage} />
+          <Route exact path="/registro/:token" component={Register} />
           <Route component={NotFoundPage} />
         </Switch>
         <GlobalStyle />
