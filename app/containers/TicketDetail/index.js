@@ -34,6 +34,7 @@ import CloseTicketDialog from 'components/CloseTicketDialog';
 import PayTicketDialog from 'components/PayTicketDialog';
 import Input from 'components/InputText';
 import CommentItem from 'components/CommentItem';
+import EmptyState from 'components/EmptyState';
 
 import Button from 'components/Button';
 import Label from 'components/Label';
@@ -194,8 +195,7 @@ export function TicketDetail({ dispatch, match }) {
           <title>Detalle ticket</title>
           <meta name="description" content="Description of TicketDetail" />
         </Helmet>
-        <h1>404</h1>
-        <h1>No se encontró el ticket</h1>
+        <EmptyState message="No se encontró el ticket" />
       </div>
     );
   }

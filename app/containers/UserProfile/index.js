@@ -23,6 +23,7 @@ import Button from 'components/Button';
 import Fab from 'components/Fab';
 import CreateEditUser from 'components/CreateEditUser';
 import ChangePasswordDialog from 'components/ChangePasswordDialog';
+import EmptyState from 'components/EmptyState';
 
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -117,19 +118,20 @@ export function UserProfile({ match, dispatch }) {
         <Helmet>
           <title>Perfil</title>
         </Helmet>
-        <h1>404</h1>
-        <h1>No se encontró el perfil</h1>
+        <EmptyState message="No se encontró el perfil" />
       </div>
     );
   }
 
+  const showRightInfo = false;
+
   if (loading) {
     return (
-      <Content>
+      <Content showRightInfo={showRightInfo}>
         <Helmet>
           <title>Perfil</title>
         </Helmet>
-        <PersonalInfoContainer className="shadow">
+        <PersonalInfoContainer showRightInfo={showRightInfo} className="shadow">
           {times(10, i => (
             <React.Fragment key={i}>
               <Skeleton
@@ -142,19 +144,21 @@ export function UserProfile({ match, dispatch }) {
             </React.Fragment>
           ))}
         </PersonalInfoContainer>
-        <ComplementInfo className="shadow">
-          {times(10, i => (
-            <React.Fragment key={i}>
-              <Skeleton
-                animation="wave"
-                height="40px"
-                width="100%"
-                variant="text"
-                key={i}
-              />
-            </React.Fragment>
-          ))}
-        </ComplementInfo>
+        {showRightInfo && (
+          <ComplementInfo className="shadow">
+            {times(10, i => (
+              <React.Fragment key={i}>
+                <Skeleton
+                  animation="wave"
+                  height="40px"
+                  width="100%"
+                  variant="text"
+                  key={i}
+                />
+              </React.Fragment>
+            ))}
+          </ComplementInfo>
+        )}
       </Content>
     );
   }
@@ -170,11 +174,11 @@ export function UserProfile({ match, dispatch }) {
   const image = get(profile, 'image', '');
 
   return (
-    <Content>
+    <Content showRightInfo={showRightInfo}>
       <Helmet>
         <title>{title}</title>
       </Helmet>
-      <PersonalInfoContainer className="shadow">
+      <PersonalInfoContainer showRightInfo={showRightInfo} className="shadow">
         <h4>Perfil</h4>
         <div className="picture-container">
           <Avatar type="" name={name} size={120} src={image} />
@@ -240,9 +244,11 @@ export function UserProfile({ match, dispatch }) {
           </React.Fragment>
         )}
       </PersonalInfoContainer>
-      <ComplementInfo className="shadow">
-        <h4>Últimos tickets</h4>
-      </ComplementInfo>
+      {showRightInfo && (
+        <ComplementInfo className="shadow">
+          <h4>Últimos tickets</h4>
+        </ComplementInfo>
+      )}
       {isMyOwnProfile && (
         <React.Fragment>
           <Input

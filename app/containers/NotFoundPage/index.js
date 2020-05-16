@@ -6,14 +6,27 @@
  */
 
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import styled from 'styled-components';
+import config from 'config';
 
-import messages from './messages';
+const Content = styled.div`
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-width: 100vw;
+
+  & > img {
+    max-width: calc(100vw - 48px);
+    max-height: calc(100vh - 48px);
+  }
+`;
 
 export default function NotFound() {
   return (
-    <h1>
-      <FormattedMessage {...messages.header} />
-    </h1>
+    <Content>
+      <img src={`${config.BASE_URL.replace('/api', '')}/404.png`} alt="404" />
+    </Content>
   );
 }

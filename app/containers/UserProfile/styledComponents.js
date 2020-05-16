@@ -5,6 +5,7 @@ export const Content = styled.div`
   display: flex;
   max-width: 1280px;
   margin: 0 auto;
+  justify-content: ${props => (props.showRightInfo ? 'unset' : 'center')};
   ${mediaQueryL} {
     flex-direction: column;
     max-width: 560px;
@@ -24,7 +25,7 @@ export const PersonalInfoContainer = styled.div`
   border-radius: 12px;
   padding: 24px;
   margin-right: 24px;
-  width: 300px;
+  width: ${props => (props.showRightInfo ? '300px' : '560px')};
 
   ${mediaQueryL} {
     margin-bottom: 24px;

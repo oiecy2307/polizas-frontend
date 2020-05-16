@@ -197,7 +197,7 @@ export function Users(props) {
         isClickable={false}
         showPagination={false}
       />
-      {users.length === 0 && <EmptyState />}
+      {users.length === 0 && <EmptyState small />}
       <CreateEditUser
         open={dialogOpen}
         onClose={() => {
