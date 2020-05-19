@@ -30,6 +30,10 @@ export default language => {
       es: 'Invitaciones',
       en: 'Invitations',
     },
+    companies: {
+      es: 'Empresas',
+      en: 'Companies',
+    },
     profile: {
       es: 'Mi perfil',
       en: 'My profile',
@@ -50,6 +54,7 @@ export default language => {
       invoices: values.invoices[language],
       users: values.users[language],
       invitations: values.invitations[language],
+      companies: values.companies[language],
       profile: values.profile[language],
       logout: values.logout[language],
     },

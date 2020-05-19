@@ -36,6 +36,7 @@ import MainLayout from 'containers/MainLayout';
 import DashboardBackoffice from 'containers/DashboardBackoffice';
 import Users from 'containers/Users/Loadable';
 import TicketDetail from 'containers/TicketDetail/Loadable';
+import Companies from 'containers/Companies/Loadable';
 import Invitations from 'containers/Invitations';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -146,6 +147,12 @@ function App({ app, dispatch }) {
             path="/invitaciones"
             layout={MainLayout}
             component={Invitations}
+          />
+          <AppRoute
+            exact
+            path="/empresas"
+            layout={MainLayout}
+            component={Companies}
           />
           <Route exact path="/inicio-sesion" component={HomePage} />
           <Route exact path="/registro/:token" component={Register} />

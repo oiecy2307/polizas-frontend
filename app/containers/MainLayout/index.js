@@ -28,6 +28,7 @@ import ExitIcon from '@material-ui/icons/ExitToAppOutlined';
 import AccountCircleIcon from '@material-ui/icons/AccountCircleOutlined';
 import UserIcon from '@material-ui/icons/GroupOutlined';
 import UserAddIcon from '@material-ui/icons/PersonAddOutlined';
+import CompanyAddIcon from '@material-ui/icons/BusinessOutlined';
 import Drawer from '@material-ui/core/Drawer';
 import Avatar from 'components/Avatar';
 import NotificationsPop from 'components/NotificationsPop';
@@ -268,6 +269,16 @@ export function MainLayout({ children, history, dispatch }) {
         >
           <UserAddIcon />
           <SidebarItemText>{messages.menu.invitations}</SidebarItemText>
+        </SidebarItem>
+      )}
+      {isAdmin && (
+        <SidebarItem
+          onClick={handleChangeRoute}
+          to="/empresas"
+          selected={optionSelected === '/empresas'}
+        >
+          <CompanyAddIcon />
+          <SidebarItemText>{messages.menu.companies}</SidebarItemText>
         </SidebarItem>
       )}
       <SidebarItem
