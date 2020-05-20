@@ -1,4 +1,4 @@
-import { post, patch } from 'utils/http';
+import { post, patch, getToken, get } from 'utils/http';
 
 export const wLogin = body =>
   new Promise((resolve, reject) => {
@@ -89,3 +89,17 @@ export const wsChangePassword = body =>
       .then(response => resolve(response))
       .catch(err => reject(err));
   });
+
+export const wsGetUserInfo = async () => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    get({
+      url: `/auth/information`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};

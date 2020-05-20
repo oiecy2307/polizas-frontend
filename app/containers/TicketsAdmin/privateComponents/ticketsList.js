@@ -30,6 +30,7 @@ import PayTicketDialog from 'components/PayTicketDialog';
 import Label from 'components/Label';
 import Avatar from 'components/Avatar';
 import Button from 'components/Button';
+import EmptyState from 'components/EmptyState';
 import { SpaceBetween } from 'utils/globalStyledComponents';
 import {
   DateDetailContainer,
@@ -211,6 +212,7 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
           />
         ))}
       </DateDetailContainer>
+      {!tickets.length && <EmptyState />}
       <CloseTicketDialog
         open={isCloseTicketDialogOpen}
         onClose={handleClose}

@@ -4,11 +4,12 @@
  *
  */
 
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { isEmail } from 'validator';
 import { get } from 'lodash';
 
+import { LoggedUser } from 'contexts/logged-user';
 import { wsSendInvitation } from 'services/users';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 
@@ -43,6 +44,10 @@ function NewInvitationDialog({
   const [role, setRole] = useState(null);
   const [busy, setBusy] = useState(false);
 
+  const currentUser = useContext(LoggedUser);
+  const isClientAdmin =
+    currentUser.role === 'client' && currentUser.isCompanyAdmin;
+
   useEffect(() => {
     setEmail(defaultEmail);
   }, [defaultEmail]);
@@ -53,7 +58,8 @@ function NewInvitationDialog({
       setBusy(true);
       const response = await wsSendInvitation({
         email,
-        role: get(role, 'value', 'technical'),
+        role: isClientAdmin ? 'client' : get(role, 'value', 'technical'),
+        companyId: isClientAdmin ? currentUser.companyId : null,
       });
       if (response.error) {
         dispatch(
@@ -82,7 +88,7 @@ function NewInvitationDialog({
     onClose();
   };
   const showError = !!email && !isEmail(email) && emailTouched;
-  const disabled = !isEmail(email) || !role || busy;
+  const disabled = !isEmail(email) || (!role && !isClientAdmin) || busy;
 
   return (
     <Dialog
@@ -105,15 +111,17 @@ function NewInvitationDialog({
         onBlur={() => setEmailTouched(true)}
         disabled={Boolean(defaultEmail)}
       />
-      <Select
-        value={role}
-        onChange={value => setRole(value)}
-        options={options}
-        placeholder="Rol"
-        error=""
-        menuPlacement="bottom"
-        menuPosition="fixed"
-      />
+      {!isClientAdmin && (
+        <Select
+          value={role}
+          onChange={value => setRole(value)}
+          options={options}
+          placeholder="Rol"
+          error=""
+          menuPlacement="bottom"
+          menuPosition="fixed"
+        />
+      )}
     </Dialog>
   );
 }

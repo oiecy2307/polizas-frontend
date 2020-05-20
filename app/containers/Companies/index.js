@@ -12,8 +12,9 @@ import { compose } from 'redux';
 import { get, times } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 
-import { wsGetCompanies } from 'services/companies';
+import { wsGetCompanies, wsUpdateCompany } from 'services/companies';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
+import { getFullName } from 'utils/helper';
 
 import Skeleton from '@material-ui/lab/Skeleton';
 
@@ -85,7 +86,33 @@ export function Companies({ dispatch }) {
     setCompanyToAssign(company);
   };
 
-  const handleDeactivateCompany = () => {};
+  const handleDeactivateCompany = async company => {
+    const active = !get(company, 'originalItem.active', true);
+    try {
+      dispatch(aSetLoadingState(true));
+      await wsUpdateCompany({
+        id: get(company, 'originalItem.id', ''),
+        active,
+      });
+      dispatch(
+        aOpenSnackbar(
+          `Empresa ${active ? 'activada' : 'desactivada'} con éxito`,
+          'success',
+        ),
+      );
+      fetchCompanies();
+    } catch (e) {
+      const error =
+        get(
+          e,
+          'data.message',
+          `Error al ${active ? 'activada' : 'desactivada'} empresa`,
+        ) || '';
+      dispatch(aOpenSnackbar(error, 'error'));
+    } finally {
+      dispatch(aSetLoadingState(false));
+    }
+  };
 
   const handleCloseDialogCompany = () => {
     setCompanyToEdit(null);
@@ -102,7 +129,7 @@ export function Companies({ dispatch }) {
       action: handleAssignCompanyAdmin,
     },
     {
-      option: 'Desactivar',
+      option: 'Activar / desactivar',
       action: handleDeactivateCompany,
     },
   ];
@@ -121,6 +148,7 @@ export function Companies({ dispatch }) {
       createdAt: (
         <div className="one-line-text">{moment(c.createdAt).format('LL')}</div>
       ),
+      admin: getFullName(get(c, 'users[0]', null)) || 'Sin responsable',
       originalItem: c,
     }));
 

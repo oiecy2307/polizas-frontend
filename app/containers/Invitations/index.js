@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo, useState, useEffect, useRef } from 'react';
+import React, { memo, useState, useEffect, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -13,6 +13,7 @@ import { get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import config from 'config';
 
+import { LoggedUser } from 'contexts/logged-user';
 import {
   wsGetInvitations,
   wsGetInvitationToken,
@@ -22,6 +23,7 @@ import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import Fab from 'components/Fab';
 import NewInvitationDialog from 'components/NewInvitationDialog';
 import Dialog from 'components/Dialog';
+import EmptyState from 'components/EmptyState';
 
 import { TabButton } from 'utils/globalStyledComponents';
 import Table from 'components/Table';
@@ -51,12 +53,17 @@ export function Invitations({ dispatch }) {
   const [defaultEmail, setDefaultEmail] = useState('');
   const urlRef = useRef(null);
 
+  const currentUser = useContext(LoggedUser);
+  const isClientAdmin =
+    currentUser.role === 'client' && currentUser.isCompanyAdmin;
+
   useEffect(() => {
     fetchInvitations();
   }, []);
 
   const fetchInvitations = async () => {
     try {
+      console.log('fetchInvitations currentUser', currentUser);
       dispatch(aSetLoadingState(true));
       const response = await wsGetInvitations();
       if (response.error) {
@@ -196,6 +203,7 @@ export function Invitations({ dispatch }) {
         isClickable={false}
         showPagination={false}
       />
+      {!items.length && <EmptyState />}
       <NewInvitationDialog
         open={newInvitationOpen}
         onClose={handleCloseNewInvitation}

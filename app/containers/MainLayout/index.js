@@ -17,9 +17,9 @@ import { get } from 'lodash';
 import firebase from 'firebase/app';
 import 'firebase/messaging';
 import config from 'config';
-import { wsSaveToken, wsLogout } from 'services/auth';
+import { wsSaveToken, wsLogout, wsGetUserInfo } from 'services/auth';
 import { wsGetNotificationsCount } from 'services/notifications';
-import { aOpenSnackbar } from 'containers/App/actions';
+import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 
 import LayersIcon from '@material-ui/icons/Layers';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -77,8 +77,7 @@ export function MainLayout({ children, history, dispatch }) {
   const [notificationsCount, setNotificationsCount] = useState(0);
 
   useEffect(() => {
-    evaluateToken();
-    fetchNotificationsCount();
+    fetchUserInfo();
     window.addEventListener('focus', onFocus);
     return () => {
       window.removeEventListener('focus', onFocus);
@@ -87,6 +86,22 @@ export function MainLayout({ children, history, dispatch }) {
 
   const onFocus = () => {
     fetchNotificationsCount();
+  };
+
+  const fetchUserInfo = async () => {
+    try {
+      dispatch(aSetLoadingState(true));
+      const response = await wsGetUserInfo();
+      await ImmortalDB.set('user', JSON.stringify(response.data));
+    } catch (e) {
+      if (get(e, 'status', '') === 401) {
+        handleLogOut();
+      }
+    } finally {
+      dispatch(aSetLoadingState(false));
+      evaluateToken();
+      fetchNotificationsCount();
+    }
   };
 
   const fetchNotificationsCount = async () => {
@@ -198,21 +213,19 @@ export function MainLayout({ children, history, dispatch }) {
 
   async function handleLogOut() {
     try {
-      const lCurrentUser = await getCurrentUser();
       const notificationToken = await ImmortalDB.get('notificationToken');
       await ImmortalDB.remove('user');
       await ImmortalDB.remove('token');
       await ImmortalDB.remove('notificationToken');
-      const response = await wsLogout({
-        id: lCurrentUser.id,
-        token: notificationToken,
-      });
-      history.push('/inicio-sesion');
-      if (response.error) {
-        dispatch(aOpenSnackbar('Error al cerrar sesión', 'error'));
+      const lCurrentUser = await getCurrentUser();
+      if (notificationToken) {
+        await wsLogout({
+          id: lCurrentUser.id,
+          token: notificationToken,
+        });
       }
-    } catch (e) {
-      dispatch(aOpenSnackbar('Error al cerrar sesión', 'error'));
+    } finally {
+      history.push('/inicio-sesion');
     }
   }
 
@@ -226,6 +239,8 @@ export function MainLayout({ children, history, dispatch }) {
 
   if (!pageLoaded) return <div />;
   const isAdmin = currentUser.role === 'admin';
+  const isClientAdmin =
+    currentUser.role === 'client' && currentUser.isCompanyAdmin;
 
   const menu = (
     <React.Fragment>
@@ -261,7 +276,7 @@ export function MainLayout({ children, history, dispatch }) {
           <SidebarItemText>{messages.menu.users}</SidebarItemText>
         </SidebarItem>
       )}
-      {isAdmin && (
+      {(isAdmin || isClientAdmin) && (
         <SidebarItem
           onClick={handleChangeRoute}
           to="/invitaciones"
