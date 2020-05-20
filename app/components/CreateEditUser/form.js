@@ -84,7 +84,7 @@ function CreateEditUserForm(props) {
           />
         )}
       />
-      {!fromProfile && (
+      {!fromProfile && !isEditing && (
         <Field
           name="email"
           defaultValues={values.email}

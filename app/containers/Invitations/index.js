@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo, useState, useEffect, useRef, useContext } from 'react';
+import React, { memo, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -13,7 +13,6 @@ import { get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import config from 'config';
 
-import { LoggedUser } from 'contexts/logged-user';
 import {
   wsGetInvitations,
   wsGetInvitationToken,
@@ -53,17 +52,12 @@ export function Invitations({ dispatch }) {
   const [defaultEmail, setDefaultEmail] = useState('');
   const urlRef = useRef(null);
 
-  const currentUser = useContext(LoggedUser);
-  const isClientAdmin =
-    currentUser.role === 'client' && currentUser.isCompanyAdmin;
-
   useEffect(() => {
     fetchInvitations();
   }, []);
 
   const fetchInvitations = async () => {
     try {
-      console.log('fetchInvitations currentUser', currentUser);
       dispatch(aSetLoadingState(true));
       const response = await wsGetInvitations();
       if (response.error) {

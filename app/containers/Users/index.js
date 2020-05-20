@@ -13,6 +13,7 @@ import { compose } from 'redux';
 import { get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import { GlobalValuesContext } from 'contexts/global-values';
+import { LoggedUser } from 'contexts/logged-user';
 
 import Table from 'components/Table';
 import { TabButton } from 'utils/globalStyledComponents';
@@ -29,8 +30,13 @@ import getMessages from './messages';
 
 export function Users(props) {
   useInjectReducer({ key: 'users', reducer });
+  const currentUser = useContext(LoggedUser);
+  const isClientAdmin =
+    currentUser.role === 'client' && currentUser.isCompanyAdmin;
   const { language } = useContext(GlobalValuesContext);
-  const [optionSelected, setOptionSelected] = useState('admin');
+  const [optionSelected, setOptionSelected] = useState(
+    isClientAdmin ? 'client' : 'admin',
+  );
   const [messages] = useState(getMessages(language));
   const [users, setUsers] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -69,8 +75,21 @@ export function Users(props) {
 
   const handleDesactivateUser = async user => {
     try {
+      if (user.id === currentUser.id) {
+        dispatch(
+          aOpenSnackbar('No puedes desactivar tu propio usuario', 'error'),
+        );
+        return;
+      }
       dispatch(aSetLoadingState(true));
-      const response = await wsUpdateUser(user.id, { role: 'inactive' });
+      const defaultRole = isClientAdmin ? 'client' : 'technical';
+      const role =
+        get(user, 'fullItem.role', '') === 'inactive'
+          ? defaultRole
+          : 'inactive';
+      const response = await wsUpdateUser(user.id, {
+        role,
+      });
       if (response.error) {
         dispatch(aOpenSnackbar('No se pudo desactivar el usuario', 'error'));
       } else {
@@ -84,16 +103,23 @@ export function Users(props) {
     }
   };
 
-  const optionsMenu = [
-    {
+  const optionsMenu = [];
+
+  if (!isClientAdmin) {
+    optionsMenu.push({
       option: 'Editar',
       action: handleOpenEditUser,
-    },
-  ];
+    });
+  }
 
   if (optionSelected !== 'inactive') {
     optionsMenu.push({
       option: 'Desactivar',
+      action: handleDesactivateUser,
+    });
+  } else {
+    optionsMenu.push({
+      option: 'Activar',
       action: handleDesactivateUser,
     });
   }
@@ -131,24 +157,28 @@ export function Users(props) {
         <meta name="description" content="crud de usuarios" />
       </Helmet>
       <div>
-        <TabButton
-          selected={optionSelected === 'admin'}
-          onClick={handleSelectOption('admin')}
-        >
-          {messages.tabs.admins}
-        </TabButton>
-        <TabButton
-          selected={optionSelected === 'technical'}
-          onClick={handleSelectOption('technical')}
-        >
-          {messages.tabs.technicalSupport}
-        </TabButton>
-        <TabButton
-          selected={optionSelected === 'salesman'}
-          onClick={handleSelectOption('salesman')}
-        >
-          {messages.tabs.salesman}
-        </TabButton>
+        {!isClientAdmin && (
+          <React.Fragment>
+            <TabButton
+              selected={optionSelected === 'admin'}
+              onClick={handleSelectOption('admin')}
+            >
+              {messages.tabs.admins}
+            </TabButton>
+            <TabButton
+              selected={optionSelected === 'technical'}
+              onClick={handleSelectOption('technical')}
+            >
+              {messages.tabs.technicalSupport}
+            </TabButton>
+            <TabButton
+              selected={optionSelected === 'salesman'}
+              onClick={handleSelectOption('salesman')}
+            >
+              {messages.tabs.salesman}
+            </TabButton>
+          </React.Fragment>
+        )}
         <TabButton
           selected={optionSelected === 'client'}
           onClick={handleSelectOption('client')}
@@ -162,33 +192,6 @@ export function Users(props) {
           {messages.tabs.inactive}
         </TabButton>
       </div>
-      {/*
-          <Paper>
-          <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>{messages.table.name}</TableCell>
-              <TableCell align="right">{messages.table.email}</TableCell>
-              <TableCell align="right">{messages.table.username}</TableCell>
-              <TableCell align="right">{messages.table.date}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users.map(user => (
-              <TableRow key={user.id}>
-                <TableCell className="text-capitalize">
-                  {`${user.name} ${user.lastname} ${user.secondLastName}`}
-                </TableCell>
-                <TableCell align="right">{user.email}</TableCell>
-                <TableCell align="right">{user.username}</TableCell>
-                <TableCell align="right">
-                  {moment(user.createdAt).format('LL')}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        </Paper> */}
       <Table
         columns={columns}
         items={items}

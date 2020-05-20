@@ -19,7 +19,7 @@ import 'firebase/messaging';
 import config from 'config';
 import { wsSaveToken, wsLogout, wsGetUserInfo } from 'services/auth';
 import { wsGetNotificationsCount } from 'services/notifications';
-import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
+import { aSetLoadingState } from 'containers/App/actions';
 
 import LayersIcon from '@material-ui/icons/Layers';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -266,7 +266,7 @@ export function MainLayout({ children, history, dispatch }) {
         <SidebarIcon icon="facturas" />
         <SidebarItemText>{messages.menu.invoices}</SidebarItemText>
       </SidebarItem> */}
-      {isAdmin && (
+      {(isAdmin || isClientAdmin) && (
         <SidebarItem
           onClick={handleChangeRoute}
           to="/usuarios"
