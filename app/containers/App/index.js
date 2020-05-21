@@ -30,6 +30,7 @@ import Register from 'containers/Register/Loadable';
 import RecoverPassword from 'containers/RecoverPassword/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import TicketsAdmin from 'containers/TicketsAdmin/Loadable';
+import TicketsReporter from 'containers/TicketsReporter/Loadable';
 import UserProfile from 'containers/UserProfile';
 import Invoices from 'containers/Invoices/Loadable';
 import MainLayout from 'containers/MainLayout';
@@ -111,6 +112,12 @@ function App({ app, dispatch }) {
             path="/tickets"
             layout={MainLayout}
             component={TicketsAdmin}
+          />
+          <AppRoute
+            exact
+            path="/reporteador-tickets"
+            layout={MainLayout}
+            component={TicketsReporter}
           />
           <AppRoute
             exact

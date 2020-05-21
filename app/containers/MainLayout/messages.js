@@ -18,6 +18,10 @@ export default language => {
       es: 'Tickets',
       en: 'Tickets',
     },
+    ticketsReporter: {
+      es: 'Reporteador tickets',
+      en: 'Tickets reporter',
+    },
     invoices: {
       es: 'Facturas',
       en: 'Invoices',
@@ -51,6 +55,7 @@ export default language => {
     menu: {
       dashboard: values.dashboard[language],
       tickets: values.tickets[language],
+      ticketsReporter: values.ticketsReporter[language],
       invoices: values.invoices[language],
       users: values.users[language],
       invitations: values.invitations[language],

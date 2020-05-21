@@ -23,7 +23,6 @@ import ContactIcon from '@material-ui/icons/ContactMail';
 import { Divider } from 'utils/globalStyledComponents';
 import Skeleton from '@material-ui/lab/Skeleton';
 
-// import messages from './messages';
 import { Container, NotificationItem } from './styledComponents';
 
 const getIcon = key => {
@@ -96,7 +95,7 @@ function NotificationsPop({ anchorEl, onClose, onRefreshCount }) {
       <Container>
         <div className="top">
           <span>Notificaciones</span>
-          <Button variant="text">Ver todas</Button>
+          {false && <Button variant="text">Ver todas</Button>}
         </div>
         <div className="content">
           {inited ? (

@@ -242,3 +242,18 @@ export const wsDeleteComment = async id => {
       .catch(err => reject(err));
   });
 };
+
+export const wsGetReport = async body => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    post({
+      url: `/tickets/get-report`,
+      body,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
