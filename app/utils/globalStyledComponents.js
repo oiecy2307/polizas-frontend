@@ -4,6 +4,7 @@ export const Paper = styled.div`
   background-color: #ffffff;
   border-radius: 12px 12px 0 0;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+  overflow: auto;
 `;
 
 export const SpaceBetween = styled.div`

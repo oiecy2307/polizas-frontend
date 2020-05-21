@@ -11,4 +11,6 @@ export const Container = styled.div`
   flex-shrink: 0;
   cursor: ${props => (props.clickable ? 'pointer' : 'default')};
   transition: all 0.25s;
+  white-space: nowrap;
+  flex-grow: 0;
 `;

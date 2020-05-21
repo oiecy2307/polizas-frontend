@@ -10,9 +10,11 @@ import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 import { get } from 'lodash';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { wsGetReport } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
+import { getStatusLabel } from 'utils/helper';
 
 import { Paper } from 'utils/globalStyledComponents';
 import Table from '@material-ui/core/Table';
@@ -23,6 +25,13 @@ import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
 
 import EmptyState from 'components/EmptyState';
+import Label from 'components/Label';
+
+const useStyles = makeStyles({
+  table: {
+    minWidth: 800,
+  },
+});
 
 export function TicketsReporter({ dispatch }) {
   const [items, setItems] = useState([]);
@@ -62,13 +71,14 @@ export function TicketsReporter({ dispatch }) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const classes = useStyles();
   return (
     <div>
       <Paper>
         <Helmet>
           <title>Reporteador de tickets</title>
         </Helmet>
-        <Table>
+        <Table className={classes.table}>
           <TableHead>
             <TableRow>
               <TableCell align="left">Nombre corto</TableCell>
@@ -86,10 +96,18 @@ export function TicketsReporter({ dispatch }) {
                 key={item.id}
               >
                 <TableCell align="left">{item.shortName}</TableCell>
-                <TableCell align="left">{item.status}</TableCell>
-                <TableCell align="left">{item.priority}</TableCell>
+                <TableCell align="left">
+                  {getStatusLabel(item.status, item.paid)}
+                </TableCell>
+                <TableCell align="left">
+                  <div style={{ maxWidth: 110 }}>
+                    <Label option={item.priority} />
+                  </div>
+                </TableCell>
                 <TableCell align="left">{item.reportedDate}</TableCell>
-                <TableCell align="left">{item.company}</TableCell>
+                <TableCell align="left">
+                  {get(item, 'client.company.name', '')}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

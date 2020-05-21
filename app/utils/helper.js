@@ -42,6 +42,19 @@ export const getIsImage = fileName => {
   return type === 'png' || type === 'jpg' || type === 'jpge';
 };
 
+export const getStatusLabel = (status, paid) => {
+  if (status === 'closed' && paid) return 'Pagado';
+  switch (status) {
+    case 'assigned':
+      return 'Asignado';
+    case 'closed':
+      return 'Cerrado';
+    case 'new':
+    default:
+      return 'Nuevo';
+  }
+};
+
 export const mediaQuery = '@media (max-width: 768px)';
 export const mediaQueryS = '@media (max-width: 576px)';
 export const mediaQueryL = '@media (max-width: 1190px)';
@@ -55,37 +68,6 @@ export const minutesToHours = minutes => {
 };
 
 export const toMoneyFormat = number => Numeral(number).format('$0,0.00');
-
-// export const createUrlForSrc = (imgSrc, format, size) => {
-//   const blob = new Blob([imgSrc], { type: getBlobType(format) });
-//   const urlCreator = window.URL || window.webkitURL;
-//   let snackbar = {
-//     open: false,
-//     text: '',
-//   };
-//   if (
-//     format !== 'pdf' &&
-//     format !== 'png' &&
-//     format !== 'jpeg' &&
-//     format !== 'jpg'
-//   ) {
-//     snackbar = {
-//       open: true,
-//       text: 'El formato del archivo no es válido',
-//     };
-//   }
-//   if (size > 5000000) {
-//     snackbar = {
-//       open: true,
-//       text: 'El tamaño del archivo debe ser menor a 5MB',
-//     };
-//   }
-//   const node = {
-//     imageUrl: snackbar.open ? '' : urlCreator.createObjectURL(blob),
-//     snackbar,
-//   };
-//   return node;
-// };
 
 export const textRegex = /^[a-zA-ZáÁéÉíÍóÓúÚñÑ ]+$/;
 
