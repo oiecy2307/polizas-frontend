@@ -25,7 +25,6 @@ const styles = () => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
-    flexBasis: 200,
     width: '100%',
     marginBottom: 32,
   },

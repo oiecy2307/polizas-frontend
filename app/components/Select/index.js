@@ -41,7 +41,7 @@ function SelectStyled(props) {
         styles={{
           control: provided => ({
             ...provided,
-            height: 56,
+            minHeight: 56,
             backgroundColor: 'rgba(0, 0, 0, 0.09)',
             marginBottom: 32,
             border: 'none',
@@ -58,9 +58,17 @@ function SelectStyled(props) {
             ...provided,
             top: '74%',
           }),
+          multiValue: provided => ({
+            ...provided,
+            backgroundColor: 'white',
+          }),
           placeholder: provided => ({
             ...provided,
             color: props.error ? 'rgb(244, 67, 54)' : 'rgba(0, 0, 0, 0.54)',
+          }),
+          valueContainer: provided => ({
+            ...provided,
+            paddingTop: props.isMulti ? 32 : 0,
           }),
         }}
       />
@@ -75,6 +83,7 @@ SelectStyled.propTypes = {
   error: PropTypes.string,
   value: PropTypes.any,
   placeholder: PropTypes.any,
+  isMulti: PropTypes.bool,
 };
 
 export default memo(SelectStyled);

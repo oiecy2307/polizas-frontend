@@ -257,3 +257,17 @@ export const wsGetReport = async body => {
       .catch(err => reject(err));
   });
 };
+
+export const wsGetReportFilters = async () => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    get({
+      url: `/tickets/get-report-filters`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};

@@ -30,7 +30,7 @@ import UserIcon from '@material-ui/icons/GroupOutlined';
 import UserAddIcon from '@material-ui/icons/PersonAddOutlined';
 import CompanyAddIcon from '@material-ui/icons/BusinessOutlined';
 import AssignmentAddIcon from '@material-ui/icons/AssignmentOutlined';
-import Drawer from '@material-ui/core/Drawer';
+import Drawer from '@material-ui/core/SwipeableDrawer';
 import Avatar from 'components/Avatar';
 import NotificationsPop from 'components/NotificationsPop';
 
@@ -353,7 +353,11 @@ export function MainLayout({ children, history, dispatch }) {
         <MobileMenu>
           <MenuIcon onClick={handleChangeMenuState} style={{ ...iconStyle }} />
           <h1>{optionResponsive}</h1>
-          <Drawer open={menuOpen} onClose={toggleDrawer}>
+          <Drawer
+            open={menuOpen}
+            onClose={toggleDrawer}
+            onOpen={() => setMenuOpen(true)}
+          >
             <MenuResponsive>
               <AlignVertical style={{ marginBottom: 24, paddingLeft: 10 }}>
                 <Logo>
