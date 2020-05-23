@@ -9,12 +9,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { wsGetReport, wsGetReportFilters } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
-import { getStatusLabel, getFullName } from 'utils/helper';
+import {
+  getStatusLabel,
+  getFullName,
+  minutesToHours,
+  toMoneyFormat,
+} from 'utils/helper';
 
 import { Paper, Divider, FloatRight } from 'utils/globalStyledComponents';
 import Table from '@material-ui/core/Table';
@@ -27,6 +32,9 @@ import FilterIcon from '@material-ui/icons/FilterListOutlined';
 import Drawer from '@material-ui/core/Drawer';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import Checkbox from '@material-ui/core/Checkbox';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import IconButton from '@material-ui/core/IconButton';
 
 import EmptyState from 'components/EmptyState';
 import Label from 'components/Label';
@@ -36,7 +44,12 @@ import InputText from 'components/InputText';
 import Datepicker from 'components/Datepicker';
 import Button from 'components/Button';
 
-import { DrawerContent, PairInputsRow } from './styledComponents';
+import {
+  DrawerContent,
+  PairInputsRow,
+  TopSection,
+  Content,
+} from './styledComponents';
 
 const useStyles = makeStyles({
   table: {
@@ -74,6 +87,57 @@ const priorityOptions = [
   },
 ];
 
+const orderOptions = [
+  {
+    value: 'companyId',
+    label: 'Empresa',
+  },
+  {
+    value: 'technicalId',
+    label: 'Técnico',
+  },
+  {
+    value: 'status',
+    label: 'Estatus',
+  },
+  {
+    value: 'paid',
+    label: 'Pagado',
+  },
+  {
+    value: 'shortName',
+    label: 'Nombre corto',
+  },
+  {
+    value: 'priority',
+    label: 'Prioridad',
+  },
+  {
+    value: 'reportedDate',
+    label: 'Fecha de creación',
+  },
+  {
+    value: 'finishedDate',
+    label: 'Fecha de terminación',
+  },
+  {
+    value: 'paidDate',
+    label: 'Fecha de pago',
+  },
+  {
+    value: 'timeNeeded',
+    label: 'Tiempo implementado',
+  },
+  {
+    value: 'cost',
+    label: 'Costo registrado',
+  },
+  {
+    value: 'totalPaid',
+    label: 'Total pagado',
+  },
+];
+
 export function TicketsReporter({ dispatch }) {
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(0);
@@ -81,7 +145,8 @@ export function TicketsReporter({ dispatch }) {
   const [count, setCount] = useState(0);
   const [companies, setCompanies] = useState([]);
   const [technicals, setTechnicals] = useState([]);
-  const [filtersOpen, setFiltersOpen] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [filtersActive, setFiltersActive] = useState({
     companies: [],
     technicals: [],
@@ -103,6 +168,24 @@ export function TicketsReporter({ dispatch }) {
     startPaidDate: null,
     endPaidDate: null,
   });
+  const [fieldsActive, setFieldsActive] = useState({
+    shortName: true,
+    statuses: true,
+    priority: true,
+    creationDate: true,
+    companies: true,
+    technicals: false,
+    finishDate: false,
+    paid: false,
+    timeUsed: false,
+    cost: false,
+    totalPaid: false,
+    paidDate: false,
+  });
+  const [temporalFilters, setTemporalFilters] = useState(null);
+  const [activeFieldsOpen, setActiveFieldsOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [filterDesc, setFilterDesc] = useState(true);
 
   useEffect(() => {
     fetchFilters();
@@ -110,7 +193,19 @@ export function TicketsReporter({ dispatch }) {
 
   useEffect(() => {
     fetchTickets();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, selectedOrder, filterDesc]);
+
+  useEffect(() => {
+    const filtersAreEqual = isEqual(filtersActive, temporalFilters);
+    if (!filtersOpen && !initialLoading && !filtersAreEqual) {
+      fetchTickets();
+    }
+    if (filtersOpen) {
+      setTemporalFilters(filtersActive);
+    } else {
+      setTemporalFilters(null);
+    }
+  }, [filtersOpen]);
 
   const fetchFilters = async () => {
     try {
@@ -139,17 +234,30 @@ export function TicketsReporter({ dispatch }) {
       const filter = {
         offset: page * rowsPerPage,
         limit: rowsPerPage,
+        filters: {
+          ...filtersActive,
+          companies: (filtersActive.companies || []).map(c => c.value),
+          technicals: (filtersActive.technicals || []).map(t => t.value),
+          statuses: (filtersActive.statuses || []).map(s => s.value),
+          priority: (filtersActive.priority || []).map(p => p.value),
+        },
+        orderBy: selectedOrder ? selectedOrder.value : 'reportedDate',
+        orientation: filterDesc ? 'DESC' : 'ASC',
       };
       const response = await wsGetReport(filter);
+      if (!response) return;
       const lCount = get(response, 'data.count', 0);
       const lItems = get(response, 'data.rows', []);
       setItems(lItems);
       setCount(lCount);
     } catch (e) {
-      const error = get(e, 'data.message', 'Error al obtener tickets') || '';
+      const error = (
+        get(e, 'data.message', 'Error al obtener tickets') || ''
+      ).toString();
       dispatch(aOpenSnackbar(error, 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
+      setInitialLoading(false);
     }
   };
 
@@ -171,6 +279,13 @@ export function TicketsReporter({ dispatch }) {
     }));
   };
 
+  const handleChangeCheckbox = (field, value) => {
+    setFieldsActive(f => ({
+      ...f,
+      [field]: value,
+    }));
+  };
+
   const companiesOptions = companies.map(c => ({ value: c.id, label: c.name }));
   const technicalsOptions = technicals.map(c => ({
     value: c.id,
@@ -178,7 +293,30 @@ export function TicketsReporter({ dispatch }) {
   }));
   const classes = useStyles();
   return (
-    <div>
+    <Content>
+      <TopSection desc={filterDesc}>
+        <div>
+          <Select
+            placeholder="Ordenar por"
+            value={selectedOrder}
+            onChange={value => setSelectedOrder(value)}
+            options={orderOptions}
+            name="order-select"
+            style={{ flexGrow: 1 }}
+          />
+          <div className="arrow">
+            <IconButton
+              aria-label={filterDesc ? 'Ascendente' : 'Descendente'}
+              onClick={() => setFilterDesc(fd => !fd)}
+            >
+              <ArrowUpwardIcon />
+            </IconButton>
+          </div>
+        </div>
+        <Button onClick={() => setActiveFieldsOpen(true)} variant="outlined">
+          Cambiar campos
+        </Button>
+      </TopSection>
       <Paper>
         <Helmet>
           <title>Reporteador de tickets</title>
@@ -186,11 +324,40 @@ export function TicketsReporter({ dispatch }) {
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell align="left">Nombre corto</TableCell>
-              <TableCell align="left">Estatus</TableCell>
-              <TableCell align="left">Prioridad</TableCell>
-              <TableCell align="left">Fecha de reporte</TableCell>
-              <TableCell align="left">Empresa</TableCell>
+              {fieldsActive.shortName && (
+                <TableCell align="left">Nombre corto</TableCell>
+              )}
+              {fieldsActive.statuses && (
+                <TableCell align="left">Estatus</TableCell>
+              )}
+              {fieldsActive.priority && (
+                <TableCell align="left">Prioridad</TableCell>
+              )}
+              {fieldsActive.creationDate && (
+                <TableCell align="left">Fecha de reporte</TableCell>
+              )}
+              {fieldsActive.companies && (
+                <TableCell align="left">Empresa</TableCell>
+              )}
+              {fieldsActive.technicals && (
+                <TableCell aling="left">Técnicos</TableCell>
+              )}
+              {fieldsActive.finishDate && (
+                <TableCell aling="left">Fecha de terminación</TableCell>
+              )}
+              {fieldsActive.paid && <TableCell aling="left">Pagado</TableCell>}
+              {fieldsActive.timeUsed && (
+                <TableCell aling="left">Tiempo implementado</TableCell>
+              )}
+              {fieldsActive.cost && (
+                <TableCell aling="left">Costo reportado</TableCell>
+              )}
+              {fieldsActive.totalPaid && (
+                <TableCell aling="left">Total pagado</TableCell>
+              )}
+              {fieldsActive.paidDate && (
+                <TableCell aling="left">Fecha de pago</TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -200,19 +367,58 @@ export function TicketsReporter({ dispatch }) {
                 onClick={() => handleClickRow(item)}
                 key={item.id}
               >
-                <TableCell align="left">{item.shortName}</TableCell>
-                <TableCell align="left">
-                  {getStatusLabel(item.status, item.paid)}
-                </TableCell>
-                <TableCell align="left">
-                  <div style={{ maxWidth: 110 }}>
-                    <Label option={item.priority} />
-                  </div>
-                </TableCell>
-                <TableCell align="left">{item.reportedDate}</TableCell>
-                <TableCell align="left">
-                  {get(item, 'client.company.name', '')}
-                </TableCell>
+                {fieldsActive.shortName && (
+                  <TableCell align="left">{item.shortName}</TableCell>
+                )}
+                {fieldsActive.statuses && (
+                  <TableCell align="left">
+                    {getStatusLabel(item.status, item.paid)}
+                  </TableCell>
+                )}
+                {fieldsActive.priority && (
+                  <TableCell align="left">
+                    <div style={{ maxWidth: 110 }}>
+                      <Label option={item.priority} />
+                    </div>
+                  </TableCell>
+                )}
+                {fieldsActive.creationDate && (
+                  <TableCell align="left">{item.reportedDate}</TableCell>
+                )}
+                {fieldsActive.companies && (
+                  <TableCell align="left">
+                    {get(item, 'client.company.name', '')}
+                  </TableCell>
+                )}
+                {fieldsActive.technicals && (
+                  <TableCell align="left">
+                    {getFullName(get(item, 'technical', ''))}
+                  </TableCell>
+                )}
+                {fieldsActive.finishDate && (
+                  <TableCell align="left">{item.finishedDate || ''}</TableCell>
+                )}
+                {fieldsActive.paid && (
+                  <TableCell align="left">{item.paid ? 'Sí' : 'No'}</TableCell>
+                )}
+                {fieldsActive.timeUsed && (
+                  <TableCell align="left">
+                    {minutesToHours(item.timeNeeded || 0)}
+                  </TableCell>
+                )}
+                {fieldsActive.cost && (
+                  <TableCell align="left">
+                    {toMoneyFormat(item.cost || 0)}
+                  </TableCell>
+                )}
+                {fieldsActive.totalPaid && (
+                  <TableCell align="left">
+                    {toMoneyFormat(item.totalPaid || 0)}
+                  </TableCell>
+                )}
+                {fieldsActive.paidDate && (
+                  <TableCell align="left">{item.paidDate || ''}</TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>
@@ -418,8 +624,169 @@ export function TicketsReporter({ dispatch }) {
           </FloatRight>
         </DrawerContent>
       </Drawer>
+      <Drawer
+        open={activeFieldsOpen}
+        onClose={() => setActiveFieldsOpen(false)}
+        anchor="right"
+      >
+        <DrawerContent>
+          <h2>Campos visibles</h2>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.shortName}
+                onChange={e =>
+                  handleChangeCheckbox('shortName', e.target.checked)
+                }
+                name="shortName"
+                color="primary"
+              />
+            }
+            label="Nombre corto"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.statuses}
+                onChange={e =>
+                  handleChangeCheckbox('statuses', e.target.checked)
+                }
+                name="statuses"
+                color="primary"
+              />
+            }
+            label="Estatus"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.priority}
+                onChange={e =>
+                  handleChangeCheckbox('priority', e.target.checked)
+                }
+                name="priority"
+                color="primary"
+              />
+            }
+            label="Prioridad"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.creationDate}
+                onChange={e =>
+                  handleChangeCheckbox('creationDate', e.target.checked)
+                }
+                name="creationDate"
+                color="primary"
+              />
+            }
+            label="Fecha de reporte"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.companies}
+                onChange={e =>
+                  handleChangeCheckbox('companies', e.target.checked)
+                }
+                name="companies"
+                color="primary"
+              />
+            }
+            label="Empresa"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.technicals}
+                onChange={e =>
+                  handleChangeCheckbox('technicals', e.target.checked)
+                }
+                name="technicals"
+                color="primary"
+              />
+            }
+            label="Técnicos"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.finishDate}
+                onChange={e =>
+                  handleChangeCheckbox('finishDate', e.target.checked)
+                }
+                name="finishDate"
+                color="primary"
+              />
+            }
+            label="Fecha de terminación"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.paid}
+                onChange={e => handleChangeCheckbox('paid', e.target.checked)}
+                name="paid"
+                color="primary"
+              />
+            }
+            label="Pagado"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.timeUsed}
+                onChange={e =>
+                  handleChangeCheckbox('timeUsed', e.target.checked)
+                }
+                name="timeUsed"
+                color="primary"
+              />
+            }
+            label="Tiempo implementado"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.cost}
+                onChange={e => handleChangeCheckbox('cost', e.target.checked)}
+                name="cost"
+                color="primary"
+              />
+            }
+            label="Costo reportado"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.totalPaid}
+                onChange={e =>
+                  handleChangeCheckbox('totalPaid', e.target.checked)
+                }
+                name="totalPaid"
+                color="primary"
+              />
+            }
+            label="Total pagado"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.paidDate}
+                onChange={e =>
+                  handleChangeCheckbox('paidDate', e.target.checked)
+                }
+                name="paidDate"
+                color="primary"
+              />
+            }
+            label="Fecha de pago"
+          />
+        </DrawerContent>
+      </Drawer>
       {!items.length && <EmptyState text="No se encontraron tickets" />}
-    </div>
+    </Content>
   );
 }
 
