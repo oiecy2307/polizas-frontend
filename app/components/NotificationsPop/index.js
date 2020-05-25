@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import { get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import history from 'utils/history';
+import { makeStyles } from '@material-ui/core/styles';
 
 import {
   wsGetNotifications,
@@ -35,6 +36,12 @@ const getIcon = key => {
       return <LayersIcon />;
   }
 };
+
+const useStyles = makeStyles(() => ({
+  root: {
+    maxHeight: '80vh',
+  },
+}));
 
 function NotificationsPop({ anchorEl, onClose, onRefreshCount }) {
   const [notifications, setNotifications] = useState([]);
@@ -76,6 +83,7 @@ function NotificationsPop({ anchorEl, onClose, onRefreshCount }) {
 
   const open = Boolean(anchorEl);
   const id = 'notifications-pop';
+  const classes = useStyles();
 
   return (
     <Popover
@@ -91,6 +99,7 @@ function NotificationsPop({ anchorEl, onClose, onRefreshCount }) {
         vertical: 'top',
         horizontal: 'center',
       }}
+      className={classes.root}
     >
       <Container>
         <div className="top">

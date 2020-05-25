@@ -245,13 +245,14 @@ export function MainLayout({ children, history, dispatch }) {
 
   const menu = (
     <React.Fragment>
-      {/* <SidebarItem
-        onClick={handleChangeRoute('/')}
+      <SidebarItem
+        onClick={handleChangeRoute}
+        to="/"
         selected={optionSelected === '/'}
       >
         <SidebarIcon icon="dashboard" />
         <SidebarItemText>{messages.menu.dashboard}</SidebarItemText>
-      </SidebarItem> */}
+      </SidebarItem>
       <SidebarItem
         onClick={handleChangeRoute}
         to="/tickets"

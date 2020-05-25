@@ -36,7 +36,6 @@ function SelectStyled(props) {
   return (
     <SelectContainer>
       <Select
-        {...props}
         noOptionsMessage={() => <span>Sin resultados</span>}
         styles={{
           control: provided => ({
@@ -71,6 +70,7 @@ function SelectStyled(props) {
             paddingTop: props.isMulti ? 32 : 0,
           }),
         }}
+        {...props}
       />
       {props.value && <FloatingLabel>{props.placeholder}</FloatingLabel>}
       {props.error && <Error>{props.error}</Error>}

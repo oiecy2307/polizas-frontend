@@ -120,13 +120,9 @@ function CreateEditTicket({
     ticketTitle: get(ticketToEdit, 'shortName', ''),
     ticketDescription: get(ticketToEdit, 'description', ''),
     ticketPriority: get(ticketToEdit, 'priority', ''),
-    // reporterId: '',
     technicalId: get(ticketToEdit, 'technicalId', ''),
     clientId: get(ticketToEdit, 'clientId', ''),
-    dueDate: moment(
-      get(ticketToEdit, 'dueDate', 'new Date()'),
-      'DD-MM-YYYY',
-    ).format(),
+    dueDate: null,
     evidence: [],
   };
 
@@ -148,6 +144,7 @@ function CreateEditTicket({
       then: Yup.date().required(messages.required),
       otherwise: Yup.date()
         .required(messages.required)
+        .typeError(messages.required)
         .min(
           moment(new Date(), 'DD-MM-YYYY')
             .add(-1, 'days')

@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   width: 378px;
-  // width: 478px;
   max-width: 100%;
 
   & .top {
@@ -15,7 +14,6 @@ export const Container = styled.div`
   }
 
   & .content {
-    max-height: 592px;
     overflow: auto;
   }
 `;

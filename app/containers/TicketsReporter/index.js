@@ -35,6 +35,10 @@ import Switch from '@material-ui/core/Switch';
 import Checkbox from '@material-ui/core/Checkbox';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import IconButton from '@material-ui/core/IconButton';
+import FormControl from '@material-ui/core/FormControl';
+import SelectMU from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import EmptyState from 'components/EmptyState';
 import Label from 'components/Label';
@@ -184,7 +188,7 @@ export function TicketsReporter({ dispatch }) {
   });
   const [temporalFilters, setTemporalFilters] = useState(null);
   const [activeFieldsOpen, setActiveFieldsOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState('reportedDate');
   const [filterDesc, setFilterDesc] = useState(true);
 
   useEffect(() => {
@@ -241,7 +245,7 @@ export function TicketsReporter({ dispatch }) {
           statuses: (filtersActive.statuses || []).map(s => s.value),
           priority: (filtersActive.priority || []).map(p => p.value),
         },
-        orderBy: selectedOrder ? selectedOrder.value : 'reportedDate',
+        orderBy: selectedOrder || 'reportedDate',
         orientation: filterDesc ? 'DESC' : 'ASC',
       };
       const response = await wsGetReport(filter);
@@ -295,15 +299,21 @@ export function TicketsReporter({ dispatch }) {
   return (
     <Content>
       <TopSection desc={filterDesc}>
-        <div>
-          <Select
-            placeholder="Ordenar por"
-            value={selectedOrder}
-            onChange={value => setSelectedOrder(value)}
-            options={orderOptions}
-            name="order-select"
-            style={{ flexGrow: 1 }}
-          />
+        <div className="select-container">
+          <FormControl variant="outlined">
+            <InputLabel id="select-label">Ordenar por</InputLabel>
+            <SelectMU
+              labelId="select-label"
+              id="select-outlined"
+              value={selectedOrder}
+              onChange={e => setSelectedOrder(e.target.value)}
+              label="Ordenar por"
+            >
+              {orderOptions.map(oo => (
+                <MenuItem value={oo.value}>{oo.label}</MenuItem>
+              ))}
+            </SelectMU>
+          </FormControl>
           <div className="arrow">
             <IconButton
               aria-label={filterDesc ? 'Ascendente' : 'Descendente'}

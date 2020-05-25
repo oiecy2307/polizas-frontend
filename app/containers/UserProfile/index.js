@@ -12,7 +12,7 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { get, times } from 'lodash';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
-import { getFullName } from 'utils/helper';
+import { getFullName, getIsImage } from 'utils/helper';
 import moment from 'moment/min/moment-with-locales';
 import { LoggedUser } from 'contexts/logged-user';
 
@@ -87,6 +87,13 @@ export function UserProfile({ match, dispatch }) {
       }
       if (!files.length) return;
       const file = files[0];
+      const isImage = getIsImage(file.name);
+      if (!isImage) {
+        dispatch(
+          aOpenSnackbar('Solo se aceptan formatos PNG, JPG y JPGE', 'error'),
+        );
+        return;
+      }
       dispatch(aSetLoadingState(true));
       const response = await wsUploadImagePicture(file);
       if (response.error) {

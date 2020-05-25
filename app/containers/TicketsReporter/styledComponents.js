@@ -5,7 +5,7 @@ export const Content = styled.div`
   padding-bottom: 64px;
 
   & th {
-    min-width: 200px;
+    min-width: 160px;
   }
 `;
 
@@ -39,18 +39,15 @@ export const TopSection = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  & > div {
-    width: 240px;
+  & .select-container {
+    width: 260px;
     display: flex;
     align-items: center;
+    position: relative;
   }
 
-  & > div > div:first-child {
+  & .select-container > div:first-child {
     flex-grow: 1;
-  }
-
-  & > div > div > div > div {
-    margin: 0;
   }
 
   & .arrow {
@@ -58,12 +55,14 @@ export const TopSection = styled.div`
     width: 48px;
     transition: all 0.25s;
     margin-left: 8px;
+    position: absolute;
+    right: 32px;
   }
 
   ${mediaQueryS} {
     flex-direction: column;
 
-    & > div {
+    & > .select-container {
       width: 100%;
       margin-bottom: 16px;
     }
