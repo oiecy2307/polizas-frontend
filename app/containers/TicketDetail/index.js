@@ -53,6 +53,7 @@ import {
   Body,
   Div,
   Canceled,
+  MainContainer,
 } from './styledComponents';
 
 moment.locale('es');
@@ -350,7 +351,7 @@ export function TicketDetail({ dispatch, match }) {
     ticket.status !== 'new' && ticket.status !== 'assigned';
 
   return (
-    <React.Fragment>
+    <MainContainer>
       <Helmet>
         <title>{shortName || 'Detalle ticket'}</title>
         <meta name="description" content="Description of TicketDetail" />
@@ -552,7 +553,7 @@ export function TicketDetail({ dispatch, match }) {
           </FloatRight>
         </Body>
       </Container>
-    </React.Fragment>
+    </MainContainer>
   );
 }
 

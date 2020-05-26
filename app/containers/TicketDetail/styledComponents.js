@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+export const MainContainer = styled.div`
+  padding-bottom: 48px;
+`;
+
 export const Container = styled.div`
   margin: 0 auto;
   width: 100%;

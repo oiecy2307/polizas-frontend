@@ -55,6 +55,22 @@ export const getStatusLabel = (status, paid) => {
   }
 };
 
+export const getRoleLabel = role => {
+  switch (role) {
+    case 'admin':
+      return 'Administrador';
+    case 'technical':
+      return 'Técnico';
+    case 'client':
+      return 'Cliente';
+    case 'inactive':
+      return 'Inactivo';
+    case 'salesman':
+    default:
+      return 'Ventas';
+  }
+};
+
 export const mediaQuery = '@media (max-width: 768px)';
 export const mediaQueryS = '@media (max-width: 576px)';
 export const mediaQueryL = '@media (max-width: 1190px)';

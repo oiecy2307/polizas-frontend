@@ -108,7 +108,6 @@ export const MobileMenu = styled.div`
     display: flex;
   }
   & h1 {
-    text-transform: capitalize;
     margin: 0;
     margin-left: 16px;
   }

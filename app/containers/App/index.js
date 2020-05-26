@@ -111,54 +111,63 @@ function App({ app, dispatch }) {
             exact
             path="/tickets"
             layout={MainLayout}
+            responsiveTitle="Tickets"
             component={TicketsAdmin}
           />
           <AppRoute
             exact
             path="/reporteador-tickets"
             layout={MainLayout}
+            responsiveTitle="Reporteador de tickets"
             component={TicketsReporter}
           />
           <AppRoute
             exact
             path="/facturas"
             layout={MainLayout}
+            responsiveTitle="Facturas"
             component={Invoices}
           />
           <AppRoute
             exact
             path="/usuarios"
             layout={MainLayout}
+            responsiveTitle="Usuarios"
             component={Users}
           />
           <AppRoute
             exact
             path="/"
             layout={MainLayout}
+            responsiveTitle="Dashboard"
             component={DashboardBackoffice}
           />
           <AppRoute
             exact
             path="/perfil/:id"
             layout={MainLayout}
+            responsiveTitle="Perfil"
             component={UserProfile}
           />
           <AppRoute
             exact
             path="/tickets/:id"
             layout={MainLayout}
+            responsiveTitle="Detalle de ticket"
             component={TicketDetail}
           />
           <AppRoute
             exact
             path="/invitaciones"
             layout={MainLayout}
+            responsiveTitle="Invitaciones"
             component={Invitations}
           />
           <AppRoute
             exact
             path="/empresas"
             layout={MainLayout}
+            responsiveTitle="Empresas"
             component={Companies}
           />
           <Route exact path="/inicio-sesion" component={HomePage} />

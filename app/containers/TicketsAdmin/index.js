@@ -59,7 +59,6 @@ export function TicketsAdmin({ dispatch }) {
   const [selectedDate, setSelectedDate] = useState(
     moment(new Date(), 'DD-MM-YYYY').format(),
   );
-  // const [lastDatesSearch, setLastDatesSearch] = useState('');
   const [debtDates, setDebtDates] = useState([]);
   const [onTimeDates, setOnTimeDates] = useState([]);
   const [idTechnical, setIdTechnical] = useState(null);
@@ -140,8 +139,6 @@ export function TicketsAdmin({ dispatch }) {
       const momentDate = moment(date);
       const month = momentDate.month() + 1;
       const year = momentDate.year();
-      // const monthYearString = `${month}-${year}`;
-      // if (monthYearString === lastDatesSearch) return;
       let rDatesWTickets = null;
       if (isClient) {
         rDatesWTickets = await wsGetDatesWithTickets(
@@ -160,7 +157,6 @@ export function TicketsAdmin({ dispatch }) {
       if (rDatesWTickets.error) return;
       setDebtDates(get(rDatesWTickets, 'data.onDebt', []));
       setOnTimeDates(get(rDatesWTickets, 'data.onTime', []));
-      // setLastDatesSearch(monthYearString);
     } catch (e) {
       // ERROR HANDLER
     }
@@ -173,6 +169,7 @@ export function TicketsAdmin({ dispatch }) {
   const handleCallback = () => {
     setDialogOpen(false);
     fetchTickets(optionSelected, selectedDate);
+    fetchTicketsBrief(optionSelected, selectedDate);
     fetchDatesWithTickets(selectedDateMonth);
   };
 

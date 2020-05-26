@@ -66,7 +66,13 @@ const iconStyle = {
   cursor: 'pointer',
 };
 
-export function MainLayout({ children, history, dispatch }) {
+export function MainLayout({
+  children,
+  history,
+  dispatch,
+  responsiveTitle,
+  mainLayout,
+}) {
   useInjectReducer({ key: 'mainLayout', reducer });
   useInjectSaga({ key: 'mainLayout', saga });
   const { language } = useContext(GlobalValuesContext);
@@ -78,12 +84,15 @@ export function MainLayout({ children, history, dispatch }) {
   const [notificationsCount, setNotificationsCount] = useState(0);
 
   useEffect(() => {
-    fetchUserInfo();
     window.addEventListener('focus', onFocus);
     return () => {
       window.removeEventListener('focus', onFocus);
     };
   }, []);
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, [mainLayout.reloadUserInfo]);
 
   const onFocus = () => {
     fetchNotificationsCount();
@@ -185,14 +194,6 @@ export function MainLayout({ children, history, dispatch }) {
   }
 
   const optionSelected = children.props.location.pathname;
-  const optionResponsive = (() => {
-    switch (optionSelected) {
-      case '/':
-        return 'Dashboard';
-      default:
-        return optionSelected.replace('/', '');
-    }
-  })();
 
   const handleChangeRoute = () => {
     setMenuOpen(false);
@@ -353,7 +354,7 @@ export function MainLayout({ children, history, dispatch }) {
         </TopBarContainer>
         <MobileMenu>
           <MenuIcon onClick={handleChangeMenuState} style={{ ...iconStyle }} />
-          <h1>{optionResponsive}</h1>
+          <h1>{responsiveTitle}</h1>
           <Drawer
             open={menuOpen}
             onClose={toggleDrawer}
@@ -388,6 +389,8 @@ MainLayout.propTypes = {
   dispatch: PropTypes.func,
   children: PropTypes.element,
   history: PropTypes.object.isRequired,
+  responsiveTitle: PropTypes.string.isRequired,
+  mainLayout: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({

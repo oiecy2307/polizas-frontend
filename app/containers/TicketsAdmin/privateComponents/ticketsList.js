@@ -74,14 +74,14 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
     ? `Hoy (${moment(date).format('LL')})`
     : formatedDate;
 
-  const getButtonText = status => {
+  const getButtonText = (status, paid) => {
     switch (status) {
       case 'new':
         return 'Asignar ticket';
       case 'assigned':
         return 'Cerrar ticket';
       case 'closed':
-        return 'Pagar ticket';
+        return paid ? 'Modificar pago' : 'Pagar ticket';
       default:
         return 'Asignar ticket';
     }
@@ -203,7 +203,7 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
                   </div>
                   {!isClient && ticket.status !== 'cancelled' && (
                     <Button onClick={() => handleButtonClicked(ticket)}>
-                      {getButtonText(ticket.status)}
+                      {getButtonText(ticket.status, ticket.paid)}
                     </Button>
                   )}
                 </SpaceBetween>
@@ -230,6 +230,9 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
         onClose={handleClose}
         dispatch={dispatch}
         id={get(ticketSelected, 'id', '').toString()}
+        defaultTicket={
+          ticketSelected && ticketSelected.paid ? ticketSelected : null
+        }
       />
     </div>
   );

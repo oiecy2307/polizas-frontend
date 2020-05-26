@@ -66,6 +66,8 @@ function PayTicketDialog({ open, onClose, dispatch, id, defaultTicket }) {
     invoice: Yup.string(),
   });
 
+  if (!open) return <div />;
+
   return (
     <Formik
       onSubmit={(values, actions) => {

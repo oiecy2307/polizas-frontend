@@ -12,11 +12,12 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { get, times } from 'lodash';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
-import { getFullName, getIsImage } from 'utils/helper';
+import { getFullName, getIsImage, getRoleLabel } from 'utils/helper';
 import moment from 'moment/min/moment-with-locales';
 import { LoggedUser } from 'contexts/logged-user';
 
 import { wsGetUserProfile, wsUploadImagePicture } from 'services/profile';
+import { aReloadUserInfo } from 'containers/MainLayout/actions';
 
 import Avatar from 'components/Avatar';
 import Button from 'components/Button';
@@ -103,6 +104,7 @@ export function UserProfile({ match, dispatch }) {
       } else {
         dispatch(aOpenSnackbar('Foto guarda con éxito', 'success'));
         fetchUserProfile();
+        dispatch(aReloadUserInfo());
       }
     } catch (e) {
       dispatch(aOpenSnackbar('No se pudo guardar la foto de perfil', 'error'));
@@ -216,7 +218,7 @@ export function UserProfile({ match, dispatch }) {
         {role && (
           <React.Fragment>
             <h5>Rol</h5>
-            <div>{role}</div>
+            <div>{getRoleLabel(role)}</div>
           </React.Fragment>
         )}
         {createdAt && (
