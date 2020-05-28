@@ -50,8 +50,10 @@ export const getStatusLabel = (status, paid) => {
     case 'closed':
       return 'Cerrado';
     case 'new':
-    default:
       return 'Nuevo';
+    case 'cancelled':
+    default:
+      return 'Cancelado';
   }
 };
 

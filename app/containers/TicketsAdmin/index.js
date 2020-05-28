@@ -95,6 +95,7 @@ export function TicketsAdmin({ dispatch }) {
     }
     fetchTickets(optionSelected, selectedDate);
     fetchDatesWithTickets(selectedDateMonth);
+    fetchTicketsBrief(optionSelected, selectedDate);
   }, [idTechnical]);
 
   async function fetchTicketsBrief(status, date) {
