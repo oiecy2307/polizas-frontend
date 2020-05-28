@@ -38,6 +38,10 @@ export default language => {
       es: 'Empresas',
       en: 'Companies',
     },
+    products: {
+      es: 'Productos',
+      en: 'Products',
+    },
     profile: {
       es: 'Mi perfil',
       en: 'My profile',
@@ -60,6 +64,7 @@ export default language => {
       users: values.users[language],
       invitations: values.invitations[language],
       companies: values.companies[language],
+      products: values.products[language],
       profile: values.profile[language],
       logout: values.logout[language],
     },

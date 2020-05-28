@@ -1,0 +1,125 @@
+/**
+ *
+ * CreateEditProduct
+ *
+ */
+
+import React, { memo, useState, useContext } from 'react';
+import PropTypes from 'prop-types';
+import { GlobalValuesContext } from 'contexts/global-values';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import { get } from 'lodash';
+
+import { wsCreateProduct, wsUpdateProduct } from 'services/products';
+import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
+
+import Dialog from 'components/Dialog';
+import Form from './form';
+
+import getMessages from './messages';
+
+function CreateEditProduct({
+  open,
+  onClose,
+  callback,
+  dispatch,
+  defaultProduct,
+}) {
+  const { language } = useContext(GlobalValuesContext);
+  const [messages] = useState(getMessages(language));
+  const isEditing = Boolean(defaultProduct);
+
+  async function handleCreateProduct(values, { resetForm, setSubmitting }) {
+    try {
+      dispatch(aSetLoadingState(true));
+
+      if (isEditing) {
+        const body = {
+          id: defaultProduct.id,
+          ...values,
+        };
+        await wsUpdateProduct(body);
+      } else {
+        const body = {
+          ...values,
+        };
+        await wsCreateProduct(body);
+      }
+
+      dispatch(aOpenSnackbar('Producto creado con éxito', 'success'));
+      callback();
+      onClose();
+      resetForm();
+      setSubmitting(false);
+    } catch (e) {
+      const errorMessage = get(e, 'data.message', 'Error al crear producto');
+      dispatch(aOpenSnackbar(errorMessage, 'error'));
+    } finally {
+      dispatch(aSetLoadingState(false));
+    }
+  }
+
+  const defaultValues = {
+    name: get(defaultProduct, 'name', ''),
+    description: get(defaultProduct, 'description', ''),
+    actualVersion: get(defaultProduct, 'actualVersion', ''),
+  };
+
+  const validationSchema = Yup.object({
+    name: Yup.string('Nombre')
+      .required('Campo requerido')
+      .max(150, 'Texto demasiado largo'),
+    description: Yup.string('Dirección')
+      .notRequired('')
+      .max(250, 'Texto demasiado largo'),
+    actualVersion: Yup.string('Versión')
+      .required('Campo requerido')
+      .max(150, 'Texto demasiado largo'),
+  });
+
+  const dialogTitle = isEditing ? 'Editar producto' : 'Nueva producto';
+
+  if (!open) return <div style={{ display: 'none ' }} />;
+
+  return (
+    <Formik
+      onSubmit={(values, actions) => {
+        handleCreateProduct(values, actions);
+      }}
+      validationSchema={validationSchema}
+      initialValues={defaultValues}
+      render={p => (
+        <Dialog
+          onClose={() => {
+            onClose();
+            p.handleReset();
+          }}
+          title={dialogTitle}
+          open={open}
+          withActions
+          negativeAction={messages.actions.cancel}
+          positiveAction={messages.actions.save}
+          onNegativeAction={() => {
+            onClose();
+            p.handleReset();
+          }}
+          onPositiveAction={() => p.handleSubmit(p.values)}
+          disabled={!p.isValid || p.isSubmitting}
+        >
+          <Form {...p} disabled={false} />
+        </Dialog>
+      )}
+    />
+  );
+}
+
+CreateEditProduct.propTypes = {
+  open: PropTypes.bool,
+  onClose: PropTypes.func,
+  callback: PropTypes.func,
+  dispatch: PropTypes.func,
+  defaultProduct: PropTypes.object,
+};
+
+export default memo(CreateEditProduct);

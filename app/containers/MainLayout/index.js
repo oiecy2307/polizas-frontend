@@ -30,6 +30,8 @@ import UserIcon from '@material-ui/icons/GroupOutlined';
 import UserAddIcon from '@material-ui/icons/PersonAddOutlined';
 import CompanyAddIcon from '@material-ui/icons/BusinessOutlined';
 import AssignmentAddIcon from '@material-ui/icons/AssignmentOutlined';
+import ProductsIcon from '@material-ui/icons/CategoryOutlined';
+
 import Drawer from '@material-ui/core/SwipeableDrawer';
 import Avatar from 'components/Avatar';
 import NotificationsPop from 'components/NotificationsPop';
@@ -307,6 +309,16 @@ export function MainLayout({
         >
           <CompanyAddIcon />
           <SidebarItemText>{messages.menu.companies}</SidebarItemText>
+        </SidebarItem>
+      )}
+      {isAdmin && (
+        <SidebarItem
+          onClick={handleChangeRoute}
+          to="/productos"
+          selected={optionSelected === '/productos'}
+        >
+          <ProductsIcon />
+          <SidebarItemText>{messages.menu.products}</SidebarItemText>
         </SidebarItem>
       )}
       <SidebarItem
