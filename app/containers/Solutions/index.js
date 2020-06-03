@@ -1,6 +1,6 @@
 /**
  *
- * Products
+ * Solutions
  *
  */
 
@@ -15,50 +15,50 @@ import moment from 'moment/min/moment-with-locales';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
-import { wsGetProducts } from 'services/products';
+import { wsGetSolutions } from 'services/solutions';
+import { wsGetProductsBrief } from 'services/products';
+
 import Table from 'components/Table';
 import EmptyState from 'components/EmptyState';
-import CreateEditProduct from 'components/CreateEditProduct';
+import CreateEditSolution from 'components/CreateEditSolution';
 import Fab from 'components/Fab';
 
 const columns = [
   {
-    key: 'name',
+    key: 'shortName',
     label: 'Nombre',
   },
   {
-    key: 'description',
-    label: 'Descripción',
-  },
-  {
-    key: 'actualVersion',
-    label: 'Versión actual',
+    key: 'products',
+    label: 'Productos relacionados',
   },
   {
     key: 'createdAt',
-    label: 'Creada',
+    label: 'Creado',
   },
 ];
 
-export function Products({ dispatch }) {
+export function Solutions({ dispatch }) {
+  const [solutions, setSolutions] = useState([]);
   const [products, setProducts] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
-  const [newProductOpen, setNewProductOpen] = useState(false);
-  const [productToEdit, setProductToEdit] = useState(null);
+  const [newSolutionOpen, setNewSolutionOpen] = useState(false);
+  const [solutionToEdit, setSolutionToEdit] = useState(null);
 
   useEffect(() => {
+    fetchSolutions();
     fetchProducts();
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchSolutions = async () => {
     try {
       dispatch(aSetLoadingState(true));
-      const response = await wsGetProducts();
-      const lProducts = get(response, 'data.rows', []);
-      setProducts(lProducts);
+      const response = await wsGetSolutions();
+      const lSolutions = get(response, 'data.rows', []);
+      setSolutions(lSolutions);
       setInitialLoading(false);
     } catch (e) {
-      const defaultError = 'Error al obtener productos';
+      const defaultError = 'Error al obtener soluciones';
       const error = get(e, 'data.message', defaultError) || defaultError;
       dispatch(aOpenSnackbar(error, 'error'));
     } finally {
@@ -66,39 +66,56 @@ export function Products({ dispatch }) {
     }
   };
 
-  const handleUpdateProduct = product => {
-    setProductToEdit(product.originalItem);
-    setNewProductOpen(true);
+  const fetchProducts = async () => {
+    try {
+      const response = await wsGetProductsBrief();
+      const lProducts = get(response, 'data', []);
+      setProducts(lProducts);
+    } catch (e) {
+      // ERROR HANDLER
+    }
   };
 
-  // const handleDeleteProduct = product => product;
+  const handleUpdateSolution = solution => {
+    setSolutionToEdit(solution.originalItem);
+    setNewSolutionOpen(true);
+  };
+
+  // const handleDeleteSolution = solution => solution;
 
   const optionsMenu = [
     {
       option: 'Editar',
-      action: handleUpdateProduct,
+      action: handleUpdateSolution,
     },
     // {
     //   option: 'Eliminar',
-    //   action: handleDeleteProduct,
+    //   action: handleDeleteSolution,
     // },
   ];
 
-  const handleCloseDialogProduct = () => {
-    setNewProductOpen(false);
+  const handleCloseDialogSolution = () => {
+    setNewSolutionOpen(false);
   };
 
-  const items = products.map(p => ({
-    ...p,
-    createdAt: moment(p.createdAt).format('LL'),
-    originalItem: p,
+  const items = solutions.map(s => ({
+    ...s,
+    createdAt: moment(s.createdAt).format('LL'),
+    originalItem: s,
+    products: (
+      <ul>
+        {s.products.map(p => (
+          <li>{`${p.name} (${p.solutionProduct.version})`}</li>
+        ))}
+      </ul>
+    ),
   }));
 
   if (initialLoading) {
     return (
       <div>
         <Helmet>
-          <title>Productos</title>
+          <title>Soluciones</title>
         </Helmet>
         {times(10, i => (
           <React.Fragment key={i}>
@@ -118,7 +135,7 @@ export function Products({ dispatch }) {
   return (
     <div>
       <Helmet>
-        <title>Productos</title>
+        <title>Soluciones</title>
       </Helmet>
       <Table
         columns={columns}
@@ -128,20 +145,21 @@ export function Products({ dispatch }) {
         isClickable={false}
         showPagination={false}
       />
-      {!products.length && <EmptyState />}
-      <CreateEditProduct
-        open={newProductOpen}
-        onClose={handleCloseDialogProduct}
-        callback={fetchProducts}
+      {!solutions.length && <EmptyState />}
+      <CreateEditSolution
+        open={newSolutionOpen}
+        onClose={handleCloseDialogSolution}
+        callback={fetchSolutions}
         dispatch={dispatch}
-        defaultProduct={productToEdit}
+        defaultSolution={solutionToEdit}
+        products={products}
       />
-      <Fab onClick={() => setNewProductOpen(true)} />
+      <Fab onClick={() => setNewSolutionOpen(true)} />
     </div>
   );
 }
 
-Products.propTypes = {
+Solutions.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
@@ -159,4 +177,4 @@ const withConnect = connect(
 export default compose(
   withConnect,
   memo,
-)(Products);
+)(Solutions);

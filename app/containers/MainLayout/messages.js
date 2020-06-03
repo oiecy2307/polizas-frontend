@@ -42,6 +42,10 @@ export default language => {
       es: 'Productos',
       en: 'Products',
     },
+    solutions: {
+      es: 'Soluciones',
+      en: 'Solutions',
+    },
     profile: {
       es: 'Mi perfil',
       en: 'My profile',
@@ -65,6 +69,7 @@ export default language => {
       invitations: values.invitations[language],
       companies: values.companies[language],
       products: values.products[language],
+      solutions: values.solutions[language],
       profile: values.profile[language],
       logout: values.logout[language],
     },

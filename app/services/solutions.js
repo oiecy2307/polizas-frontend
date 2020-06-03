@@ -1,10 +1,10 @@
 import { get, getToken, patch, post } from 'utils/http';
 
-export const wsGetProducts = async () => {
+export const wsGetSolutions = async () => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
     get({
-      url: `/products`,
+      url: `/solutions`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -14,25 +14,11 @@ export const wsGetProducts = async () => {
   });
 };
 
-export const wsGetProductsBrief = async () => {
-  const token = await getToken();
-  return new Promise((resolve, reject) => {
-    get({
-      url: `/products/brief`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(response => resolve(response))
-      .catch(err => reject(err));
-  });
-};
-
-export const wsCreateProduct = async body => {
+export const wsCreateSolution = async body => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
     post({
-      url: `/products`,
+      url: `/solutions`,
       body,
       headers: {
         Authorization: `Bearer ${token}`,
@@ -43,11 +29,11 @@ export const wsCreateProduct = async body => {
   });
 };
 
-export const wsUpdateProduct = async body => {
+export const wsUpdateSolution = async body => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
     patch({
-      url: `/products`,
+      url: `/solutions`,
       body,
       headers: {
         Authorization: `Bearer ${token}`,

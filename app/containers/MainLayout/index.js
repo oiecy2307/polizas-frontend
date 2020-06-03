@@ -31,6 +31,7 @@ import UserAddIcon from '@material-ui/icons/PersonAddOutlined';
 import CompanyAddIcon from '@material-ui/icons/BusinessOutlined';
 import AssignmentAddIcon from '@material-ui/icons/AssignmentOutlined';
 import ProductsIcon from '@material-ui/icons/CategoryOutlined';
+import SolutionsIcon from '@material-ui/icons/EmojiObjectsOutlined';
 
 import Drawer from '@material-ui/core/SwipeableDrawer';
 import Avatar from 'components/Avatar';
@@ -321,6 +322,14 @@ export function MainLayout({
           <SidebarItemText>{messages.menu.products}</SidebarItemText>
         </SidebarItem>
       )}
+      <SidebarItem
+        onClick={handleChangeRoute}
+        to="/soluciones"
+        selected={optionSelected === '/soluciones'}
+      >
+        <SolutionsIcon />
+        <SidebarItemText>{messages.menu.solutions}</SidebarItemText>
+      </SidebarItem>
       <SidebarItem
         onClick={handleChangeRoute}
         to={`/perfil/${currentUser.id}`}
