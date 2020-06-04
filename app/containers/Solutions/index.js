@@ -13,6 +13,7 @@ import { get, times } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 
 import Skeleton from '@material-ui/lab/Skeleton';
+import { Link } from 'react-router-dom';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { wsGetSolutions } from 'services/solutions';
@@ -100,15 +101,20 @@ export function Solutions({ dispatch }) {
 
   const items = solutions.map(s => ({
     ...s,
-    createdAt: moment(s.createdAt).format('LL'),
-    originalItem: s,
+    shortName: (
+      <Link to={`/soluciones/${s.id}`}>
+        <div style={{ color: 'black' }}>{s.shortName}</div>
+      </Link>
+    ),
     products: (
-      <ul>
+      <ul style={{ paddingLeft: 14 }}>
         {s.products.map(p => (
           <li>{`${p.name} (${p.solutionProduct.version})`}</li>
         ))}
       </ul>
     ),
+    createdAt: moment(s.createdAt).format('LL'),
+    originalItem: s,
   }));
 
   if (initialLoading) {

@@ -40,6 +40,7 @@ import TicketDetail from 'containers/TicketDetail/Loadable';
 import Companies from 'containers/Companies/Loadable';
 import Products from 'containers/Products/Loadable';
 import Solutions from 'containers/Solutions/Loadable';
+import SolutionDetail from 'containers/SolutionDetail/Loadable';
 import Invitations from 'containers/Invitations';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -183,8 +184,15 @@ function App({ app, dispatch }) {
             exact
             path="/soluciones"
             layout={MainLayout}
-            responsiveTitle="Productos"
+            responsiveTitle="Soluciones"
             component={Solutions}
+          />
+          <AppRoute
+            exact
+            path="/soluciones/:id"
+            layout={MainLayout}
+            responsiveTitle="Detalle de solución"
+            component={SolutionDetail}
           />
           <Route exact path="/inicio-sesion" component={HomePage} />
           <Route exact path="/registro/:token" component={Register} />
