@@ -14,18 +14,21 @@ import HtmlParser from 'html-react-parser';
 
 import { wsGetSolutionById, wsUpdateSolution } from 'services/solutions';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
+import { wsGetProductsBrief } from 'services/products';
 
 import Skeleton from '@material-ui/lab/Skeleton';
+import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import { stateToHTML } from 'draft-js-export-html';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
 import { Divider, FloatRight } from 'utils/globalStyledComponents';
 import Input from 'components/InputText';
 import CommentItem from 'components/CommentItem';
 import Button from 'components/Button';
 import EmptyState from 'components/EmptyState';
 import Dialog from 'components/Dialog';
-import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
-import { stateToHTML } from 'draft-js-export-html';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import CreateEditSolution from 'components/CreateEditSolution';
 
 import {
   Container,
@@ -43,10 +46,23 @@ export function SolutionDetail({ dispatch, match }) {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [isEditing, setIsEditing] = useState(false);
   const [attributeEditing, setAttributeEditing] = useState('problem');
+  const [editSolutionOpen, setEditSolutionOpen] = useState(false);
+  const [productsList, setProductsList] = useState([]);
 
   useEffect(() => {
     fetchSolution();
+    fetchProducts();
   }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await wsGetProductsBrief();
+      const lProducts = get(response, 'data', []);
+      setProductsList(lProducts);
+    } catch (e) {
+      // ERROR HANDLER
+    }
+  };
 
   const fetchSolution = async () => {
     try {
@@ -173,6 +189,12 @@ export function SolutionDetail({ dispatch, match }) {
     }
   }
 
+  const products = (get(solution, 'products', []) || []).map(product => ({
+    label: `# ${product.name}(${get(product, 'solutionProduct.version', '')})`,
+  }));
+
+  console.log('products', products);
+
   return (
     <MainContainer>
       <Helmet>
@@ -180,33 +202,51 @@ export function SolutionDetail({ dispatch, match }) {
       </Helmet>
       <Container>
         <TopSection>
-          <span>{shortName}</span>
+          <h3>
+            {shortName}
+            <Button
+              onClick={() => setEditSolutionOpen(true)}
+              variant="outlined"
+            >
+              Editar
+            </Button>
+          </h3>
+          <div className="products">
+            {products.map(p => (
+              <div>{p.label}</div>
+            ))}
+          </div>
         </TopSection>
+      </Container>
+      <Divider size="24" />
+      <Container>
         <Header>
           <h3>
             Problema
             <Button
               onClick={() => handleChangeEditingState('problem')}
-              variant="contained"
+              variant="outlined"
             >
               Editar
             </Button>
           </h3>
-          <div />
-          {HtmlParser(htmlProblem)}
+          <div className="incoming-html">{HtmlParser(htmlProblem)}</div>
         </Header>
-        <Body>
+      </Container>
+      <Divider size="24" />
+      <Container>
+        <Header>
           <h3>
             Solución
             <Button
               onClick={() => handleChangeEditingState('solution')}
-              variant="contained"
+              variant="outlined"
             >
               Editar
             </Button>
           </h3>
-          {HtmlParser(htmlSolution)}
-        </Body>
+          <div className="incoming-html">{HtmlParser(htmlSolution)}</div>
+        </Header>
       </Container>
       <Divider size="24" />
       {false && (
@@ -246,9 +286,29 @@ export function SolutionDetail({ dispatch, match }) {
             wrapperClassName="demo-wrapper"
             editorClassName="editor-class"
             onEditorStateChange={onEditorStateChange}
+            toolbar={{
+              options: [
+                'inline',
+                'blockType',
+                'fontSize',
+                'list',
+                'textAlign',
+                'colorPicker',
+                'link',
+                'history',
+              ],
+            }}
           />
         </EditorWrapper>
       </Dialog>
+      <CreateEditSolution
+        open={editSolutionOpen}
+        onClose={() => setEditSolutionOpen(false)}
+        callback={fetchSolution}
+        dispatch={dispatch}
+        defaultSolution={solution}
+        products={productsList}
+      />
     </MainContainer>
   );
 }

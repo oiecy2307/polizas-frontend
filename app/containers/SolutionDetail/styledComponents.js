@@ -2,6 +2,10 @@ import styled from 'styled-components';
 
 export const MainContainer = styled.div`
   padding-bottom: 48px;
+
+  & button {
+    flex-shrink: 0;
+  }
 `;
 
 export const Container = styled.div`
@@ -28,15 +32,27 @@ export const Container = styled.div`
 `;
 
 export const TopSection = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   padding: 16px 24px;
-  border-bottom: 1px solid #97979747;
 
-  & div > div {
-    font-size: 12px;
-    margin-top: 4px;
+  & h3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+    padding-bottom: 24px;
+  }
+
+  & .products {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  & .products > div {
+    margin-bottom: 8px;
+    margin-right: 16px;
+    padding: 8px;
+    background: #d9ebe2;
+    border-radius: 4px;
   }
 `;
 
@@ -49,7 +65,12 @@ export const Header = styled.div`
     align-items: center;
     margin-bottom: 0;
     padding-bottom: 24px;
-    border-bottom: 1px solid #97979747;
+  }
+
+  & .incoming-html {
+    padding: 16px;
+    border: 1px dashed #108043;
+    border-radius: 8px;
   }
 `;
 
@@ -63,7 +84,6 @@ export const Body = styled.div`
     align-items: center;
     margin-bottom: 0;
     padding-bottom: 24px;
-    border-bottom: 1px solid #97979747;
   }
 `;
 
@@ -85,10 +105,18 @@ export const Canceled = styled.div`
 export const EditorWrapper = styled.div`
   & .editor-class {
     box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+    max-height: 500px;
+    min-height: 50vh;
+    overflow: hidden;
+  }
+
+  & .public-DraftEditor-content > div {
+    max-height: 500px;
+    min-height: 50vh;
     padding: 0 16px;
+    overflow: auto;
   }
 
   & .DraftEditor-editorContainer > div {
-    min-height: 50vh;
   }
 `;
