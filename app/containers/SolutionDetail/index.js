@@ -141,7 +141,7 @@ export function SolutionDetail({ dispatch, match }) {
         <Helmet>
           <title>Detalle de solución</title>
         </Helmet>
-        <EmptyState message="No se encontró el ticket" />
+        <EmptyState message="No se encontró la solución" />
       </div>
     );
   }
@@ -192,8 +192,6 @@ export function SolutionDetail({ dispatch, match }) {
   const products = (get(solution, 'products', []) || []).map(product => ({
     label: `# ${product.name}(${get(product, 'solutionProduct.version', '')})`,
   }));
-
-  console.log('products', products);
 
   return (
     <MainContainer>
