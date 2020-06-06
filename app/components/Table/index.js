@@ -23,11 +23,13 @@ function TableComponent(props) {
     count,
     rowsPerPage,
     page,
-    onPageChanged,
+    onChangePage,
     showPagination,
     isClickable,
     onRowClicked,
     showHead,
+    labelRowsPerPage,
+    onChangeRowsPerPage,
   } = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -46,10 +48,6 @@ function TableComponent(props) {
   const handleOnOptionMenuClicked = action => () => {
     action(selectedItem);
     handleCloseMenu();
-  };
-
-  const handleChangePage = (e, newPage) => {
-    onPageChanged(newPage);
   };
 
   const handleClickRow = item => () => {
@@ -112,7 +110,7 @@ function TableComponent(props) {
         </Table>
         {showPagination && (
           <TablePagination
-            rowsPerPageOptions={[]}
+            rowsPerPageOptions={[10, 15, 20, 30, 40, 50, 100]}
             component="div"
             count={count}
             rowsPerPage={rowsPerPage}
@@ -123,8 +121,14 @@ function TableComponent(props) {
             nextIconButtonProps={{
               'aria-label': 'next page',
             }}
-            onChangePage={handleChangePage}
+            SelectProps={{
+              inputProps: { 'aria-label': 'Items por página' },
+              native: true,
+            }}
+            labelRowsPerPage={labelRowsPerPage}
+            onChangePage={onChangePage}
             labelDisplayedRows={({ from, to }) => `${from}-${to} de ${count}`}
+            onChangeRowsPerPage={onChangeRowsPerPage}
           />
         )}
         <Menu
@@ -153,11 +157,13 @@ TableComponent.propTypes = {
   count: PropTypes.number,
   rowsPerPage: PropTypes.number,
   page: PropTypes.number,
-  onPageChanged: PropTypes.func,
+  onChangePage: PropTypes.func,
   showPagination: PropTypes.bool,
   isClickable: PropTypes.bool,
   onRowClicked: PropTypes.func,
   showHead: PropTypes.bool,
+  labelRowsPerPage: PropTypes.string,
+  onChangeRowsPerPage: PropTypes.func,
 };
 
 TableComponent.defaultProps = {
@@ -168,11 +174,13 @@ TableComponent.defaultProps = {
   count: 0,
   rowsPerPage: 10,
   page: 0,
-  onPageChanged: () => {},
+  onChangePage: () => {},
   showPagination: true,
   isClickable: false,
   onRowClicked: () => {},
   showHead: true,
+  labelRowsPerPage: 'Items por página',
+  onChangeRowsPerPage: () => {},
 };
 
 export default TableComponent;

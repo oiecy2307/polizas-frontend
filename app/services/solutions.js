@@ -1,10 +1,11 @@
 import { get, getToken, patch, post } from 'utils/http';
 
-export const wsGetSolutions = async () => {
+export const wsGetSolutions = async body => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
-    get({
-      url: `/solutions`,
+    post({
+      url: `/solutions/get-filtered`,
+      body,
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
-import { get, times } from 'lodash';
+import { get, times, isEqual } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -72,7 +72,7 @@ export function Solutions({ dispatch }) {
   const [newSolutionOpen, setNewSolutionOpen] = useState(false);
   const [solutionToEdit, setSolutionToEdit] = useState(null);
   const [filterDesc, setFilterDesc] = useState(true);
-  const [filtersAsideOpen, setFiltersAsideOpen] = useState(true);
+  const [filtersAsideOpen, setFiltersAsideOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState('createdAt');
   const [filtersActive, setFiltersActive] = useState({
     shortName: '',
@@ -80,23 +80,52 @@ export function Solutions({ dispatch }) {
     startCreationDate: null,
     endCreationDate: null,
   });
+  const [temporalFilters, setTemporalFilters] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     fetchSolutions();
-    fetchProducts();
-  }, []);
+  }, [page, rowsPerPage, selectedOrder, filterDesc]);
+
+  useEffect(() => {
+    const filtersAreEqual = isEqual(filtersActive, temporalFilters);
+    if (!filtersAsideOpen && !initialLoading && !filtersAreEqual) {
+      fetchSolutions();
+    }
+    if (filtersAsideOpen) {
+      setTemporalFilters(filtersActive);
+    } else {
+      setTemporalFilters(null);
+    }
+  }, [filtersAsideOpen]);
 
   const fetchSolutions = async () => {
     try {
       dispatch(aSetLoadingState(true));
-      const response = await wsGetSolutions();
+      const response = await wsGetSolutions({
+        offset: page * rowsPerPage,
+        limit: rowsPerPage,
+        filters: {
+          ...filtersActive,
+          products: (filtersActive.products || []).map(p => p.value),
+        },
+        orderBy: selectedOrder || 'createdAt',
+        orientation: filterDesc ? 'DESC' : 'ASC',
+      });
       const lSolutions = get(response, 'data.rows', []);
       setSolutions(lSolutions);
+      setCount(lSolutions.length);
       setInitialLoading(false);
     } catch (e) {
       const defaultError = 'Error al obtener soluciones';
       const error = get(e, 'data.message', defaultError) || defaultError;
-      dispatch(aOpenSnackbar(error, 'error'));
+      dispatch(aOpenSnackbar(error.toString(), 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
     }
@@ -138,6 +167,15 @@ export function Solutions({ dispatch }) {
     setFiltersAsideOpen(false);
   };
 
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
   const handleChangeFilters = (field, value) => {
     setFiltersActive(f => ({
       ...f,
@@ -155,7 +193,9 @@ export function Solutions({ dispatch }) {
     products: (
       <ul style={{ paddingLeft: 14 }}>
         {s.products.map(p => (
-          <li>{`${p.name} (${p.solutionProduct.version})`}</li>
+          <li key={`${s.id}-${p.id}`}>{`${p.name} (${
+            p.solutionProduct.version
+          })`}</li>
         ))}
       </ul>
     ),
@@ -206,7 +246,9 @@ export function Solutions({ dispatch }) {
               label="Ordenar por"
             >
               {orderOptions.map(oo => (
-                <MenuItem value={oo.value}>{oo.label}</MenuItem>
+                <MenuItem key={oo.value} value={oo.value}>
+                  {oo.label}
+                </MenuItem>
               ))}
             </SelectMU>
           </FormControl>
@@ -228,8 +270,14 @@ export function Solutions({ dispatch }) {
         items={items}
         withMenu
         optionsMenu={optionsMenu}
+        count={count}
         isClickable={false}
-        showPagination={false}
+        showPagination
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        labelRowsPerPage="soluciones por página"
+        onChangeRowsPerPage={handleChangeRowsPerPage}
       />
       {!solutions.length && <EmptyState />}
       <CreateEditSolution
