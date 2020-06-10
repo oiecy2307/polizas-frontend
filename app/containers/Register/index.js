@@ -110,7 +110,7 @@ export function Register({ dispatch, match, history }) {
       .max(150, 'El texto es muy largo'),
     passwordConfirmation: Yup.string()
       .required('Campo requerido')
-      .oneOf([Yup.ref('password'), null], 'Confirmar contraseña'),
+      .oneOf([Yup.ref('password'), null], 'Las contraseñas no coinciden'),
     phoneNumber: Yup.number('Role')
       .typeError('Solo números')
       .max(9999999999999999, 'El texto es muy largo'),
