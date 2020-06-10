@@ -11,7 +11,7 @@ import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 import * as Yup from 'yup';
 import { get } from 'lodash';
-import { textRegex, getToken } from 'utils/helper';
+import { textRegex, getToken, trimObject } from 'utils/helper';
 import { ImmortalDB } from 'immortal-db';
 
 import { Formik } from 'formik';
@@ -60,11 +60,13 @@ export function Register({ dispatch, match, history }) {
     try {
       const token = get(match, 'params.token', '');
       dispatch(aSetLoadingState(true));
-      const response = await wsRegisterWInvitation({
-        ...body,
-        phone: body.phoneNumber,
-        token,
-      });
+      const response = await wsRegisterWInvitation(
+        trimObject({
+          ...body,
+          phone: body.phoneNumber,
+          token,
+        }),
+      );
       if (response) {
         dispatch(aOpenSnackbar('Registro con éxito', 'success'));
         resetValues();
@@ -93,22 +95,29 @@ export function Register({ dispatch, match, history }) {
 
   const validationSchema = Yup.object({
     name: Yup.string('Nombre')
+      .trim()
       .required('Campo requerido')
       .max(150, 'El texto es muy largo')
       .matches(textRegex, 'Texto no válido'),
     lastname: Yup.string('Apellido paterno')
+      .trim()
       .required('Campo requerido')
       .max(150, 'El texto es muy largo')
       .matches(textRegex, 'Texto no válido'),
     secondLastName: Yup.string('Apellido materno')
+      .trim()
       .max(150, 'El texto es muy largo')
       .matches(textRegex, 'Texto no válido'),
-    username: Yup.string('Username').max(150, 'El texto es muy largo'),
+    username: Yup.string('Username')
+      .trim()
+      .max(150, 'El texto es muy largo'),
     password: Yup.string('Contraseña')
+      .trim()
       .required('Campo requerido')
       .min(8, 'Deben ser al menos 8 caracteres')
       .max(150, 'El texto es muy largo'),
     passwordConfirmation: Yup.string()
+      .trim()
       .required('Campo requerido')
       .oneOf([Yup.ref('password'), null], 'Las contraseñas no coinciden'),
     phoneNumber: Yup.number('Role')

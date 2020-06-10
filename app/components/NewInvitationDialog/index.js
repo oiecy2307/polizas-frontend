@@ -12,6 +12,7 @@ import { get } from 'lodash';
 import { LoggedUser } from 'contexts/logged-user';
 import { wsSendInvitation } from 'services/users';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
+import { trimObject } from 'utils/helper';
 
 import Dialog from 'components/Dialog';
 import Input from 'components/InputText';
@@ -56,11 +57,12 @@ function NewInvitationDialog({
     try {
       dispatch(aSetLoadingState(true));
       setBusy(true);
-      const response = await wsSendInvitation({
+      const body = trimObject({
         email,
         role: isClientAdmin ? 'client' : get(role, 'value', 'technical'),
         companyId: isClientAdmin ? currentUser.companyId : null,
       });
+      const response = await wsSendInvitation(body);
       if (response.error) {
         dispatch(
           aOpenSnackbar('Ocurrió un error al enviar invitación', 'error'),

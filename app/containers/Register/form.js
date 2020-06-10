@@ -143,7 +143,7 @@ function RegisterForm(props) {
           render={({ field }) => (
             <Input
               {...field}
-              label="Número de teléfono"
+              label="Número de teléfono (opcional)"
               helperText={touched.phoneNumber ? errors.phoneNumber : ''}
               error={touched.phoneNumber && Boolean(errors.phoneNumber)}
             />

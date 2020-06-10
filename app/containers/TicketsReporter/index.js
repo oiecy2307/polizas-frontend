@@ -19,6 +19,7 @@ import {
   getFullName,
   minutesToHours,
   toMoneyFormat,
+  trimObject,
 } from 'utils/helper';
 
 import { Paper, Divider, FloatRight } from 'utils/globalStyledComponents';
@@ -248,7 +249,7 @@ export function TicketsReporter({ dispatch }) {
         orderBy: selectedOrder || 'reportedDate',
         orientation: filterDesc ? 'DESC' : 'ASC',
       };
-      const response = await wsGetReport(filter);
+      const response = await wsGetReport(trimObject(filter));
       if (!response) return;
       const lCount = get(response, 'data.count', 0);
       const lItems = get(response, 'data.rows', []);

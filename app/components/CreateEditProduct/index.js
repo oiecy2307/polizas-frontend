@@ -13,6 +13,7 @@ import { get } from 'lodash';
 
 import { wsCreateProduct, wsUpdateProduct } from 'services/products';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
+import { trimObject } from 'utils/helper';
 
 import Dialog from 'components/Dialog';
 import Form from './form';
@@ -39,12 +40,12 @@ function CreateEditProduct({
           id: defaultProduct.id,
           ...values,
         };
-        await wsUpdateProduct(body);
+        await wsUpdateProduct(trimObject(body));
       } else {
         const body = {
           ...values,
         };
-        await wsCreateProduct(body);
+        await wsCreateProduct(trimObject(body));
       }
 
       dispatch(aOpenSnackbar('Producto creado con éxito', 'success'));
@@ -68,12 +69,15 @@ function CreateEditProduct({
 
   const validationSchema = Yup.object({
     name: Yup.string('Nombre')
+      .trim()
       .required('Campo requerido')
       .max(150, 'Texto demasiado largo'),
     description: Yup.string('Dirección')
+      .trim()
       .notRequired('')
       .max(250, 'Texto demasiado largo'),
     actualVersion: Yup.string('Versión')
+      .trim()
       .required('Campo requerido')
       .max(150, 'Texto demasiado largo'),
   });

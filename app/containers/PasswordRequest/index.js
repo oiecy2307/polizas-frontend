@@ -44,8 +44,8 @@ function PasswordRequest({ history, dispatch }) {
 
   async function handleRequestPasswordChange() {
     try {
-      if (username) {
-        const response = await wsRequestRecovery({ email: username });
+      if (username.trim()) {
+        const response = await wsRequestRecovery({ email: username.trim() });
         if (response.error) {
           dispatch(aOpenSnackbar('No se pudo enviar la solicitud', 'error'));
         } else {

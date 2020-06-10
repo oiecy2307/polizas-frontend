@@ -13,6 +13,7 @@ import { get } from 'lodash';
 
 import { wsCreateSolution, wsUpdateSolution } from 'services/solutions';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
+import { trimObject } from 'utils/helper';
 
 import Dialog from 'components/Dialog';
 import Form from './form';
@@ -40,12 +41,12 @@ function CreateEditSolution({
           id: defaultSolution.id,
           ...values,
         };
-        await wsUpdateSolution(body);
+        await wsUpdateSolution(trimObject(body));
       } else {
         const body = {
           ...values,
         };
-        await wsCreateSolution(body);
+        await wsCreateSolution(trimObject(body));
       }
 
       dispatch(aOpenSnackbar('Solución creada con éxito', 'success'));
@@ -72,6 +73,7 @@ function CreateEditSolution({
 
   const validationSchema = Yup.object({
     shortName: Yup.string('Nombre corto')
+      .trim()
       .required('Campo requerido')
       .max(250, 'Texto demasiado largo'),
     products: Yup.array(),

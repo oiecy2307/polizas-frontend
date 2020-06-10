@@ -322,14 +322,16 @@ export function MainLayout({
           <SidebarItemText>{messages.menu.products}</SidebarItemText>
         </SidebarItem>
       )}
-      <SidebarItem
-        onClick={handleChangeRoute}
-        to="/soluciones"
-        selected={optionSelected === '/soluciones'}
-      >
-        <SolutionsIcon />
-        <SidebarItemText>{messages.menu.solutions}</SidebarItemText>
-      </SidebarItem>
+      {isAdmin && (
+        <SidebarItem
+          onClick={handleChangeRoute}
+          to="/soluciones"
+          selected={optionSelected === '/soluciones'}
+        >
+          <SolutionsIcon />
+          <SidebarItemText>{messages.menu.solutions}</SidebarItemText>
+        </SidebarItem>
+      )}
       <SidebarItem
         onClick={handleChangeRoute}
         to={`/perfil/${currentUser.id}`}

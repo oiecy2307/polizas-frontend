@@ -14,7 +14,7 @@ import moment from 'moment/min/moment-with-locales';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { wsCreateTicket, wsUpdateTicket } from 'services/tickets';
 import { wsGetUsersByType } from 'services/users';
-import { getCurrentUser, textRegex } from 'utils/helper';
+import { getCurrentUser, textRegex, trimObject } from 'utils/helper';
 
 import FormikDebugger from 'components/FormikDebugger';
 import Dialog from 'components/Dialog';
@@ -97,9 +97,9 @@ function CreateEditTicket({
       const finalBody = isClient ? bodyClient : bodyAdmin;
       let response = null;
       if (isEditing) {
-        response = await wsUpdateTicket(ticketToEdit.id, finalBody);
+        response = await wsUpdateTicket(ticketToEdit.id, trimObject(finalBody));
       } else {
-        response = await wsCreateTicket(finalBody);
+        response = await wsCreateTicket(trimObject(finalBody));
       }
       if (response.error) {
         dispatch(aOpenSnackbar('Error al guardar ticket', 'error'));
@@ -128,12 +128,15 @@ function CreateEditTicket({
 
   const schemaAdmin = Yup.object({
     ticketTitle: Yup.string(messages.fields.ticketTitle)
+      .trim()
       .required(messages.required)
       .max(150, messages.tooLong),
     ticketDescription: Yup.string(messages.fields.ticketDescription)
+      .trim()
       .required(messages.required)
       .max(5000, messages.tooLong),
     ticketPriority: Yup.string(messages.fields.ticketPriority)
+      .trim()
       .required(messages.required)
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
@@ -157,12 +160,15 @@ function CreateEditTicket({
 
   const schemaClient = Yup.object({
     ticketTitle: Yup.string(messages.fields.ticketTitle)
+      .trim()
       .required(messages.required)
       .max(150, messages.tooLong),
     ticketDescription: Yup.string(messages.fields.ticketDescription)
+      .trim()
       .required(messages.required)
       .max(150, messages.tooLong),
     ticketPriority: Yup.string(messages.fields.ticketPriority)
+      .trim()
       .required(messages.required)
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),

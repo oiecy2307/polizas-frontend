@@ -155,7 +155,7 @@ export function TicketDetail({ dispatch, match }) {
       const id = get(match, 'params.id', null);
       dispatch(aSetLoadingState(true));
       const response = await wsCreateComment(id, {
-        text: comment,
+        text: comment.trim(),
       });
       if (response.error) {
         dispatch(aOpenSnackbar('No fue posible comentar', 'error'));
@@ -546,7 +546,7 @@ export function TicketDetail({ dispatch, match }) {
             <Button
               variant="text"
               onClick={handleSaveComment}
-              disabled={!comment}
+              disabled={!comment.trim()}
             >
               Comentar
             </Button>

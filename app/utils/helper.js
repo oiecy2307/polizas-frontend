@@ -1,5 +1,11 @@
 import { ImmortalDB } from 'immortal-db';
 import Numeral from 'numeral';
+import { mapValues } from 'lodash';
+
+export const trimObject = object =>
+  mapValues({ ...object }, value =>
+    typeof value === 'string' ? value.trim() : value,
+  );
 
 export const getCurrentUser = async () => {
   try {

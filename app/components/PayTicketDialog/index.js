@@ -13,6 +13,7 @@ import { get } from 'lodash';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { wsPayTicket } from 'services/tickets';
+import { trimObject } from 'utils/helper';
 
 import Dialog from 'components/Dialog';
 import Form from './form';
@@ -21,7 +22,7 @@ function PayTicketDialog({ open, onClose, dispatch, id, defaultTicket }) {
   const handlePayTicket = async (body, resetValues) => {
     try {
       dispatch(aSetLoadingState(true));
-      const response = await wsPayTicket(id, body);
+      const response = await wsPayTicket(id, trimObject(body));
       if (response.error) {
         dispatch(aOpenSnackbar('No se pudo pagar el ticket', 'error'));
       } else {
@@ -63,7 +64,7 @@ function PayTicketDialog({ open, onClose, dispatch, id, defaultTicket }) {
         .typeError('Solo se permiten números')
         .positive('El tiempo debe ser positivo'),
     }),
-    invoice: Yup.string(),
+    invoice: Yup.string().trim(),
   });
 
   if (!open) return <div />;

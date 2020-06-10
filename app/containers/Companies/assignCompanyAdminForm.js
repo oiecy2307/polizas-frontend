@@ -12,6 +12,7 @@ import { isEmail } from 'validator';
 
 import { wsAssignOrSendInvitation } from 'services/companies';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
+import { trimObject } from 'utils/helper';
 
 import Dialog from 'components/Dialog';
 import Input from 'components/InputText';
@@ -36,7 +37,7 @@ function AssignCompanyAdminForm({
         email,
       };
 
-      const response = await wsAssignOrSendInvitation(body);
+      const response = await wsAssignOrSendInvitation(trimObject(body));
       const alreadyAssigned = get(response, 'data.userAlreadyExists', false);
       if (alreadyAssigned) {
         dispatch(aOpenSnackbar('Se ha asignado al responsable', 'success'));

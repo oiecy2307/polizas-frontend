@@ -11,7 +11,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { get } from 'lodash';
 
-import { textRegex } from 'utils/helper';
+import { textRegex, trimObject } from 'utils/helper';
 import { wRegister } from 'services/auth';
 import { wsUpdateUser } from 'services/users';
 import { wsUpdateProfileInfo } from 'services/profile';
@@ -41,11 +41,11 @@ function CreateEditUser({
       dispatch(aSetLoadingState(true));
       let response = null;
       if (fromProfile) {
-        response = await wsUpdateProfileInfo(body);
+        response = await wsUpdateProfileInfo(trimObject(body));
       } else if (isEditing) {
-        response = await wsUpdateUser(userToEdit.id, body);
+        response = await wsUpdateUser(userToEdit.id, trimObject(body));
       } else {
-        response = await wRegister(body);
+        response = await wRegister(trimObject(body));
       }
       if (response.error) {
         dispatch(aOpenSnackbar('Error al guardar el usuario', 'error'));
@@ -76,17 +76,21 @@ function CreateEditUser({
 
   const validationSchema = Yup.object({
     name: Yup.string(messages.fields.name)
+      .trim()
       .required(messages.required)
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
     lastname: Yup.string(messages.fields.lastname)
+      .trim()
       .required(messages.required)
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
     secondLastName: Yup.string(messages.fields.secondLastName)
+      .trim()
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
     email: Yup.string(messages.fields.email)
+      .trim()
       .email(messages.emailError)
       .max(200, messages.tooLong)
       .required(messages.required),
@@ -94,17 +98,21 @@ function CreateEditUser({
     //   .required(messages.required)
     //   .max(150, messages.tooLong),
     password: Yup.string(messages.fields.password)
+      .trim()
       [isEditing ? 'notRequired' : 'required'](messages.required)
       .min(8, messages.tooShort)
       .max(150, messages.tooLong),
     passwordConfirmation: Yup.string()
+      .trim()
       [isEditing ? 'notRequired' : 'required'](messages.required)
       .oneOf([Yup.ref('password'), null], messages.passwordDontMatch),
     role: Yup.string(messages.fields.role)
+      .trim()
       .required(messages.required)
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
     company: Yup.string(messages.fields.role)
+      .trim()
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
     phoneNumber: Yup.number(messages.fields.role)

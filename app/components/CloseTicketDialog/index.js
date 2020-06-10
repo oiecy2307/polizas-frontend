@@ -11,6 +11,7 @@ import * as Yup from 'yup';
 import moment from 'moment/min/moment-with-locales';
 import { wsCloseTicket } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
+import { trimObject } from 'utils/helper';
 
 import Dialog from 'components/Dialog';
 import Form from './form';
@@ -21,7 +22,7 @@ function CloseTicketDialog({ open, onClose, dispatch, id }) {
   async function handleCloseTicket(body, resetValues) {
     try {
       dispatch(aSetLoadingState(true));
-      const response = await wsCloseTicket(id, body);
+      const response = await wsCloseTicket(id, trimObject(body));
       if (response.error) {
         dispatch(aOpenSnackbar('No se pudo cerrar el ticket', 'error'));
       } else {
@@ -62,8 +63,8 @@ function CloseTicketDialog({ open, onClose, dispatch, id }) {
       .typeError('Solo se permiten números')
       .required(messages.required)
       .positive('El costo debe ser positivo'),
-    solution: Yup.string(),
-    status: Yup.string(),
+    solution: Yup.string().trim(),
+    status: Yup.string().trim(),
   });
 
   return (
