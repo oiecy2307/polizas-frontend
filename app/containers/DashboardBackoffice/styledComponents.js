@@ -3,7 +3,8 @@ import { mediaQuery, mediaQueryS } from 'utils/helper';
 
 export const Content = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  justify-content: space-evenly;
   flex-wrap: wrap;
 `;
 
@@ -16,8 +17,9 @@ export const Paper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 32px 16px;
-  margin-right: 24px;
+  /* margin-right: 24px; */
   margin-bottom: 24px;
+  width: calc(50% - 16px);
 
   & > h3 {
     width: 100%;
@@ -45,7 +47,7 @@ export const Label = styled.div`
 `;
 
 export const PersonalInfo = styled.div`
-  width: calc(100% - 216px);
+  width: calc(100% - 160px);
   font-size: 14px;
 
   & .name {
@@ -63,8 +65,7 @@ export const PersonalInfo = styled.div`
 `;
 
 export const TechnicalCheckbox = styled.div`
-  width: 454px;
-  max-width: 100%;
+  width: 100%;
   height: 64px;
   margin-bottom: 16px;
   border-radius: 12px;
@@ -114,8 +115,7 @@ export const ItemCompany = styled.div`
 `;
 
 export const TodayTicketsSection = styled.div`
-  min-width: 360px;
-  max-width: 100%;
+  width: 100%;
 
   & .item {
     padding: 18px 16px 18px 24px;

@@ -49,19 +49,20 @@ export function UserProfile({ match, dispatch }) {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
 
+  const id = get(match, 'params.id', '');
+
   const currentUser = useContext(LoggedUser);
   const isMyOwnProfile =
     currentUser.id.toString() === get(match, 'params.id', '').toString();
 
   useEffect(() => {
     fetchUserProfile();
-  }, []);
+  }, [id]);
 
   const filesRef = useRef(null);
 
   const fetchUserProfile = async () => {
     try {
-      const id = get(match, 'params.id', '');
       if (!id) return;
       dispatch(aSetLoadingState(true));
       const response = await wsGetUserProfile(id);

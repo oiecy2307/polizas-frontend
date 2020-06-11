@@ -396,7 +396,9 @@ export function MainLayout({
         </MobileMenu>
         <Flex>
           <LeftMenu>{menu}</LeftMenu>
-          <Content>{children}</Content>
+          <div className="content-wrapper">
+            <Content>{children}</Content>
+          </div>
         </Flex>
       </MainContainer>
       <NotificationsPop

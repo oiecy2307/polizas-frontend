@@ -47,14 +47,28 @@ export const Avatar = styled.img`
 export const Flex = styled.div`
   display: flex;
   min-height: calc(100vh - 64px);
+
+  & .content-wrapper {
+    margin-left: 236px;
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    & .content-wrapper {
+      margin: 0;
+    }
+  }
 `;
 
 export const LeftMenu = styled.div`
   background-color: #ffffff;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
   width: 236px;
-  min-height: calc(100vh - 64px);
+  height: calc(100vh - 64px);
   padding: 40px 8px;
+  position: fixed;
+  overflow: auto;
+  padding-bottom: 32px;
 
   @media (max-width: 768px) {
     display: none;
@@ -70,7 +84,7 @@ export const MenuResponsive = styled.div`
 `;
 
 export const Content = styled.div`
-  width: calc(100% - 236px);
+  width: 100%;
   min-height: calc(100vh - 64px);
   padding: 24px;
   max-width: 1280px;

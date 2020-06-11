@@ -100,7 +100,7 @@ export function TicketsAdmin({ dispatch }) {
 
   async function fetchTicketsBrief(status, date) {
     try {
-      const ldate = moment(date).format();
+      const ldate = moment(date).format('YYYY-MM-DD');
       let response = null;
       if (isClient) {
         response = await wsGetTicketsBrief(status, ldate, currentUser.id);
@@ -116,7 +116,7 @@ export function TicketsAdmin({ dispatch }) {
   async function fetchTickets(status, date) {
     try {
       dispatch(aSetLoadingState(true));
-      const ldate = moment(date).format();
+      const ldate = moment(date).format('YYYY-MM-DD');
       let rTickets = null;
       if (isClient) {
         rTickets = await wsGetTicketsByStatus(status, ldate, currentUser.id);

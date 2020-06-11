@@ -193,13 +193,28 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
                       name={get(ticket, 'technical.name', '')}
                       src={get(ticket, 'technical.image', '')}
                     />
-                    <div>{getFullName(ticket.technical)} (asignado)</div>
+                    <div>{getFullName(ticket.technical)} (técnico)</div>
+                  </div>
+                )}
+                {ticket.client && (
+                  <div className="row row-technical">
+                    <Avatar
+                      name={get(ticket, 'client.name', '')}
+                      src={get(ticket, 'client.image', '')}
+                    />
+                    <div>{getFullName(ticket.client)} (cliente)</div>
                   </div>
                 )}
                 <SpaceBetween>
                   <div className="row">
-                    <PhoneIcon />
-                    <div>{get(ticket, 'client.phoneNumber', '')} (cliente)</div>
+                    {get(ticket, 'client.phoneNumber', '') && (
+                      <React.Fragment>
+                        <PhoneIcon />
+                        <div>
+                          {get(ticket, 'client.phoneNumber', '')} (cliente)
+                        </div>
+                      </React.Fragment>
+                    )}
                   </div>
                   {!isClient && ticket.status !== 'cancelled' && (
                     <Button onClick={() => handleButtonClicked(ticket)}>

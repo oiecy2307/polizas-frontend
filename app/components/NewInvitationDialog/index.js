@@ -105,6 +105,7 @@ function NewInvitationDialog({
     >
       <Input
         label="Correo"
+        type="email"
         value={email}
         onChange={e => setEmail(e.target.value)}
         helperText={showError ? 'Ingrese un correo válido' : ''}
