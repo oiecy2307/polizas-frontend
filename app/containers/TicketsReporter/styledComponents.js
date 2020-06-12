@@ -20,6 +20,10 @@ export const DrawerContent = styled.div`
   h5 {
     margin-top: 0;
   }
+
+  & > label {
+    width: 100%;
+  }
 `;
 
 export const PairInputsRow = styled.div`
