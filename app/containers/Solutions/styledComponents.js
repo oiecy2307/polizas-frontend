@@ -45,8 +45,8 @@ export const DrawerContent = styled.div`
   padding: 24px;
   max-width: 392px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  display: block;
+  flex-shrink: 0;
 
   & h2,
   h5 {

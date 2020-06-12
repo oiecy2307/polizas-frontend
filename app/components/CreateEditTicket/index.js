@@ -45,7 +45,7 @@ function CreateEditTicket({
   async function fetchUsers() {
     try {
       dispatch(aSetLoadingState(true));
-      const responseTechnicals = await wsGetUsersByType('technical');
+      const responseTechnicals = await wsGetUsersByType('technical-admin');
       setTechnicals(
         get(responseTechnicals, 'data.rows', []).map(t => ({
           ...t,
