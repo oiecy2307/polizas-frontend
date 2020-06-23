@@ -18,7 +18,7 @@ import { trimObject } from 'utils/helper';
 import Dialog from 'components/Dialog';
 import Form from './form';
 
-function PayTicketDialog({ open, onClose, dispatch, id, defaultTicket }) {
+function PayTicketDialog({ open, onClose, dispatch, id, defaultTicket, cost }) {
   const handlePayTicket = async (body, resetValues) => {
     try {
       dispatch(aSetLoadingState(true));
@@ -93,7 +93,7 @@ function PayTicketDialog({ open, onClose, dispatch, id, defaultTicket }) {
           onPositiveAction={() => p.handleSubmit(p.values)}
           disabled={!p.isValid || p.isSubmitting}
         >
-          <Form {...p} />
+          <Form {...p} cost={cost} />
         </Dialog>
       )}
     />
@@ -106,6 +106,7 @@ PayTicketDialog.propTypes = {
   id: PropTypes.string,
   onClose: PropTypes.func,
   defaultTicket: PropTypes.object,
+  cost: PropTypes.string,
 };
 
 export default memo(PayTicketDialog);

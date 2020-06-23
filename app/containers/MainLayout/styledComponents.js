@@ -50,12 +50,13 @@ export const Flex = styled.div`
 
   & .content-wrapper {
     margin-left: 236px;
-    width: 100%;
+    width: calc(100% - 236px);
   }
 
   @media (max-width: 768px) {
     & .content-wrapper {
       margin: 0;
+      width: 100%;
     }
   }
 `;

@@ -16,6 +16,12 @@ export const Container = styled.div`
   & .content {
     overflow: auto;
   }
+
+  & .close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
 `;
 
 export const NotificationItem = styled.div`

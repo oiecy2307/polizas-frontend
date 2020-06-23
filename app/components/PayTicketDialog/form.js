@@ -19,9 +19,17 @@ import { Divider } from 'utils/globalStyledComponents';
 import { Form } from './styledComponents';
 
 function PayTicketForm(props) {
-  const { values, touched, errors, setFieldValue, setFieldTouched } = props;
+  const {
+    values,
+    touched,
+    errors,
+    setFieldValue,
+    setFieldTouched,
+    cost,
+  } = props;
   const { language } = useContext(GlobalValuesContext);
   moment.locale(language);
+  const costLabel = cost ? ` ($${cost} costo registrado)` : '';
   return (
     <Form>
       <Field
@@ -51,7 +59,7 @@ function PayTicketForm(props) {
         render={({ field }) => (
           <Input
             {...field}
-            label="Monto pagado"
+            label={`Monto pagado${costLabel}`}
             helperText={touched.totalPaid ? errors.totalPaid : ''}
             error={touched.totalPaid && Boolean(errors.totalPaid)}
             disabled={!values.paid}
@@ -105,6 +113,7 @@ PayTicketForm.propTypes = {
   errors: PropTypes.object,
   setFieldValue: PropTypes.func,
   setFieldTouched: PropTypes.func,
+  cost: PropTypes.string,
 };
 
 export default memo(PayTicketForm);

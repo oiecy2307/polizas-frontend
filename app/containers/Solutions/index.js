@@ -26,6 +26,7 @@ import SelectMU from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Drawer from '@material-ui/core/Drawer';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { FloatRight } from 'utils/globalStyledComponents';
 import Table from 'components/Table';
@@ -43,6 +44,7 @@ const columns = [
   {
     key: 'shortName',
     label: 'Nombre',
+    style: { minWidth: 160 },
   },
   {
     key: 'products',
@@ -51,6 +53,7 @@ const columns = [
   {
     key: 'createdAt',
     label: 'Creado',
+    style: { minWidth: 160 },
   },
 ];
 
@@ -295,6 +298,13 @@ export function Solutions({ dispatch }) {
       >
         <DrawerContent>
           <h2>Filtros</h2>
+          <IconButton
+            className="close-button"
+            aria-label="close"
+            onClick={handleFiltersClose}
+          >
+            <CloseIcon />
+          </IconButton>
           <InputText
             value={filtersActive.shortName}
             onChange={e => handleChangeFilters('shortName', e.target.value)}

@@ -25,10 +25,12 @@ const columns = [
   {
     key: 'name',
     label: 'Nombre',
+    style: { minWidth: 160 },
   },
   {
     key: 'description',
     label: 'Descripción',
+    style: { minWidth: 160 },
   },
   {
     key: 'actualVersion',
@@ -37,6 +39,7 @@ const columns = [
   {
     key: 'createdAt',
     label: 'Creada',
+    style: { minWidth: 160 },
   },
 ];
 

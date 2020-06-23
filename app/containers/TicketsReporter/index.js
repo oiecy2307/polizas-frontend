@@ -11,6 +11,7 @@ import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 import { get, isEqual } from 'lodash';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
 
 import { wsGetReport, wsGetReportFilters } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
@@ -40,6 +41,7 @@ import FormControl from '@material-ui/core/FormControl';
 import SelectMU from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import CloseIcon from '@material-ui/icons/Close';
 
 import EmptyState from 'components/EmptyState';
 import Label from 'components/Label';
@@ -311,7 +313,9 @@ export function TicketsReporter({ dispatch }) {
               label="Ordenar por"
             >
               {orderOptions.map(oo => (
-                <MenuItem value={oo.value}>{oo.label}</MenuItem>
+                <MenuItem value={oo.value} key={oo.value}>
+                  {oo.label}
+                </MenuItem>
               ))}
             </SelectMU>
           </FormControl>
@@ -379,7 +383,9 @@ export function TicketsReporter({ dispatch }) {
                 key={item.id}
               >
                 {fieldsActive.shortName && (
-                  <TableCell align="left">{item.shortName}</TableCell>
+                  <TableCell align="left">
+                    <Link to={`/tickets/${item.id}`}>{item.shortName}</Link>
+                  </TableCell>
                 )}
                 {fieldsActive.statuses && (
                   <TableCell align="left">
@@ -462,6 +468,13 @@ export function TicketsReporter({ dispatch }) {
       <Drawer open={filtersOpen} onClose={handleFiltersClose} anchor="right">
         <DrawerContent>
           <h2>Filtros</h2>
+          <IconButton
+            className="close-button"
+            aria-label="close"
+            onClick={handleFiltersClose}
+          >
+            <CloseIcon />
+          </IconButton>
           <InputText
             value={filtersActive.shortName}
             onChange={e => handleChangeFilters('shortName', e.target.value)}
@@ -642,6 +655,13 @@ export function TicketsReporter({ dispatch }) {
       >
         <DrawerContent>
           <h2>Campos visibles</h2>
+          <IconButton
+            className="close-button"
+            aria-label="close"
+            onClick={() => setActiveFieldsOpen(false)}
+          >
+            <CloseIcon />
+          </IconButton>
           <FormControlLabel
             control={
               <Checkbox
@@ -794,6 +814,9 @@ export function TicketsReporter({ dispatch }) {
             }
             label="Fecha de pago"
           />
+          <FloatRight>
+            <Button onClick={() => setActiveFieldsOpen(false)}>Guardar</Button>
+          </FloatRight>
         </DrawerContent>
       </Drawer>
       {!items.length && <EmptyState text="No se encontraron tickets" />}

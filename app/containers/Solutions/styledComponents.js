@@ -52,6 +52,12 @@ export const DrawerContent = styled.div`
   h5 {
     margin-top: 0;
   }
+
+  & .close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
 `;
 
 export const PairInputsRow = styled.div`

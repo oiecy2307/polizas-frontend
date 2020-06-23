@@ -33,14 +33,17 @@ const columns = [
   {
     key: 'email',
     label: 'Correo',
+    style: { minWidth: 200 },
   },
   {
     key: 'expiresOn',
     label: 'Expira',
+    style: { minWidth: 160 },
   },
   {
     key: 'createdAt',
     label: 'Creada',
+    style: { minWidth: 160 },
   },
 ];
 

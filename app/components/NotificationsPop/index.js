@@ -23,6 +23,8 @@ import DoneIcon from '@material-ui/icons/Done';
 import ContactIcon from '@material-ui/icons/ContactMail';
 import { Divider } from 'utils/globalStyledComponents';
 import Skeleton from '@material-ui/lab/Skeleton';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { Container, NotificationItem } from './styledComponents';
 
@@ -106,6 +108,13 @@ function NotificationsPop({ anchorEl, onClose, onRefreshCount }) {
           <span>Notificaciones</span>
           {false && <Button variant="text">Ver todas</Button>}
         </div>
+        <IconButton
+          className="close-button"
+          aria-label="close"
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
         <div className="content">
           {inited ? (
             <React.Fragment>

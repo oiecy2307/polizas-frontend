@@ -78,7 +78,8 @@ function CreateEditTicket({
         description: body.ticketDescription,
         clientId: body.clientId,
         status: body.technicalId ? 'assigned' : 'new',
-        reportedDate: moment(new Date(), 'DD-MM-YYYY').format(),
+        reportedDate: moment().format('DD-MM-YYYY'),
+        dueDate: moment(body.dueDate).format('DD-MM-YYYY'),
         shortName: body.ticketTitle,
         priority: body.ticketPriority,
         evidence: body.evidence,
@@ -89,8 +90,8 @@ function CreateEditTicket({
         description: body.ticketDescription,
         status: 'new',
         priority: body.ticketPriority,
-        reportedDate: moment(new Date(), 'DD-MM-YYYY').format(),
-        dueDate: moment(new Date(), 'DD-MM-YYYY').format(),
+        reportedDate: moment().format('DD-MM-YYYY'),
+        dueDate: moment().format('DD-MM-YYYY'),
         shortName: body.ticketTitle,
         evidence: body.evidence,
       };
@@ -122,7 +123,7 @@ function CreateEditTicket({
     ticketPriority: get(ticketToEdit, 'priority', ''),
     technicalId: get(ticketToEdit, 'technicalId', ''),
     clientId: get(ticketToEdit, 'clientId', ''),
-    dueDate: null,
+    dueDate: get(ticketToEdit, 'dueDate', null),
     evidence: [],
   };
 

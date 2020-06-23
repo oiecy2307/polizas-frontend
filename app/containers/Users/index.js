@@ -48,14 +48,17 @@ export function Users(props) {
     {
       key: 'name',
       label: messages.table.name,
+      style: { minWidth: 160 },
     },
     {
       key: 'email',
       label: messages.table.email,
+      style: { minWidth: 200 },
     },
     {
       key: 'date',
       label: messages.table.date,
+      style: { minWidth: 160 },
     },
   ];
 

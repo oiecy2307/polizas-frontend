@@ -30,6 +30,8 @@ function Datepicker({ language, ...restProps }) {
           format="DD-MM-YYYY"
           inputVariant="filled"
           helperText=""
+          cancelLabel="Cancelar"
+          okLabel="Aceptar"
           {...restProps}
         />
       </MuiPickersUtilsProvider>

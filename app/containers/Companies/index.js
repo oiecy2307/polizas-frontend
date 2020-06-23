@@ -30,10 +30,12 @@ const columns = [
   {
     key: 'name',
     label: 'Nombre',
+    style: { minWidth: 100 },
   },
   {
     key: 'address',
     label: 'Dirección',
+    style: { minWidth: 160 },
   },
   {
     key: 'active',
@@ -46,6 +48,7 @@ const columns = [
   {
     key: 'admin',
     label: 'Responsable',
+    style: { minWidth: 160 },
   },
 ];
 

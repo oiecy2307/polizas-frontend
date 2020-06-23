@@ -39,8 +39,8 @@ export default language => {
       en: 'Priority level',
     },
     evidence: {
-      es: 'Adjuntar evidencia',
-      en: 'Upload evidence',
+      es: 'Adjuntar evidencia (presiona para eliminar)',
+      en: 'Upload evidence (touch to delete)',
     },
     technicalId: {
       es: 'Técnico asignado',

@@ -6,7 +6,7 @@
 
 import React, { memo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getFileType } from 'utils/helper';
+import { getFileType, getIsImage } from 'utils/helper';
 
 import UploadFile from 'components/UploadFile';
 import { wsUploadEvidence } from 'services/tickets';
@@ -14,8 +14,7 @@ import { Container } from './styledComponents';
 
 const getDataUrl = file =>
   new Promise(resolve => {
-    const type = getFileType(file.name);
-    const isImageType = type === 'png' || type === 'jpg' || type === 'jpge';
+    const isImageType = getIsImage(file.name);
 
     if (!isImageType) {
       resolve('');

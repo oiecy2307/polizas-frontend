@@ -37,14 +37,14 @@ export const getFullName = user => {
 export const getFileType = (fileName = '') => {
   try {
     const stringSections = fileName.split('.');
-    return stringSections[stringSections.length - 1];
+    return stringSections[stringSections.length - 1].toLowerCase();
   } catch (e) {
     return '';
   }
 };
 
 export const getIsImage = fileName => {
-  const type = getFileType(fileName);
+  const type = getFileType(fileName).toLowerCase();
   return type === 'png' || type === 'jpg' || type === 'jpge';
 };
 

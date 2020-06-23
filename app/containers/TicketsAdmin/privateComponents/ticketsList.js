@@ -117,6 +117,8 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
     setTicketSelected(null);
   };
 
+  console.log('tickets', tickets);
+
   return (
     <div>
       <DateDetailContainer>
@@ -202,7 +204,10 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
                       name={get(ticket, 'client.name', '')}
                       src={get(ticket, 'client.image', '')}
                     />
-                    <div>{getFullName(ticket.client)} (cliente)</div>
+                    <div>
+                      {getFullName(ticket.client)} (
+                      {get(ticket, 'client.company.name', '')})
+                    </div>
                   </div>
                 )}
                 <SpaceBetween>
@@ -245,6 +250,7 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
         onClose={handleClose}
         dispatch={dispatch}
         id={get(ticketSelected, 'id', '').toString()}
+        cost={get(ticketSelected, 'cost', '').toString()}
         defaultTicket={
           ticketSelected && ticketSelected.paid ? ticketSelected : null
         }

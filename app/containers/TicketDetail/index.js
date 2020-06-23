@@ -235,6 +235,7 @@ export function TicketDetail({ dispatch, match }) {
   const reporterName = getFullName(get(ticket, 'reporter', {}));
   const reporterImg = get(ticket, 'reporter.image', {});
   const clientName = getFullName(get(ticket, 'client', {}));
+  const companyName = get(ticket, 'client.company.name', {});
   const clientImg = get(ticket, 'client.image', {});
   const evidence = get(ticket, 'evidence', []);
   const isCancelled = get(ticket, 'status', '') === 'cancelled';
@@ -393,7 +394,7 @@ export function TicketDetail({ dispatch, match }) {
               <h5>Cliente</h5>
               <div className="user">
                 <Avatar name={clientName} src={clientImg} />
-                <span className="name">{clientName}</span>
+                <span className="name">{`${clientName} (${companyName})`}</span>
               </div>
             </React.Fragment>
           )}
@@ -516,6 +517,7 @@ export function TicketDetail({ dispatch, match }) {
                 onClose={handleCloseModals}
                 dispatch={dispatch}
                 id={get(ticket, 'id', '').toString()}
+                cost={get(ticket, 'cost', '').toString()}
                 defaultTicket={ticket}
               />
             )}

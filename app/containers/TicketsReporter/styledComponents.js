@@ -15,6 +15,7 @@ export const DrawerContent = styled.div`
   width: 100%;
   display: block;
   flex-shrink: 0;
+  position: relative;
 
   & h2,
   h5 {
@@ -23,6 +24,12 @@ export const DrawerContent = styled.div`
 
   & > label {
     width: 100%;
+  }
+
+  & .close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
   }
 `;
 

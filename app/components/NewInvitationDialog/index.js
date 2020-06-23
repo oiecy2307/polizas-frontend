@@ -121,8 +121,6 @@ function NewInvitationDialog({
           options={options}
           placeholder="Rol"
           error=""
-          menuPlacement="bottom"
-          menuPosition="fixed"
         />
       )}
     </Dialog>
