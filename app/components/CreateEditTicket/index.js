@@ -14,7 +14,12 @@ import moment from 'moment/min/moment-with-locales';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { wsCreateTicket, wsUpdateTicket } from 'services/tickets';
 import { wsGetUsersByType } from 'services/users';
-import { getCurrentUser, textRegex, trimObject } from 'utils/helper';
+import {
+  getCurrentUser,
+  textRegex,
+  trimObject,
+  dateFormatToServer,
+} from 'utils/helper';
 
 import FormikDebugger from 'components/FormikDebugger';
 import Dialog from 'components/Dialog';
@@ -68,7 +73,7 @@ function CreateEditTicket({
     }
   }
 
-  async function handleCreateTicket(body, resetValues) {
+  async function handleCreateTicket(body, { resetForm, setSubmitting }) {
     try {
       dispatch(aSetLoadingState(true));
       const user = await getCurrentUser();
@@ -78,8 +83,7 @@ function CreateEditTicket({
         description: body.ticketDescription,
         clientId: body.clientId,
         status: body.technicalId ? 'assigned' : 'new',
-        reportedDate: moment().format('DD-MM-YYYY'),
-        dueDate: moment(body.dueDate).format('DD-MM-YYYY'),
+        reportedDate: moment().format(dateFormatToServer),
         shortName: body.ticketTitle,
         priority: body.ticketPriority,
         evidence: body.evidence,
@@ -90,8 +94,8 @@ function CreateEditTicket({
         description: body.ticketDescription,
         status: 'new',
         priority: body.ticketPriority,
-        reportedDate: moment().format('DD-MM-YYYY'),
-        dueDate: moment().format('DD-MM-YYYY'),
+        reportedDate: moment().format(dateFormatToServer),
+        dueDate: moment().format(dateFormatToServer),
         shortName: body.ticketTitle,
         evidence: body.evidence,
       };
@@ -108,12 +112,13 @@ function CreateEditTicket({
         dispatch(aOpenSnackbar('Ticket guardado', 'success'));
         callback();
         onClose();
-        resetValues();
+        resetForm();
       }
     } catch (e) {
       dispatch(aOpenSnackbar('Error al guardar ticket', 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
+      setSubmitting(false);
     }
   }
 
@@ -121,7 +126,7 @@ function CreateEditTicket({
     ticketTitle: get(ticketToEdit, 'shortName', ''),
     ticketDescription: get(ticketToEdit, 'description', ''),
     ticketPriority: get(ticketToEdit, 'priority', ''),
-    technicalId: get(ticketToEdit, 'technicalId', ''),
+    technicalId: get(ticketToEdit, 'technicalId', '') || '',
     clientId: get(ticketToEdit, 'clientId', ''),
     dueDate: get(ticketToEdit, 'dueDate', null),
     evidence: [],
@@ -142,7 +147,7 @@ function CreateEditTicket({
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
     technicalId: Yup.number(),
-    clientId: Yup.number(),
+    clientId: Yup.number().required(messages.required),
     dueDate: Yup.date().when('clientId', {
       is: () => isEditing,
       then: Yup.date().required(messages.required),
@@ -182,7 +187,7 @@ function CreateEditTicket({
   return (
     <Formik
       onSubmit={(values, actions) => {
-        handleCreateTicket(values, actions.resetForm);
+        handleCreateTicket(values, actions);
       }}
       validationSchema={validationSchema}
       initialValues={defaultValues}

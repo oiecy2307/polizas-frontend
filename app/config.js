@@ -10,8 +10,9 @@ const config = (() => {
       return local;
     case 'development':
       return dev;
+    case 'production':
     default:
-      return dev;
+      return staging;
   }
 })();
 

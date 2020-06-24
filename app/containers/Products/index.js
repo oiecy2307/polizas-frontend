@@ -87,8 +87,14 @@ export function Products({ dispatch }) {
     // },
   ];
 
+  const handleCallBack = () => {
+    fetchProducts();
+    setProductToEdit(null);
+  };
+
   const handleCloseDialogProduct = () => {
     setNewProductOpen(false);
+    setProductToEdit(null);
   };
 
   const items = products.map(p => ({
@@ -119,7 +125,7 @@ export function Products({ dispatch }) {
   }
 
   return (
-    <div>
+    <div style={{ marginBottom: 64 }}>
       <Helmet>
         <title>Productos</title>
       </Helmet>
@@ -135,7 +141,7 @@ export function Products({ dispatch }) {
       <CreateEditProduct
         open={newProductOpen}
         onClose={handleCloseDialogProduct}
-        callback={fetchProducts}
+        callback={handleCallBack}
         dispatch={dispatch}
         defaultProduct={productToEdit}
       />

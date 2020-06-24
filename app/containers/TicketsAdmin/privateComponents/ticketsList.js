@@ -117,8 +117,6 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
     setTicketSelected(null);
   };
 
-  console.log('tickets', tickets);
-
   return (
     <div>
       <DateDetailContainer>

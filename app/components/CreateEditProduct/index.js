@@ -82,7 +82,7 @@ function CreateEditProduct({
       .max(150, 'Texto demasiado largo'),
   });
 
-  const dialogTitle = isEditing ? 'Editar producto' : 'Nueva producto';
+  const dialogTitle = isEditing ? 'Editar producto' : 'Nuevo producto';
 
   if (!open) return <div style={{ display: 'none ' }} />;
 
