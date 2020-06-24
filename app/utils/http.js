@@ -17,7 +17,10 @@ apiCall.interceptors.response.use(response => response, async function(error) {
   let errorMessage = 'There was an error communicating with the server.';
   if (error.response) {
     if (error.response.status === 401) {
-      history.push('/');
+      await ImmortalDB.remove('user');
+      await ImmortalDB.remove('token');
+      await ImmortalDB.remove('notificationToken');
+      history.push('/inicio-sesion');
     }
     errorMessage = error.response.message
       ? error.response.message
