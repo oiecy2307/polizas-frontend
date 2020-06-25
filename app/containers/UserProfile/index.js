@@ -92,7 +92,7 @@ export function UserProfile({ match, dispatch }) {
       const isImage = getIsImage(file.name);
       if (!isImage) {
         dispatch(
-          aOpenSnackbar('Solo se aceptan formatos PNG, JPG y JPGE', 'error'),
+          aOpenSnackbar('Solo se aceptan formatos PNG, JPG y JPEG', 'error'),
         );
         return;
       }

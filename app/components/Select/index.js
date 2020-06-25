@@ -9,6 +9,7 @@ import { GlobalValuesContext } from 'contexts/global-values';
 import Select from 'react-select';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const Error = styled.div`
   margin-top: -28px;
@@ -35,9 +36,14 @@ function SelectStyled(props) {
     ? '2px solid rgb(244, 67, 54)'
     : '1px solid #919191';
   const { isResponsive } = useContext(GlobalValuesContext);
-  const position = !isResponsive
-    ? { menuPlacement: 'bottom', menuPosition: 'fixed' }
-    : {};
+  const matches = useMediaQuery(
+    '@media only screen and (max-width: 1024px) and (min-width: 900px)',
+  );
+  const position =
+    matches || isResponsive
+      ? {}
+      : { menuPlacement: 'bottom', menuPosition: 'fixed' };
+
   return (
     <SelectContainer>
       <Select
@@ -56,7 +62,7 @@ function SelectStyled(props) {
           }),
           menu: provided => ({
             ...provided,
-            zIndex: 99,
+            zIndex: 999,
           }),
           singleValue: provided => ({
             ...provided,

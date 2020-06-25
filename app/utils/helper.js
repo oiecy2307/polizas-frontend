@@ -47,7 +47,7 @@ export const getFileType = (fileName = '') => {
 
 export const getIsImage = fileName => {
   const type = getFileType(fileName).toLowerCase();
-  return type === 'png' || type === 'jpg' || type === 'jpge';
+  return type === 'png' || type === 'jpg' || type === 'jpeg';
 };
 
 export const getStatusLabel = (status, paid) => {

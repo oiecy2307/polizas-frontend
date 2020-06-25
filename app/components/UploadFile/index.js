@@ -55,7 +55,7 @@ function UploadFile({
     );
   }
 
-  const isImageType = type === 'png' || type === 'jpg' || type === 'jpge';
+  const isImageType = type === 'png' || type === 'jpg' || type === 'jpeg';
 
   return (
     <Container>
