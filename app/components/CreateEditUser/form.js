@@ -8,7 +8,7 @@ import React, { memo, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { GlobalValuesContext } from 'contexts/global-values';
 import { Field } from 'formik';
-import { find } from 'lodash';
+import { find, get } from 'lodash';
 
 import Input from 'components/InputText';
 import Select from 'components/Select';
@@ -163,7 +163,7 @@ function CreateEditUserForm(props) {
                   {...field}
                   value={value}
                   onChange={newValue => {
-                    setFieldValue(field.name, newValue.value);
+                    setFieldValue(field.name, get(newValue, 'value', ''));
                   }}
                   options={options}
                   placeholder={messages.fields.role}
@@ -176,18 +176,6 @@ function CreateEditUserForm(props) {
                 />
               );
             }}
-          />
-          <Field
-            name="company"
-            defaultValues={values.company}
-            render={({ field }) => (
-              <Input
-                {...field}
-                label={messages.fields.company}
-                helperText={touched.company ? errors.company : ''}
-                error={touched.company && Boolean(errors.company)}
-              />
-            )}
           />
         </React.Fragment>
       )}

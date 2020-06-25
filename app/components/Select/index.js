@@ -80,6 +80,7 @@ function SelectStyled(props) {
             zIndex: 999,
           }),
         }}
+        isClearable
         {...props}
         {...position}
       />

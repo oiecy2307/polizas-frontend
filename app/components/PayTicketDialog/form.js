@@ -78,10 +78,14 @@ function PayTicketForm(props) {
             label="Fecha de pago"
             language={language}
             onChange={newValue => {
-              setFieldValue(
-                field.name,
-                moment(newValue, 'DD-MM-YYYY').format(),
-              );
+              if (!newValue) {
+                setFieldValue(field.name, null);
+              } else {
+                setFieldValue(
+                  field.name,
+                  moment(newValue, 'DD-MM-YYYY').format(),
+                );
+              }
             }}
             helperText={touched.paidDate ? errors.paidDate : ''}
             error={touched.paidDate && Boolean(errors.paidDate)}

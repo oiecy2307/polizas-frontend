@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import moment from 'moment/min/moment-with-locales';
 import { wsCloseTicket } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
-import { trimObject } from 'utils/helper';
+import { trimObject, dateFormatToServer } from 'utils/helper';
 
 import Dialog from 'components/Dialog';
 import Form from './form';
@@ -22,7 +22,11 @@ function CloseTicketDialog({ open, onClose, dispatch, id }) {
   async function handleCloseTicket(body, resetValues) {
     try {
       dispatch(aSetLoadingState(true));
-      const response = await wsCloseTicket(id, trimObject(body));
+      const finalBody = {
+        ...body,
+        finishedDate: moment(body.finishedDate).format(dateFormatToServer),
+      };
+      const response = await wsCloseTicket(id, trimObject(finalBody));
       if (response.error) {
         dispatch(aOpenSnackbar('No se pudo cerrar el ticket', 'error'));
       } else {

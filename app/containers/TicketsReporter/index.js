@@ -12,6 +12,7 @@ import { compose } from 'redux';
 import { get, isEqual } from 'lodash';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
+import moment from 'moment/min/moment-with-locales';
 
 import { wsGetReport, wsGetReportFilters } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
@@ -21,6 +22,7 @@ import {
   minutesToHours,
   toMoneyFormat,
   trimObject,
+  dateFormatToServer,
 } from 'utils/helper';
 
 import { Paper, Divider, FloatRight } from 'utils/globalStyledComponents';
@@ -145,6 +147,15 @@ const orderOptions = [
   },
 ];
 
+const getFormatedDate = date => {
+  try {
+    if (!date) return null;
+    return moment(date).format(dateFormatToServer);
+  } catch (e) {
+    return null;
+  }
+};
+
 export function TicketsReporter({ dispatch }) {
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(0);
@@ -243,6 +254,12 @@ export function TicketsReporter({ dispatch }) {
         limit: rowsPerPage,
         filters: {
           ...filtersActive,
+          startCreationDate: getFormatedDate(filtersActive.startCreationDate),
+          endCreationDate: getFormatedDate(filtersActive.endCreationDate),
+          startFinishDate: getFormatedDate(filtersActive.startFinishDate),
+          endFinishDate: getFormatedDate(filtersActive.endFinishDate),
+          startPaidDate: getFormatedDate(filtersActive.startPaidDate),
+          endPaidDate: getFormatedDate(filtersActive.endPaidDate),
           companies: (filtersActive.companies || []).map(c => c.value),
           technicals: (filtersActive.technicals || []).map(t => t.value),
           statuses: (filtersActive.statuses || []).map(s => s.value),

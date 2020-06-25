@@ -48,13 +48,13 @@ function CreateEditProduct({
         await wsCreateProduct(trimObject(body));
       }
 
-      dispatch(aOpenSnackbar('Producto creado con éxito', 'success'));
+      dispatch(aOpenSnackbar('Producto guardado con éxito', 'success'));
       callback();
       onClose();
       resetForm();
       setSubmitting(false);
     } catch (e) {
-      const errorMessage = get(e, 'data.message', 'Error al crear producto');
+      const errorMessage = get(e, 'data.message', 'Error al guardar producto');
       dispatch(aOpenSnackbar(errorMessage, 'error'));
     } finally {
       dispatch(aSetLoadingState(false));

@@ -37,8 +37,8 @@ const columns = [
     label: 'Versión actual',
   },
   {
-    key: 'createdAt',
-    label: 'Creada',
+    key: 'updatedAt',
+    label: 'Última actualización',
     style: { minWidth: 160 },
   },
 ];
@@ -99,7 +99,7 @@ export function Products({ dispatch }) {
 
   const items = products.map(p => ({
     ...p,
-    createdAt: moment(p.createdAt).format('LL'),
+    updatedAt: moment(p.updatedAt).format('LL'),
     originalItem: p,
   }));
 

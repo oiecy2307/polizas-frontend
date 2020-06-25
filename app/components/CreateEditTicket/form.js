@@ -8,7 +8,7 @@ import React, { memo, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { GlobalValuesContext } from 'contexts/global-values';
 import { Field } from 'formik';
-import { find } from 'lodash';
+import { find, get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import UploadEvidence from 'components/UploadEvidence';
 import Label from 'components/Label';
@@ -103,7 +103,7 @@ function CreateEditTicketForm(props) {
                   {...field}
                   value={value}
                   onChange={newValue => {
-                    setFieldValue(field.name, newValue.value);
+                    setFieldValue(field.name, get(newValue, 'value', ''));
                   }}
                   options={technicals}
                   placeholder={messages.fields.technicalId}
@@ -128,7 +128,7 @@ function CreateEditTicketForm(props) {
                   {...field}
                   value={value}
                   onChange={newValue => {
-                    setFieldValue(field.name, newValue.value);
+                    setFieldValue(field.name, get(newValue, 'value', ''));
                   }}
                   options={clients}
                   placeholder={messages.fields.clientId}
@@ -153,10 +153,14 @@ function CreateEditTicketForm(props) {
                 label={messages.fields.dueDate}
                 language={language}
                 onChange={newValue => {
-                  setFieldValue(
-                    field.name,
-                    moment(newValue, 'DD-MM-YYYY').format(),
-                  );
+                  if (!newValue) {
+                    setFieldValue(field.name, null);
+                  } else {
+                    setFieldValue(
+                      field.name,
+                      moment(newValue, 'DD-MM-YYYY').format(),
+                    );
+                  }
                 }}
                 helperText={touched.dueDate ? errors.dueDate : ''}
                 error={touched.dueDate && Boolean(errors.dueDate)}

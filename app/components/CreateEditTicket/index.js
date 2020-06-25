@@ -84,6 +84,7 @@ function CreateEditTicket({
         clientId: body.clientId,
         status: body.technicalId ? 'assigned' : 'new',
         reportedDate: moment().format(dateFormatToServer),
+        dueDate: moment(body.dueDate).format(dateFormatToServer),
         shortName: body.ticketTitle,
         priority: body.ticketPriority,
         evidence: body.evidence,
@@ -150,7 +151,9 @@ function CreateEditTicket({
     clientId: Yup.number().required(messages.required),
     dueDate: Yup.date().when('clientId', {
       is: () => isEditing,
-      then: Yup.date().required(messages.required),
+      then: Yup.date()
+        .required(messages.required)
+        .typeError(messages.required),
       otherwise: Yup.date()
         .required(messages.required)
         .typeError(messages.required)
