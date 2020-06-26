@@ -8,8 +8,17 @@ import React from 'react';
 import { compose } from 'redux';
 import { withRouter, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { validateRoute } from 'utils/helper';
 
 class AppRoute extends React.PureComponent { // eslint-disable-line
+  componentDidMount() {
+    this.handleValidateRoute();
+  }
+
+  handleValidateRoute = async () => {
+    await validateRoute(this.props.responsiveTitle);
+  };
+
   render() {
     const {
       layout: Layout,
@@ -18,6 +27,7 @@ class AppRoute extends React.PureComponent { // eslint-disable-line
       responsiveTitle,
       ...rest
     } = this.props;
+
     return (
       <Route
         {...rest}

@@ -244,6 +244,7 @@ export function MainLayout({
 
   if (!pageLoaded) return <div />;
   const isAdmin = currentUser.role === 'admin';
+  const isTechnical = currentUser.role === 'technical';
   const isClientAdmin =
     currentUser.role === 'client' && currentUser.isCompanyAdmin;
 
@@ -322,7 +323,7 @@ export function MainLayout({
           <SidebarItemText>{messages.menu.products}</SidebarItemText>
         </SidebarItem>
       )}
-      {isAdmin && (
+      {(isAdmin || isTechnical) && (
         <SidebarItem
           onClick={handleChangeRoute}
           to="/soluciones"

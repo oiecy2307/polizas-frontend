@@ -1,8 +1,76 @@
 import { ImmortalDB } from 'immortal-db';
 import Numeral from 'numeral';
 import { mapValues } from 'lodash';
+import history from 'utils/history';
 
 export const dateFormatToServer = 'YYYY-MM-DD';
+
+export const validateRoute = async route => {
+  const user = JSON.parse(await ImmortalDB.get('user'));
+  const routes = [
+    {
+      route: 'Tickets',
+      roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
+    },
+    {
+      route: 'Reporteador de tickets',
+      roles: ['admin'],
+    },
+    {
+      route: 'Facturas',
+      roles: [
+        /* 'admin', 'salesman', 'technical', 'client', 'client-admin' */
+      ],
+    },
+    {
+      route: 'Usuarios',
+      roles: ['admin', 'client-admin'],
+    },
+    {
+      route: 'Dashboard',
+      roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
+    },
+    {
+      route: 'Perfil',
+      roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
+    },
+    {
+      route: 'Detalle de ticket',
+      roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
+    },
+    {
+      route: 'Invitaciones',
+      roles: ['admin', 'client-admin'],
+    },
+    {
+      route: 'Empresas',
+      roles: ['admin'],
+    },
+    {
+      route: 'Productos',
+      roles: ['admin'],
+    },
+    {
+      route: 'Soluciones',
+      roles: ['admin', 'salesman', 'technical'],
+    },
+    {
+      route: 'Detalle de solución',
+      roles: ['admin', 'salesman', 'technical'],
+    },
+  ];
+
+  const role =
+    user.isCompanyAdmin && user.role === 'client' ? 'client-admin' : role;
+
+  const unauthorized = !(routes.find(r => r.route === route).roles || []).some(
+    r => r === role,
+  );
+
+  if (unauthorized) {
+    history.push('/');
+  }
+};
 
 export const trimObject = object =>
   mapValues({ ...object }, value =>

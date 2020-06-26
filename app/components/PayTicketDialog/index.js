@@ -91,7 +91,7 @@ function PayTicketDialog({ open, onClose, dispatch, id, defaultTicket, cost }) {
           }}
           title="Pagar ticket"
           withActions
-          positiveAction="Pagar"
+          positiveAction={defaultTicket ? 'Modificar pago' : 'Pagar'}
           onNegativeAction={() => {
             onClose(false);
             p.handleReset();
