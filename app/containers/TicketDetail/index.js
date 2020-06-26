@@ -398,10 +398,9 @@ export function TicketDetail({ dispatch, match }) {
               </div>
             </React.Fragment>
           )}
-          <React.Fragment>
-            {technicalName ||
-              (!isClient && !isCancelled && <h5>Técnico asignado</h5>)}
-            {technicalName ? (
+          {technicalName && (
+            <React.Fragment>
+              <h5>Técnico asignado</h5>
               <Div
                 className="user"
                 clickable={!isClient && !isCancelled}
@@ -410,15 +409,8 @@ export function TicketDetail({ dispatch, match }) {
                 <Avatar name={technicalName} src={technicalImg} />
                 <span className="name">{technicalName}</span>
               </Div>
-            ) : (
-              !isClient &&
-              !isCancelled && (
-                <Button onClick={handleOpenAssignDialog} variant="text">
-                  Asignar ticket
-                </Button>
-              )
-            )}
-          </React.Fragment>
+            </React.Fragment>
+          )}
           {finishedDate && (
             <React.Fragment>
               <h5>Fecha de terminación</h5>
