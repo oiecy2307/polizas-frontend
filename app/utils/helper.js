@@ -61,7 +61,7 @@ export const validateRoute = async route => {
   ];
 
   const role =
-    user.isCompanyAdmin && user.role === 'client' ? 'client-admin' : role;
+    user.isCompanyAdmin && user.role === 'client' ? 'client-admin' : user.role;
 
   const unauthorized = !(routes.find(r => r.route === route).roles || []).some(
     r => r === role,
