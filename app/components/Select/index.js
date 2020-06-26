@@ -37,7 +37,7 @@ function SelectStyled(props) {
     : '1px solid #919191';
   const { isResponsive } = useContext(GlobalValuesContext);
   const matches = useMediaQuery(
-    '@media only screen and (max-width: 1024px) and (min-width: 900px)',
+    '@media only screen and (max-width: 1080px) and (min-width: 800px)',
   );
   const position =
     matches || isResponsive

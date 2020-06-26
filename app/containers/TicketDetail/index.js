@@ -399,7 +399,8 @@ export function TicketDetail({ dispatch, match }) {
             </React.Fragment>
           )}
           <React.Fragment>
-            <h5>Técnico asignado</h5>
+            {technicalName ||
+              (!isClient && !isCancelled && <h5>Técnico asignado</h5>)}
             {technicalName ? (
               <Div
                 className="user"
