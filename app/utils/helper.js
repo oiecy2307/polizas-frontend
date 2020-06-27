@@ -14,7 +14,7 @@ export const validateRoute = async route => {
     },
     {
       route: 'Reporteador de tickets',
-      roles: ['admin'],
+      roles: ['admin', 'salesman'],
     },
     {
       route: 'Facturas',
@@ -52,11 +52,11 @@ export const validateRoute = async route => {
     },
     {
       route: 'Soluciones',
-      roles: ['admin', 'salesman', 'technical'],
+      roles: ['admin', 'technical'],
     },
     {
       route: 'Detalle de solución',
-      roles: ['admin', 'salesman', 'technical'],
+      roles: ['admin', 'technical'],
     },
   ];
 

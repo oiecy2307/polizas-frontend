@@ -256,7 +256,7 @@ export function TicketDetail({ dispatch, match }) {
         return 'Cerrar ticket';
       case 'paid':
       case 'closed':
-        return 'Pagar ticket';
+        return 'Modificar pago';
       default:
         return 'Asignar ticket';
     }
@@ -351,6 +351,11 @@ export function TicketDetail({ dispatch, match }) {
   const showClosedInfo =
     ticket.status !== 'new' && ticket.status !== 'assigned';
 
+  const showButton =
+    !isClient &&
+    !isCancelled &&
+    !(currentUser.role === 'technical' && ticket.status === 'closed');
+
   return (
     <MainContainer>
       <Helmet>
@@ -368,7 +373,7 @@ export function TicketDetail({ dispatch, match }) {
               </div>
             </Tooltip>
           </div>
-          {!isClient && !isCancelled && (
+          {showButton && (
             <Button onClick={handleButtonClicked}>{buttonText}</Button>
           )}
         </TopSection>

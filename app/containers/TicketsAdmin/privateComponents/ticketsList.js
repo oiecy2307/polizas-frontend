@@ -4,13 +4,14 @@
  *
  */
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment/min/moment-with-locales';
 import { get } from 'lodash';
 import Numeral from 'numeral';
 import { minutesToHours, getFullName } from 'utils/helper';
 import { Link } from 'react-router-dom';
+import { LoggedUser } from 'contexts/logged-user';
 
 import DescriptionIcon from '@material-ui/icons/Description';
 import CalendarIcon from '@material-ui/icons/CalendarToday';
@@ -68,6 +69,8 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
   const [isAssignTicketDialogOpen, setIsAssignTicketDialogOpen] = useState(
     false,
   );
+  const currentUser = useContext(LoggedUser);
+
   const isToday = moment(date).isSame(new Date(), 'day');
   const formatedDate = moment(date).format('LL');
   const displayDate = isToday
@@ -116,6 +119,11 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
     }
     setTicketSelected(null);
   };
+
+  const showButton = ticket =>
+    !isClient &&
+    ticket.status !== 'cancelled' &&
+    !(currentUser.role === 'technical' && ticket.status === 'closed');
 
   return (
     <div>
@@ -219,7 +227,7 @@ export function TicketsList({ tickets, date, onRefresh, dispatch, isClient }) {
                       </React.Fragment>
                     )}
                   </div>
-                  {!isClient && ticket.status !== 'cancelled' && (
+                  {showButton(ticket) && (
                     <Button onClick={() => handleButtonClicked(ticket)}>
                       {getButtonText(ticket.status, ticket.paid)}
                     </Button>

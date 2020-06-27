@@ -245,6 +245,7 @@ export function MainLayout({
   if (!pageLoaded) return <div />;
   const isAdmin = currentUser.role === 'admin';
   const isTechnical = currentUser.role === 'technical';
+  const isSalesman = currentUser.role === 'salesman';
   const isClientAdmin =
     currentUser.role === 'client' && currentUser.isCompanyAdmin;
 
@@ -266,7 +267,7 @@ export function MainLayout({
         <SidebarIcon icon="tickets" />
         <SidebarItemText>{messages.menu.tickets}</SidebarItemText>
       </SidebarItem>
-      {isAdmin && (
+      {(isAdmin || isSalesman) && (
         <SidebarItem
           onClick={handleChangeRoute}
           to="/reporteador-tickets"

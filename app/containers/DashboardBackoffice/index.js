@@ -234,12 +234,13 @@ export function DashboardBackoffice({ dispatch }) {
         <React.Fragment>
           <Paper>
             <h3>Tickets por estatus (últimos 30 días)</h3>
-            <PieChart width={360} height={280}>
+            <PieChart width={660} height={280}>
               <Pie
                 dataKey="value"
                 isAnimationActive={false}
                 data={ticketStatusCount}
                 outerRadius={80}
+                cx={330}
                 fill="#108043"
                 label={payload => <PieChartItem {...payload} />}
               />
@@ -248,12 +249,13 @@ export function DashboardBackoffice({ dispatch }) {
           </Paper>
           <Paper>
             <h3>Tickets cerrados por técnico (últimos 30 días)</h3>
-            <PieChart width={360} height={280}>
+            <PieChart width={660} height={280}>
               <Pie
                 dataKey="value"
                 isAnimationActive={false}
                 data={technicalsWork}
                 outerRadius={80}
+                cx={330}
                 fill="#108043"
                 label={payload => <PieChartItem {...payload} />}
               />
@@ -262,12 +264,13 @@ export function DashboardBackoffice({ dispatch }) {
           </Paper>
           <Paper>
             <h3>Tickets por empresa (últimos 30 días)</h3>
-            <PieChart width={360} height={280}>
+            <PieChart width={660} height={280}>
               <Pie
                 dataKey="value"
                 isAnimationActive={false}
                 data={ticketsByCompany}
                 outerRadius={80}
+                cx={330}
                 fill="#108043"
                 label={payload => <PieChartItem {...payload} />}
               />

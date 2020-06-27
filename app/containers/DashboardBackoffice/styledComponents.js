@@ -27,6 +27,11 @@ export const Paper = styled.div`
     margin-top: 0;
   }
 
+  @media (max-width: 1024px) {
+    margin-right: 0;
+    width: 100%;
+  }
+
   ${mediaQuery} {
     margin-right: 0;
     width: 100%;
