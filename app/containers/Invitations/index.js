@@ -53,20 +53,29 @@ export function Invitations({ dispatch }) {
   const [newInvitationOpen, setNewInvitationOpen] = useState(false);
   const [urlInvitation, setUrlInvitation] = useState('');
   const [defaultEmail, setDefaultEmail] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [count, setCount] = useState(0);
+
   const urlRef = useRef(null);
 
   useEffect(() => {
     fetchInvitations();
-  }, []);
+  }, [page, rowsPerPage, optionSelected]);
 
   const fetchInvitations = async () => {
     try {
       dispatch(aSetLoadingState(true));
-      const response = await wsGetInvitations();
+      const response = await wsGetInvitations(
+        optionSelected,
+        page * rowsPerPage,
+        rowsPerPage,
+      );
       if (response.error) {
         dispatch(aOpenSnackbar('Error al obtener invitaciones', 'error'));
       } else {
         setInvitations(get(response, 'data.invitations', []) || []);
+        setCount(get(response, 'data.count', 0));
       }
     } catch (e) {
       dispatch(aOpenSnackbar('Error al obtener invitaciones', 'error'));
@@ -136,6 +145,15 @@ export function Invitations({ dispatch }) {
     document.execCommand('copy');
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   const optionsMenu = [
     {
       option: 'Link invitación',
@@ -198,7 +216,13 @@ export function Invitations({ dispatch }) {
         withMenu
         optionsMenu={optionsMenu}
         isClickable={false}
-        showPagination={false}
+        showPagination
+        count={count}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        labelRowsPerPage="Invitaciones por página"
+        onChangeRowsPerPage={handleChangeRowsPerPage}
       />
       {!items.length && <EmptyState />}
       <NewInvitationDialog

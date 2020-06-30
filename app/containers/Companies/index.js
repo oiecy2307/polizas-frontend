@@ -59,17 +59,25 @@ export function Companies({ dispatch }) {
   const [initialLoading, setInitialLoading] = useState(true);
   const [companyToEdit, setCompanyToEdit] = useState(null);
   const [companyToAssign, setCompanyToAssign] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     fetchCompanies();
-  }, []);
+  }, [page, rowsPerPage, optionSelected]);
 
   const fetchCompanies = async () => {
     try {
       dispatch(aSetLoadingState(true));
-      const response = await wsGetCompanies();
+      const response = await wsGetCompanies(
+        optionSelected,
+        page * rowsPerPage,
+        rowsPerPage,
+      );
       const lCompanies = get(response, 'data.rows', []);
       setCompanies(lCompanies);
+      setCount(get(response, 'data.count', 0));
     } catch (e) {
       const error =
         get(e, 'data.message', 'No se pudo obtener las empresas') || '';
@@ -120,6 +128,15 @@ export function Companies({ dispatch }) {
   const handleCloseDialogCompany = () => {
     setCompanyToEdit(null);
     setNewCompanyOpen(false);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const optionsMenu = [
@@ -207,7 +224,13 @@ export function Companies({ dispatch }) {
         withMenu
         optionsMenu={optionsMenu}
         isClickable={false}
-        showPagination={false}
+        showPagination
+        count={count}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        labelRowsPerPage="Empresas por página"
+        onChangeRowsPerPage={handleChangeRowsPerPage}
       />
       {items.length === 0 && <EmptyState />}
       <Fab onClick={() => setNewCompanyOpen(true)} />

@@ -41,6 +41,9 @@ export function Users(props) {
   const [users, setUsers] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [userToEdit, setUserToEdit] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [count, setCount] = useState(0);
 
   const { dispatch } = props;
 
@@ -129,12 +132,17 @@ export function Users(props) {
 
   useEffect(() => {
     fetchUsers(optionSelected);
-  }, [optionSelected]);
+  }, [optionSelected, page, rowsPerPage]);
 
   async function fetchUsers(type) {
     try {
       dispatch(aSetLoadingState(true));
-      const rUsers = await wsGetUsersByType(type);
+      const rUsers = await wsGetUsersByType(
+        type,
+        page * rowsPerPage,
+        rowsPerPage,
+      );
+      setCount(get(rUsers, 'data.count', 0));
       if (rUsers.error)
         dispatch(aOpenSnackbar('Error al consultar usuarios', 'error'));
       setUsers(get(rUsers, 'data.rows', []));
@@ -151,6 +159,15 @@ export function Users(props) {
 
   const handleSaveSuccess = () => {
     fetchUsers(optionSelected);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   return (
@@ -201,7 +218,13 @@ export function Users(props) {
         withMenu
         optionsMenu={optionsMenu}
         isClickable={false}
-        showPagination={false}
+        showPagination
+        count={count}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        labelRowsPerPage="Usuarios por página"
+        onChangeRowsPerPage={handleChangeRowsPerPage}
       />
       {users.length === 0 && <EmptyState small />}
       <CreateEditUser

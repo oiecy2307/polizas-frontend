@@ -122,8 +122,9 @@ export function Solutions({ dispatch }) {
         orientation: filterDesc ? 'DESC' : 'ASC',
       });
       const lSolutions = get(response, 'data.rows', []);
+      const lCount = get(response, 'data.count', 0);
       setSolutions(lSolutions);
-      setCount(lSolutions.length);
+      setCount(lCount);
       setInitialLoading(false);
     } catch (e) {
       const defaultError = 'Error al obtener soluciones';
@@ -279,7 +280,7 @@ export function Solutions({ dispatch }) {
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}
-        labelRowsPerPage="soluciones por página"
+        labelRowsPerPage="Soluciones por página"
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
       {!solutions.length && <EmptyState />}

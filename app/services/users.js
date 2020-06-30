@@ -1,10 +1,10 @@
 import { get, getToken, patch, post, deleteRequest } from 'utils/http';
 
-export const wsGetUsersByType = async type => {
+export const wsGetUsersByType = async (type, offset, limit) => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
     get({
-      url: `/users/type/${type}`,
+      url: `/users/type/${type}?offset=${offset}&limit=${limit}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -43,11 +43,11 @@ export const wsUpdateUser = async (id, body) => {
   });
 };
 
-export const wsGetInvitations = async () => {
+export const wsGetInvitations = async (status, offset, limit) => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
     get({
-      url: `/users/invitations`,
+      url: `/users/invitations?status=${status}&offset=${offset}&limit=${limit}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

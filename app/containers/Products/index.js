@@ -13,6 +13,7 @@ import { get, times } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 
 import Skeleton from '@material-ui/lab/Skeleton';
+import { TabButton } from 'utils/globalStyledComponents';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { wsGetProducts } from 'services/products';
@@ -44,21 +45,30 @@ const columns = [
 ];
 
 export function Products({ dispatch }) {
+  const [optionSelected, setOptionSelected] = useState('all');
   const [products, setProducts] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
   const [newProductOpen, setNewProductOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [page, rowsPerPage, optionSelected]);
 
   const fetchProducts = async () => {
     try {
       dispatch(aSetLoadingState(true));
-      const response = await wsGetProducts();
+      const response = await wsGetProducts(
+        optionSelected,
+        page * rowsPerPage,
+        rowsPerPage,
+      );
       const lProducts = get(response, 'data.rows', []);
       setProducts(lProducts);
+      setCount(get(response, 'data.count', []));
       setInitialLoading(false);
     } catch (e) {
       const defaultError = 'Error al obtener productos';
@@ -72,6 +82,15 @@ export function Products({ dispatch }) {
   const handleUpdateProduct = product => {
     setProductToEdit(product.originalItem);
     setNewProductOpen(true);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   // const handleDeleteProduct = product => product;
@@ -129,13 +148,39 @@ export function Products({ dispatch }) {
       <Helmet>
         <title>Productos</title>
       </Helmet>
+      <div>
+        <TabButton
+          selected={optionSelected === 'all'}
+          onClick={() => setOptionSelected('all')}
+        >
+          Todas
+        </TabButton>
+        <TabButton
+          selected={optionSelected === 'actives'}
+          onClick={() => setOptionSelected('actives')}
+        >
+          Activos
+        </TabButton>
+        <TabButton
+          selected={optionSelected === 'disabled'}
+          onClick={() => setOptionSelected('disabled')}
+        >
+          Desactivados
+        </TabButton>
+      </div>
       <Table
         columns={columns}
         items={items}
         withMenu
         optionsMenu={optionsMenu}
         isClickable={false}
-        showPagination={false}
+        showPagination
+        count={count}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        labelRowsPerPage="Productos por página"
+        onChangeRowsPerPage={handleChangeRowsPerPage}
       />
       {!products.length && <EmptyState />}
       <CreateEditProduct
