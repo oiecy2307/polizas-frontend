@@ -53,7 +53,7 @@ const columns = [
 ];
 
 export function Companies({ dispatch }) {
-  const [optionSelected, setOptionSelected] = useState('all');
+  const [optionSelected, setOptionSelected] = useState('actives');
   const [companies, setCompanies] = useState([]);
   const [newCompanyOpen, setNewCompanyOpen] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -149,7 +149,7 @@ export function Companies({ dispatch }) {
       action: handleAssignCompanyAdmin,
     },
     {
-      option: 'Activar / desactivar',
+      option: optionSelected === 'actives' ? 'Desactivar' : 'Activar',
       action: handleDeactivateCompany,
     },
   ];
@@ -200,12 +200,6 @@ export function Companies({ dispatch }) {
       </Helmet>
       <div>
         <TabButton
-          selected={optionSelected === 'all'}
-          onClick={() => setOptionSelected('all')}
-        >
-          Todas
-        </TabButton>
-        <TabButton
           selected={optionSelected === 'actives'}
           onClick={() => setOptionSelected('actives')}
         >
@@ -218,21 +212,23 @@ export function Companies({ dispatch }) {
           Desactivadas
         </TabButton>
       </div>
-      <Table
-        columns={columns}
-        items={items}
-        withMenu
-        optionsMenu={optionsMenu}
-        isClickable={false}
-        showPagination
-        count={count}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        labelRowsPerPage="Empresas por página"
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-      {items.length === 0 && <EmptyState />}
+      {Boolean(items.length) && (
+        <Table
+          columns={columns}
+          items={items}
+          withMenu
+          optionsMenu={optionsMenu}
+          isClickable={false}
+          showPagination
+          count={count}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          labelRowsPerPage="Empresas por página"
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      )}
+      {!items.length && <EmptyState />}
       <Fab onClick={() => setNewCompanyOpen(true)} />
       <CreateEditCompany
         open={newCompanyOpen}

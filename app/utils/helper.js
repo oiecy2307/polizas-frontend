@@ -72,9 +72,11 @@ export const validateRoute = async route => {
   }
 };
 
+const emojisRegex = /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
+
 export const trimObject = object =>
   mapValues({ ...object }, value =>
-    typeof value === 'string' ? value.trim() : value,
+    typeof value === 'string' ? value.trim().replace(emojisRegex, '') : value,
   );
 
 export const getCurrentUser = async () => {

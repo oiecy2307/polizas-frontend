@@ -16,7 +16,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { Link } from 'react-router-dom';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
-import { wsGetSolutions } from 'services/solutions';
+import { wsGetSolutions, wsUpdateSolution } from 'services/solutions';
 import { wsGetProductsBrief } from 'services/products';
 
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
@@ -37,6 +37,7 @@ import Button from 'components/Button';
 import Datepicker from 'components/Datepicker';
 import Select from 'components/Select';
 import InputText from 'components/InputText';
+import Dialog from 'components/Dialog';
 
 import { DrawerContent, PairInputsRow, TopSection } from './styledComponents';
 
@@ -87,6 +88,8 @@ export function Solutions({ dispatch }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
+  const [solutionToDelete, setSolutionToDelete] = useState(null);
+  const [deleteClicked, setDeleteClicked] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -150,17 +153,20 @@ export function Solutions({ dispatch }) {
     setNewSolutionOpen(true);
   };
 
-  // const handleDeleteSolution = solution => solution;
+  const handleDeleteSolution = solution => {
+    setSolutionToDelete(solution.originalItem);
+    setDeleteClicked(false);
+  };
 
   const optionsMenu = [
     {
       option: 'Editar',
       action: handleUpdateSolution,
     },
-    // {
-    //   option: 'Eliminar',
-    //   action: handleDeleteSolution,
-    // },
+    {
+      option: 'Eliminar',
+      action: handleDeleteSolution,
+    },
   ];
 
   const handleCloseDialogSolution = () => {
@@ -187,6 +193,36 @@ export function Solutions({ dispatch }) {
     }));
   };
 
+  const handleCloseDeleteDialog = () => {
+    setSolutionToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      setDeleteClicked(true);
+      dispatch(aSetLoadingState(true));
+      const response = await wsUpdateSolution({
+        id: solutionToDelete.id,
+        active: false,
+      });
+      if (response.error) {
+        dispatch(
+          aOpenSnackbar('Ocurrió un error al eliminar la solución', 'error'),
+        );
+      } else {
+        dispatch(aOpenSnackbar('Solución eliminada con éxito', 'success'));
+      }
+    } catch (e) {
+      dispatch(
+        aOpenSnackbar('Ocurrió un error al eliminar la solución', 'error'),
+      );
+    } finally {
+      dispatch(aSetLoadingState(false));
+      handleCloseDeleteDialog();
+      fetchSolutions();
+    }
+  };
+
   const items = solutions.map(s => ({
     ...s,
     shortName: (
@@ -211,6 +247,8 @@ export function Solutions({ dispatch }) {
     value: p.id,
     label: p.name,
   }));
+
+  const deleteDialogOpen = Boolean(solutionToDelete);
 
   if (initialLoading) {
     return (
@@ -269,20 +307,22 @@ export function Solutions({ dispatch }) {
           Filtrar
         </Button>
       </TopSection>
-      <Table
-        columns={columns}
-        items={items}
-        withMenu
-        optionsMenu={optionsMenu}
-        count={count}
-        isClickable={false}
-        showPagination
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        labelRowsPerPage="Soluciones por página"
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+      {Boolean(solutions.length) && (
+        <Table
+          columns={columns}
+          items={items}
+          withMenu
+          optionsMenu={optionsMenu}
+          count={count}
+          isClickable={false}
+          showPagination
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          labelRowsPerPage="Soluciones por página"
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      )}
       {!solutions.length && <EmptyState />}
       <CreateEditSolution
         open={newSolutionOpen}
@@ -345,6 +385,20 @@ export function Solutions({ dispatch }) {
           </FloatRight>
         </DrawerContent>
       </Drawer>
+      <Dialog
+        onClose={handleCloseDeleteDialog}
+        title="Eliminar solución"
+        open={deleteDialogOpen}
+        withActions
+        negativeAction="Cancelar"
+        positiveAction="Eliminar"
+        onNegativeAction={handleCloseDeleteDialog}
+        onPositiveAction={handleConfirmDelete}
+        disabled={deleteClicked}
+      >
+        ¿Estás seguro de eliminar esta solución? Esta acción no se puede
+        deshacer
+      </Dialog>
       <Fab onClick={() => setNewSolutionOpen(true)} />
     </div>
   );

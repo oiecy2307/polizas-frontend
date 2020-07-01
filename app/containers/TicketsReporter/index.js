@@ -52,6 +52,7 @@ import Select from 'components/Select';
 import InputText from 'components/InputText';
 import Datepicker from 'components/Datepicker';
 import Button from 'components/Button';
+import SkeletonLoader from 'components/SkeletonLoader';
 
 import {
   DrawerContent,
@@ -316,8 +317,23 @@ export function TicketsReporter({ dispatch }) {
     label: getFullName(c),
   }));
   const classes = useStyles();
+
+  if (initialLoading) {
+    return (
+      <div>
+        <Helmet>
+          <title>Reporteador de tickets</title>
+        </Helmet>
+        <SkeletonLoader />
+      </div>
+    );
+  }
+
   return (
     <Content>
+      <Helmet>
+        <title>Reporteador de tickets</title>
+      </Helmet>
       <TopSection desc={filterDesc}>
         <div className="select-container">
           <FormControl variant="outlined">
@@ -350,114 +366,119 @@ export function TicketsReporter({ dispatch }) {
         </Button>
       </TopSection>
       <Paper>
-        <Helmet>
-          <title>Reporteador de tickets</title>
-        </Helmet>
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              {fieldsActive.shortName && (
-                <TableCell align="left">Nombre corto</TableCell>
-              )}
-              {fieldsActive.statuses && (
-                <TableCell align="left">Estatus</TableCell>
-              )}
-              {fieldsActive.priority && (
-                <TableCell align="left">Prioridad</TableCell>
-              )}
-              {fieldsActive.creationDate && (
-                <TableCell align="left">Fecha de reporte</TableCell>
-              )}
-              {fieldsActive.companies && (
-                <TableCell align="left">Empresa</TableCell>
-              )}
-              {fieldsActive.technicals && (
-                <TableCell aling="left">Técnicos</TableCell>
-              )}
-              {fieldsActive.finishDate && (
-                <TableCell aling="left">Fecha de terminación</TableCell>
-              )}
-              {fieldsActive.paid && <TableCell aling="left">Pagado</TableCell>}
-              {fieldsActive.timeUsed && (
-                <TableCell aling="left">Tiempo implementado</TableCell>
-              )}
-              {fieldsActive.cost && (
-                <TableCell aling="left">Costo reportado</TableCell>
-              )}
-              {fieldsActive.totalPaid && (
-                <TableCell aling="left">Total pagado</TableCell>
-              )}
-              {fieldsActive.paidDate && (
-                <TableCell aling="left">Fecha de pago</TableCell>
-              )}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {items.map(item => (
-              <TableRow
-                style={{ cursor: 'pointer' }}
-                onClick={() => handleClickRow(item)}
-                key={item.id}
-              >
+        {Boolean(items.length) && (
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
                 {fieldsActive.shortName && (
-                  <TableCell align="left">
-                    <Link to={`/tickets/${item.id}`}>{item.shortName}</Link>
-                  </TableCell>
+                  <TableCell align="left">Nombre corto</TableCell>
                 )}
                 {fieldsActive.statuses && (
-                  <TableCell align="left">
-                    {getStatusLabel(item.status, item.paid)}
-                  </TableCell>
+                  <TableCell align="left">Estatus</TableCell>
                 )}
                 {fieldsActive.priority && (
-                  <TableCell align="left">
-                    <div style={{ maxWidth: 110 }}>
-                      <Label option={item.priority} />
-                    </div>
-                  </TableCell>
+                  <TableCell align="left">Prioridad</TableCell>
                 )}
                 {fieldsActive.creationDate && (
-                  <TableCell align="left">{item.reportedDate}</TableCell>
+                  <TableCell align="left">Fecha de reporte</TableCell>
                 )}
                 {fieldsActive.companies && (
-                  <TableCell align="left">
-                    {get(item, 'client.company.name', '')}
-                  </TableCell>
+                  <TableCell align="left">Empresa</TableCell>
                 )}
                 {fieldsActive.technicals && (
-                  <TableCell align="left">
-                    {getFullName(get(item, 'technical', ''))}
-                  </TableCell>
+                  <TableCell aling="left">Técnicos</TableCell>
                 )}
                 {fieldsActive.finishDate && (
-                  <TableCell align="left">{item.finishedDate || ''}</TableCell>
+                  <TableCell aling="left">Fecha de terminación</TableCell>
                 )}
                 {fieldsActive.paid && (
-                  <TableCell align="left">{item.paid ? 'Sí' : 'No'}</TableCell>
+                  <TableCell aling="left">Pagado</TableCell>
                 )}
                 {fieldsActive.timeUsed && (
-                  <TableCell align="left">
-                    {minutesToHours(item.timeNeeded || 0)}
-                  </TableCell>
+                  <TableCell aling="left">Tiempo implementado</TableCell>
                 )}
                 {fieldsActive.cost && (
-                  <TableCell align="left">
-                    {toMoneyFormat(item.cost || 0)}
-                  </TableCell>
+                  <TableCell aling="left">Costo reportado</TableCell>
                 )}
                 {fieldsActive.totalPaid && (
-                  <TableCell align="left">
-                    {toMoneyFormat(item.totalPaid || 0)}
-                  </TableCell>
+                  <TableCell aling="left">Total pagado</TableCell>
                 )}
                 {fieldsActive.paidDate && (
-                  <TableCell align="left">{item.paidDate || ''}</TableCell>
+                  <TableCell aling="left">Fecha de pago</TableCell>
                 )}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {items.length > 0 && (
+            </TableHead>
+            <TableBody>
+              {items.map(item => (
+                <TableRow
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleClickRow(item)}
+                  key={item.id}
+                >
+                  {fieldsActive.shortName && (
+                    <TableCell align="left">
+                      <Link to={`/tickets/${item.id}`}>{item.shortName}</Link>
+                    </TableCell>
+                  )}
+                  {fieldsActive.statuses && (
+                    <TableCell align="left">
+                      {getStatusLabel(item.status, item.paid)}
+                    </TableCell>
+                  )}
+                  {fieldsActive.priority && (
+                    <TableCell align="left">
+                      <div style={{ maxWidth: 110 }}>
+                        <Label option={item.priority} />
+                      </div>
+                    </TableCell>
+                  )}
+                  {fieldsActive.creationDate && (
+                    <TableCell align="left">{item.reportedDate}</TableCell>
+                  )}
+                  {fieldsActive.companies && (
+                    <TableCell align="left">
+                      {get(item, 'client.company.name', '')}
+                    </TableCell>
+                  )}
+                  {fieldsActive.technicals && (
+                    <TableCell align="left">
+                      {getFullName(get(item, 'technical', ''))}
+                    </TableCell>
+                  )}
+                  {fieldsActive.finishDate && (
+                    <TableCell align="left">
+                      {item.finishedDate || ''}
+                    </TableCell>
+                  )}
+                  {fieldsActive.paid && (
+                    <TableCell align="left">
+                      {item.paid ? 'Sí' : 'No'}
+                    </TableCell>
+                  )}
+                  {fieldsActive.timeUsed && (
+                    <TableCell align="left">
+                      {minutesToHours(item.timeNeeded || 0)}
+                    </TableCell>
+                  )}
+                  {fieldsActive.cost && (
+                    <TableCell align="left">
+                      {toMoneyFormat(item.cost || 0)}
+                    </TableCell>
+                  )}
+                  {fieldsActive.totalPaid && (
+                    <TableCell align="left">
+                      {toMoneyFormat(item.totalPaid || 0)}
+                    </TableCell>
+                  )}
+                  {fieldsActive.paidDate && (
+                    <TableCell align="left">{item.paidDate || ''}</TableCell>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+        {Boolean(items.length) && (
           <TablePagination
             rowsPerPageOptions={[10, 15, 20, 30, 40, 50, 100]}
             component="div"

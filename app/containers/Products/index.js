@@ -16,7 +16,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { TabButton } from 'utils/globalStyledComponents';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
-import { wsGetProducts } from 'services/products';
+import { wsGetProducts, wsUpdateProduct } from 'services/products';
 import Table from 'components/Table';
 import EmptyState from 'components/EmptyState';
 import CreateEditProduct from 'components/CreateEditProduct';
@@ -45,7 +45,7 @@ const columns = [
 ];
 
 export function Products({ dispatch }) {
-  const [optionSelected, setOptionSelected] = useState('all');
+  const [optionSelected, setOptionSelected] = useState('actives');
   const [products, setProducts] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
   const [newProductOpen, setNewProductOpen] = useState(false);
@@ -93,18 +93,41 @@ export function Products({ dispatch }) {
     setPage(0);
   };
 
-  // const handleDeleteProduct = product => product;
+  const handleDeleteProduct = async product => {
+    try {
+      const { originalItem } = product;
+      dispatch(aSetLoadingState(true));
+      const response = await wsUpdateProduct({
+        id: originalItem.id,
+        active: !originalItem.active,
+      });
+      if (response.error) {
+        dispatch(aOpenSnackbar('Error al actualizar producto', 'error'));
+      } else {
+        const text = !originalItem.active ? 'activado' : 'desactivado';
+        dispatch(aOpenSnackbar(`Producto ${text} con éxito`, 'success'));
+        fetchProducts();
+      }
+    } catch (e) {
+      dispatch(aOpenSnackbar('Error al actualizar producto', 'error'));
+    } finally {
+      dispatch(aSetLoadingState(false));
+    }
+  };
 
   const optionsMenu = [
     {
       option: 'Editar',
       action: handleUpdateProduct,
     },
-    // {
-    //   option: 'Eliminar',
-    //   action: handleDeleteProduct,
-    // },
+    {
+      option: 'Activar / desactivar',
+      action: handleDeleteProduct,
+    },
   ];
+
+  if (optionSelected === 'actives') optionsMenu[1].option = 'Desactivar';
+  if (optionSelected === 'disabled') optionsMenu[1].option = 'Activar';
 
   const handleCallBack = () => {
     fetchProducts();
@@ -150,12 +173,6 @@ export function Products({ dispatch }) {
       </Helmet>
       <div>
         <TabButton
-          selected={optionSelected === 'all'}
-          onClick={() => setOptionSelected('all')}
-        >
-          Todas
-        </TabButton>
-        <TabButton
           selected={optionSelected === 'actives'}
           onClick={() => setOptionSelected('actives')}
         >
@@ -168,20 +185,22 @@ export function Products({ dispatch }) {
           Desactivados
         </TabButton>
       </div>
-      <Table
-        columns={columns}
-        items={items}
-        withMenu
-        optionsMenu={optionsMenu}
-        isClickable={false}
-        showPagination
-        count={count}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        labelRowsPerPage="Productos por página"
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+      {products.length > 0 && (
+        <Table
+          columns={columns}
+          items={items}
+          withMenu
+          optionsMenu={optionsMenu}
+          isClickable={false}
+          showPagination
+          count={count}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          labelRowsPerPage="Productos por página"
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      )}
       {!products.length && <EmptyState />}
       <CreateEditProduct
         open={newProductOpen}

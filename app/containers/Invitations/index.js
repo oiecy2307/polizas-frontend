@@ -23,6 +23,7 @@ import Fab from 'components/Fab';
 import NewInvitationDialog from 'components/NewInvitationDialog';
 import Dialog from 'components/Dialog';
 import EmptyState from 'components/EmptyState';
+import SkeletonLoader from 'components/SkeletonLoader';
 
 import { TabButton } from 'utils/globalStyledComponents';
 import Table from 'components/Table';
@@ -56,6 +57,7 @@ export function Invitations({ dispatch }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const urlRef = useRef(null);
 
@@ -81,6 +83,7 @@ export function Invitations({ dispatch }) {
       dispatch(aOpenSnackbar('Error al obtener invitaciones', 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
+      setInitialLoading(false);
     }
   };
 
@@ -185,6 +188,17 @@ export function Invitations({ dispatch }) {
 
   const urlDialogOpen = Boolean(urlInvitation);
 
+  if (initialLoading) {
+    return (
+      <div>
+        <Helmet>
+          <title>Invitaciones</title>
+        </Helmet>
+        <SkeletonLoader />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Helmet>
@@ -210,20 +224,22 @@ export function Invitations({ dispatch }) {
           Expiradas
         </TabButton>
       </div>
-      <Table
-        columns={columns}
-        items={items}
-        withMenu
-        optionsMenu={optionsMenu}
-        isClickable={false}
-        showPagination
-        count={count}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        labelRowsPerPage="Invitaciones por página"
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+      {Boolean(items.length) && (
+        <Table
+          columns={columns}
+          items={items}
+          withMenu
+          optionsMenu={optionsMenu}
+          isClickable={false}
+          showPagination
+          count={count}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          labelRowsPerPage="Invitaciones por página"
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      )}
       {!items.length && <EmptyState />}
       <NewInvitationDialog
         open={newInvitationOpen}

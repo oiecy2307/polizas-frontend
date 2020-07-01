@@ -19,6 +19,7 @@ import Table from 'components/Table';
 import { TabButton } from 'utils/globalStyledComponents';
 import EmptyState from 'components/EmptyState';
 import CreateEditUser from 'components/CreateEditUser';
+import SkeletonLoader from 'components/SkeletonLoader';
 
 import { wsGetUsersByType, wsUpdateUser } from 'services/users';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
@@ -44,6 +45,7 @@ export function Users(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const { dispatch } = props;
 
@@ -150,6 +152,7 @@ export function Users(props) {
       dispatch(aOpenSnackbar('Error al consultar usuarios', 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
+      setInitialLoading(false);
     }
   }
 
@@ -169,6 +172,17 @@ export function Users(props) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  if (initialLoading) {
+    return (
+      <div>
+        <Helmet>
+          <title>Usuarios</title>
+        </Helmet>
+        <SkeletonLoader />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -212,21 +226,23 @@ export function Users(props) {
           {messages.tabs.inactive}
         </TabButton>
       </div>
-      <Table
-        columns={columns}
-        items={items}
-        withMenu
-        optionsMenu={optionsMenu}
-        isClickable={false}
-        showPagination
-        count={count}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        labelRowsPerPage="Usuarios por página"
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-      {users.length === 0 && <EmptyState small />}
+      {Boolean(users.length) && (
+        <Table
+          columns={columns}
+          items={items}
+          withMenu
+          optionsMenu={optionsMenu}
+          isClickable={false}
+          showPagination
+          count={count}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          labelRowsPerPage="Usuarios por página"
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      )}
+      {!users.length && <EmptyState />}
       <CreateEditUser
         open={dialogOpen}
         onClose={() => {
