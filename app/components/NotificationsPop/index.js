@@ -83,6 +83,11 @@ function NotificationsPop({ anchorEl, onClose, onRefreshCount }) {
     onClose();
   };
 
+  const handleWatchAll = () => {
+    history.push('/notificaciones');
+    onClose();
+  };
+
   const open = Boolean(anchorEl);
   const id = 'notifications-pop';
   const classes = useStyles();
@@ -138,6 +143,13 @@ function NotificationsPop({ anchorEl, onClose, onRefreshCount }) {
               ))}
               {notifications.length === 0 && (
                 <div style={{ padding: 16 }}>Sin notificaciones</div>
+              )}
+              {Boolean(notifications.length) && (
+                <div className="watch-all">
+                  <Button variant="text" onClick={handleWatchAll}>
+                    Ver todas
+                  </Button>
+                </div>
               )}
             </React.Fragment>
           ) : (

@@ -51,8 +51,8 @@ export default language => {
       en: 'Client',
     },
     dueDate: {
-      es: 'Fecha terminación',
-      en: 'Due date',
+      es: 'Fecha terminación estimada',
+      en: 'Estimated due date',
     },
     required: {
       es: 'Campo requerido',

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   width: 378px;
   max-width: 100%;
+  margin: 0 auto;
 
   & .top {
     height: 48px;
@@ -23,10 +24,8 @@ export const Container = styled.div`
     right: 0;
   }
 
-  & .watch-all {
-    display: flex;
-    justify-content: center;
-    margin: 16px 0;
+  & .loading-text {
+    text-align: center;
   }
 `;
 

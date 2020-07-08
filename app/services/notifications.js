@@ -1,12 +1,10 @@
 import { post, getToken, get } from 'utils/http';
-import { getCurrentUser } from 'utils/helper';
 
 export const wsGetNotificationsCount = async () => {
   const token = await getToken();
-  const user = await getCurrentUser();
   return new Promise((resolve, reject) => {
     get({
-      url: `/notifications/count-unseen-by-user/${user.id}`,
+      url: `/notifications/count-unseen-by-user`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -16,12 +14,11 @@ export const wsGetNotificationsCount = async () => {
   });
 };
 
-export const wsGetNotifications = async () => {
+export const wsGetNotifications = async offset => {
   const token = await getToken();
-  const user = await getCurrentUser();
   return new Promise((resolve, reject) => {
     get({
-      url: `/notifications/by-user/${user.id}`,
+      url: `/notifications/by-user?offset=${offset}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -33,10 +30,9 @@ export const wsGetNotifications = async () => {
 
 export const wsMarkNotificationsAsSeen = async () => {
   const token = await getToken();
-  const user = await getCurrentUser();
   return new Promise((resolve, reject) => {
     post({
-      url: `/notifications/mark-as-seen/${user.id}`,
+      url: `/notifications/mark-as-seen`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
