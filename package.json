@@ -1,16 +1,16 @@
 {
-  "name": "react-boilerplate",
-  "version": "4.0.0",
-  "description": "A highly scalable, offline-first foundation with the best DX and a focus on performance and best practices",
+  "name": "Suppdesk web",
+  "version": "1.0.1",
+  "description": "Tickets management system. Create -> follow -> resolve -> document",
   "repository": {
     "type": "git",
-    "url": "git://github.com/react-boilerplate/react-boilerplate.git"
+    "url": "git://gitlab.com/pedromedina95/zuppdesk-web.git"
   },
   "engines": {
     "npm": ">=5",
     "node": ">=8.15.1"
   },
-  "author": "Max Stoiber",
+  "author": "Pedro Medina Contreras",
   "license": "MIT",
   "scripts": {
     "analyze:clean": "rimraf stats.json",

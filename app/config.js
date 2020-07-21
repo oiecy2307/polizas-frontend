@@ -12,7 +12,7 @@ const config = (() => {
       return dev;
     case 'production':
     default:
-      return dev;
+      return staging;
   }
 })();
 
