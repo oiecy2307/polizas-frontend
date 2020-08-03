@@ -90,11 +90,7 @@ export function Users(props) {
         return;
       }
       dispatch(aSetLoadingState(true));
-      const defaultRole = isClientAdmin ? 'client' : 'technical';
-      const role =
-        get(user, 'fullItem.role', '') === 'inactive'
-          ? defaultRole
-          : 'inactive';
+      const role = optionSelected === 'inactive' ? 'active' : 'inactive';
       const response = await wsUpdateUser(user.id, {
         role,
       });

@@ -105,7 +105,23 @@ export function MainLayout({
     try {
       dispatch(aSetLoadingState(true));
       const response = await wsGetUserInfo();
-      await ImmortalDB.set('user', JSON.stringify(response.data));
+
+      if (!response) return;
+
+      const newData = response.data;
+      const oldData = JSON.parse(await ImmortalDB.get('user'));
+
+      if (!get(newData, 'active', true)) {
+        handleLogOut();
+        return;
+      }
+
+      if (get(newData, 'role', '') !== get(oldData, 'role', '')) {
+        handleLogOut();
+        return;
+      }
+
+      await ImmortalDB.set('user', JSON.stringify(newData));
     } catch (e) {
       if (get(e, 'status', '') === 401) {
         handleLogOut();

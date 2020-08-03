@@ -1,5 +1,5 @@
 {
-  "name": "Suppdesk web",
+  "name": "suppdesk-web",
   "version": "1.0.1",
   "description": "Tickets management system. Create -> follow -> resolve -> document",
   "repository": {

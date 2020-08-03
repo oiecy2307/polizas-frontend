@@ -5,7 +5,7 @@ export const Container = styled.div`
   max-width: 100%;
 
   & .top {
-    height: 48px;
+    height: 64px;
     padding: 0 16px;
     display: flex;
     align-items: center;
@@ -19,7 +19,7 @@ export const Container = styled.div`
 
   & .close-button {
     position: absolute;
-    top: 0;
+    top: 8px;
     right: 0;
   }
 
