@@ -111,7 +111,11 @@ export function MainLayout({
       const newData = response.data;
       const oldData = JSON.parse(await ImmortalDB.get('user'));
 
-      if (!get(newData, 'active', true)) {
+      if (
+        !get(newData, 'active', true) ||
+        get(newData, 'passwordVersion', null) !==
+          get(oldData, 'passwordVersion', null)
+      ) {
         handleLogOut();
         return;
       }

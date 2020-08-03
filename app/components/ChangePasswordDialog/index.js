@@ -10,7 +10,9 @@ import { GlobalValuesContext } from 'contexts/global-values';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { get } from 'lodash';
+import { ImmortalDB } from 'immortal-db';
 
+import { wsGetUserInfo } from 'services/auth';
 import { wsChangePassword } from 'services/profile';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 
@@ -34,6 +36,12 @@ function ChangePasswordDialog({ open, onClose, callback, dispatch }) {
       if (response.error) {
         dispatch(aOpenSnackbar('Error al cambiar contraseña', 'error'));
       } else {
+        const responseUserInfo = await wsGetUserInfo();
+
+        const newData = responseUserInfo.data;
+        if (responseUserInfo) {
+          await ImmortalDB.set('user', JSON.stringify(newData));
+        }
         dispatch(aOpenSnackbar('Contraseña cambiada con éxito', 'success'));
         callback();
         onClose();
