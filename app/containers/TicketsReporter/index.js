@@ -380,31 +380,31 @@ export function TicketsReporter({ dispatch }) {
                   <TableCell align="left">Prioridad</TableCell>
                 )}
                 {fieldsActive.creationDate && (
-                  <TableCell align="left">Fecha de reporte</TableCell>
+                  <TableCell align="right">Fecha de reporte</TableCell>
                 )}
                 {fieldsActive.companies && (
                   <TableCell align="left">Empresa</TableCell>
                 )}
                 {fieldsActive.technicals && (
-                  <TableCell aling="left">Técnicos</TableCell>
+                  <TableCell align="left">Técnicos</TableCell>
                 )}
                 {fieldsActive.finishDate && (
-                  <TableCell aling="left">Fecha de terminación</TableCell>
+                  <TableCell align="right">Fecha de terminación</TableCell>
                 )}
                 {fieldsActive.paid && (
-                  <TableCell aling="left">Pagado</TableCell>
+                  <TableCell align="left">Pagado</TableCell>
                 )}
                 {fieldsActive.timeUsed && (
-                  <TableCell aling="left">Tiempo implementado</TableCell>
+                  <TableCell align="right">Tiempo implementado</TableCell>
                 )}
                 {fieldsActive.cost && (
-                  <TableCell aling="left">Costo reportado</TableCell>
+                  <TableCell align="right">Costo reportado</TableCell>
                 )}
                 {fieldsActive.totalPaid && (
-                  <TableCell aling="left">Total pagado</TableCell>
+                  <TableCell align="right">Total pagado</TableCell>
                 )}
                 {fieldsActive.paidDate && (
-                  <TableCell aling="left">Fecha de pago</TableCell>
+                  <TableCell align="right">Fecha de pago</TableCell>
                 )}
               </TableRow>
             </TableHead>
@@ -433,7 +433,7 @@ export function TicketsReporter({ dispatch }) {
                     </TableCell>
                   )}
                   {fieldsActive.creationDate && (
-                    <TableCell align="left">{item.reportedDate}</TableCell>
+                    <TableCell align="right">{item.reportedDate}</TableCell>
                   )}
                   {fieldsActive.companies && (
                     <TableCell align="left">
@@ -446,7 +446,7 @@ export function TicketsReporter({ dispatch }) {
                     </TableCell>
                   )}
                   {fieldsActive.finishDate && (
-                    <TableCell align="left">
+                    <TableCell align="right">
                       {item.finishedDate || ''}
                     </TableCell>
                   )}
@@ -456,22 +456,22 @@ export function TicketsReporter({ dispatch }) {
                     </TableCell>
                   )}
                   {fieldsActive.timeUsed && (
-                    <TableCell align="left">
+                    <TableCell align="right">
                       {minutesToHours(item.timeNeeded || 0)}
                     </TableCell>
                   )}
                   {fieldsActive.cost && (
-                    <TableCell align="left">
+                    <TableCell align="right">
                       {toMoneyFormat(item.cost || 0)}
                     </TableCell>
                   )}
                   {fieldsActive.totalPaid && (
-                    <TableCell align="left">
+                    <TableCell align="right">
                       {toMoneyFormat(item.totalPaid || 0)}
                     </TableCell>
                   )}
                   {fieldsActive.paidDate && (
-                    <TableCell align="left">{item.paidDate || ''}</TableCell>
+                    <TableCell align="right">{item.paidDate || ''}</TableCell>
                   )}
                 </TableRow>
               ))}

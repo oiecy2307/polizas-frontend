@@ -6,6 +6,7 @@ export const Content = styled.div`
 
   & th {
     min-width: 160px;
+    white-space: nowrap;
   }
 `;
 
