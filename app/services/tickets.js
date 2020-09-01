@@ -271,3 +271,33 @@ export const wsGetReportFilters = async () => {
       .catch(err => reject(err));
   });
 };
+
+export const wsCreateTimeTracker = async (body, id) => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    post({
+      url: `/tickets/play-time/${id}`,
+      body,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
+
+export const wsPauseTimeTracker = async (body, id) => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    patch({
+      url: `/tickets/pause-time/${id}`,
+      body,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};

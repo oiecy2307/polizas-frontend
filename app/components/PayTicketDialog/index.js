@@ -29,6 +29,7 @@ function PayTicketDialog({ open, onClose, dispatch, id, defaultTicket, cost }) {
       const response = await wsPayTicket(id, trimObject(finalBody));
       if (response.error) {
         dispatch(aOpenSnackbar('No se pudo pagar el ticket', 'error'));
+        dispatch(aOpenSnackbar('No se pudo pagar el ticket', 'error'));
       } else {
         dispatch(aOpenSnackbar('Cambios guardados', 'success'));
       }

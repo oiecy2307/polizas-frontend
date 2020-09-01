@@ -39,6 +39,7 @@ import EmptyState from 'components/EmptyState';
 import Button from 'components/Button';
 import Label from 'components/Label';
 import Avatar from 'components/Avatar';
+import TimeTracker from 'components/TimeTracker';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Menu from '@material-ui/core/Menu';
@@ -403,6 +404,10 @@ export function TicketDetail({ dispatch, match }) {
               </div>
             </React.Fragment>
           )}
+          <h5>Tiempo trabajado</h5>
+          <div>
+            <TimeTracker dispatch={dispatch} ticket={ticket} />
+          </div>
           {technicalName && (
             <React.Fragment>
               <h5>Técnico asignado</h5>
