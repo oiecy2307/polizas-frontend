@@ -86,7 +86,7 @@ function CloseTicketDialog({ open, onClose, dispatch, id, time }) {
     status: Yup.string().trim(),
   });
 
-  if (!id) return <div />;
+  if (!open) return <div />;
 
   return (
     <Formik

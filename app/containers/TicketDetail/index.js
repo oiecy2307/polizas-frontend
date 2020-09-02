@@ -349,6 +349,13 @@ export function TicketDetail({ dispatch, match }) {
     return [];
   })();
 
+  const handleTicketTimeChanged = time => {
+    setTicket(_ticket => ({
+      ..._ticket,
+      time,
+    }));
+  };
+
   const showClosedInfo =
     ticket.status !== 'new' && ticket.status !== 'assigned';
 
@@ -408,7 +415,11 @@ export function TicketDetail({ dispatch, match }) {
             <React.Fragment>
               <h5>Tiempo trabajado</h5>
               <div>
-                <TimeTracker dispatch={dispatch} ticket={ticket} />
+                <TimeTracker
+                  ticket={ticket}
+                  dispatch={dispatch}
+                  onTimeChanged={handleTicketTimeChanged}
+                />
               </div>
             </React.Fragment>
           )}
@@ -511,6 +522,7 @@ export function TicketDetail({ dispatch, match }) {
               onClose={handleCloseModals}
               dispatch={dispatch}
               id={get(ticket, 'id', '').toString()}
+              time={get(ticket, 'time', 0)}
             />
             <AssignTicketDialog
               open={isAssignTicketDialogOpen}
