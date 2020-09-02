@@ -188,6 +188,12 @@ export const TicketInformation = styled.div`
   & .row-technical > div {
     padding-left: 16px;
   }
+
+  & .row-technical .formal-name {
+    font-size: 12px;
+    color: gray;
+    margin-top: 4px;
+  }
 `;
 
 export const ButtonDot = styled.span`

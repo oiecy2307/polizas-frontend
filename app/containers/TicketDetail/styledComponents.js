@@ -79,6 +79,13 @@ export const Body = styled.div`
     margin-left: 16px;
   }
 
+  & .user .formal-name {
+    margin-left: 16px;
+    font-size: 12px;
+    color: gray;
+    margin-top: 4px;
+  }
+
   & .evidence img {
     max-width: 100%;
     margin-bottom: 16px;

@@ -79,6 +79,8 @@ function TicketExpandableItem({
 
   const isClient = get(currentUser, 'role', '') === 'client';
 
+  const formalName = get(ticket, 'client.company.formalName', '');
+
   const showButton =
     !isClient &&
     ticket.status !== 'cancelled' &&
@@ -174,8 +176,11 @@ function TicketExpandableItem({
                 src={get(ticket, 'client.image', '')}
               />
               <div>
-                {getFullName(ticket.client)} (
-                {get(ticket, 'client.company.name', '')})
+                <div>
+                  {getFullName(ticket.client)} (
+                  {get(ticket, 'client.company.name', '')})
+                </div>
+                {formalName && <div className="formal-name">{formalName}</div>}
               </div>
             </div>
           )}

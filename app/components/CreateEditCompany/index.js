@@ -62,16 +62,26 @@ function CreateEditCompany({
   }
 
   const defaultValues = {
-    name: get(defaultCompany, 'name', ''),
-    address: get(defaultCompany, 'address', ''),
+    name: get(defaultCompany, 'name', '') || '',
+    address: get(defaultCompany, 'address', '') || '',
+    formalName: get(defaultCompany, 'formalName', '') || '',
+    rfc: get(defaultCompany, 'rfc', '') || '',
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string('Nombre')
+    name: Yup.string('Nombre comercial')
       .trim()
       .required('Campo requerido')
       .max(150, 'Texto demasiado largo'),
     address: Yup.string('Dirección')
+      .trim()
+      .notRequired('')
+      .max(250, 'Texto demasiado largo'),
+    formalName: Yup.string('Razón social')
+      .trim()
+      .notRequired('')
+      .max(250, 'Texto demasiado largo'),
+    rfc: Yup.string('RFC')
       .trim()
       .notRequired('')
       .max(250, 'Texto demasiado largo'),

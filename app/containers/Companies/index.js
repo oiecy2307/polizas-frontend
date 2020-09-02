@@ -38,6 +38,16 @@ const columns = [
     style: { minWidth: 160 },
   },
   {
+    key: 'formalName',
+    label: 'Razón social',
+    style: { minWidth: 160 },
+  },
+  {
+    key: 'rfc',
+    label: 'RFC',
+    style: { minWidth: 100 },
+  },
+  {
     key: 'active',
     label: 'Estatus',
   },

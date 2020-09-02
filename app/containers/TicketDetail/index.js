@@ -248,6 +248,9 @@ export function TicketDetail({ dispatch, match }) {
   const paidDate = get(ticket, 'paidDate', '');
   const invoice = get(ticket, 'invoice', '');
   const showPaidInfo = paid !== null;
+  const formalName = get(ticket, 'client.company.formalName', '');
+
+  console.log('ticket', ticket);
 
   const buttonText = (() => {
     switch (status) {
@@ -407,7 +410,12 @@ export function TicketDetail({ dispatch, match }) {
               <h5>Cliente</h5>
               <div className="user">
                 <Avatar name={clientName} src={clientImg} />
-                <span className="name">{`${clientName} (${companyName})`}</span>
+                <div>
+                  <div className="name">{`${clientName} (${companyName})`}</div>
+                  {formalName && (
+                    <div className="formal-name">{formalName}</div>
+                  )}
+                </div>
               </div>
             </React.Fragment>
           )}
