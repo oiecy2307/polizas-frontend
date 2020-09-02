@@ -175,6 +175,14 @@ export function TicketsAdmin({ dispatch }) {
     fetchDatesWithTickets(selectedDateMonth);
   };
 
+  const handleTicketTimeChanged = (index, time) => {
+    setTickets(_tickets => {
+      const newTickets = [..._tickets];
+      newTickets[index].time = time;
+      return newTickets;
+    });
+  };
+
   return (
     <div>
       <Helmet>
@@ -219,6 +227,7 @@ export function TicketsAdmin({ dispatch }) {
             onRefresh={handleCallback}
             dispatch={dispatch}
             isClient={isClient}
+            onTicketTimeChanged={handleTicketTimeChanged}
           />
         </LeftSection>
         <div>

@@ -18,7 +18,11 @@ import Form from './form';
 
 import messages from './messages';
 
-function CloseTicketDialog({ open, onClose, dispatch, id }) {
+const hourCost = 500;
+const halfHourCost = 300;
+const quaterHourCost = 150;
+
+function CloseTicketDialog({ open, onClose, dispatch, id, time }) {
   async function handleCloseTicket(body, resetValues) {
     try {
       dispatch(aSetLoadingState(true));
@@ -41,11 +45,23 @@ function CloseTicketDialog({ open, onClose, dispatch, id }) {
     }
   }
 
+  let cost = 0;
+
+  if (time) {
+    cost += parseInt(time / 3600, 10) * hourCost;
+    const minutes = parseInt((time % 3600) / 60, 10);
+    if (minutes > 15) {
+      cost += halfHourCost;
+    }
+    if (minutes > 45) {
+      cost += quaterHourCost;
+    }
+  }
+
   const defaultValues = {
     finishedDate: moment(new Date(), 'DD-MM-YYYY').format(),
-    timeNeeded: '',
-    cost: '',
-    solution: '',
+    timeNeeded: time ? parseInt(time / 60, 10) : '',
+    cost: cost || '',
     status: 'finished',
   };
 
@@ -67,9 +83,10 @@ function CloseTicketDialog({ open, onClose, dispatch, id }) {
       .typeError('Solo se permiten números')
       .required(messages.required)
       .positive('El costo debe ser positivo'),
-    solution: Yup.string().trim(),
     status: Yup.string().trim(),
   });
+
+  if (!id) return <div />;
 
   return (
     <Formik
@@ -107,6 +124,7 @@ CloseTicketDialog.propTypes = {
   dispatch: PropTypes.func,
   id: PropTypes.string,
   onClose: PropTypes.func,
+  time: PropTypes.number,
 };
 
 export default memo(CloseTicketDialog);

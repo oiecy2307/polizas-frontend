@@ -40,20 +40,6 @@ function CreateEditTicketForm(props) {
           />
         )}
       />
-      <Field
-        name="solution"
-        defaultValues={values.solution}
-        render={({ field }) => (
-          <Input
-            {...field}
-            label="Notas de la solución"
-            helperText={touched.solution ? errors.solution : ''}
-            error={touched.solution && Boolean(errors.solution)}
-            multiline
-            rows="4"
-          />
-        )}
-      />
     </Form>
   );
 }

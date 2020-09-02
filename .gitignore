@@ -3,8 +3,8 @@ coverage
 build
 node_modules
 stats.json
-app/firebase-messaging-sw.js
-app/config.js
+# app/firebase-messaging-sw.js
+# app/config.js
 .firebase
 
 # Cruft

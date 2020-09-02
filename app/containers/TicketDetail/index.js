@@ -404,10 +404,14 @@ export function TicketDetail({ dispatch, match }) {
               </div>
             </React.Fragment>
           )}
-          <h5>Tiempo trabajado</h5>
-          <div>
-            <TimeTracker dispatch={dispatch} ticket={ticket} />
-          </div>
+          {get(ticket, 'status', '') === 'assigned' && (
+            <React.Fragment>
+              <h5>Tiempo trabajado</h5>
+              <div>
+                <TimeTracker dispatch={dispatch} ticket={ticket} />
+              </div>
+            </React.Fragment>
+          )}
           {technicalName && (
             <React.Fragment>
               <h5>Técnico asignado</h5>

@@ -27,7 +27,7 @@ const getTrackersSum = items => {
   return timeInSeconds;
 };
 
-function TimeTracker({ ticket, dispatch }) {
+function TimeTracker({ ticket, dispatch, onTimeChanged }) {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [lastTimeSaved, setLastTimeSaved] = useState(null);
@@ -46,6 +46,10 @@ function TimeTracker({ ticket, dispatch }) {
     }, 1000);
     return () => clearInterval(interval);
   }, [isRunning]);
+
+  useEffect(() => {
+    onTimeChanged(time);
+  }, [time]);
 
   useEffect(() => {
     window.addEventListener('focus', onFocus);
@@ -105,6 +109,11 @@ function TimeTracker({ ticket, dispatch }) {
 TimeTracker.propTypes = {
   ticket: PropTypes.object,
   dispatch: PropTypes.func,
+  onTimeChanged: PropTypes.func,
+};
+
+TimeTracker.defaultProps = {
+  onTimeChanged: () => {},
 };
 
 export default memo(TimeTracker);

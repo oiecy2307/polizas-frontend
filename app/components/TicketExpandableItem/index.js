@@ -69,7 +69,12 @@ const getIcon = ticket => {
   }
 };
 
-function TicketExpandableItem({ ticket, onButtonClicked, dispatch }) {
+function TicketExpandableItem({
+  ticket,
+  onButtonClicked,
+  dispatch,
+  onTicketTimeChanged,
+}) {
   const currentUser = useContext(LoggedUser);
 
   const isClient = get(currentUser, 'role', '') === 'client';
@@ -129,10 +134,16 @@ function TicketExpandableItem({ ticket, onButtonClicked, dispatch }) {
               )} a las ${moment(ticket.createdAt).format('hh:mm a')}`}
             </div>
           </div>
-          <div className="row">
-            <ClockIcon />
-            <TimeTracker ticket={ticket} dispatch={dispatch} />
-          </div>
+          {get(ticket, 'status', '') === 'assigned' && (
+            <div className="row">
+              <ClockIcon />
+              <TimeTracker
+                ticket={ticket}
+                dispatch={dispatch}
+                onTimeChanged={onTicketTimeChanged}
+              />
+            </div>
+          )}
           {ticket.paid && (
             <div className="row">
               <Money />
@@ -193,12 +204,14 @@ TicketExpandableItem.propTypes = {
   ticket: PropTypes.object,
   onButtonClicked: PropTypes.func,
   dispatch: PropTypes.func,
+  onTicketTimeChanged: PropTypes.func,
 };
 
 TicketExpandableItem.defaultProps = {
   ticket: {},
   onButtonClicked: () => {},
   dispatch: () => {},
+  onTicketTimeChanged: () => {},
 };
 
 export default memo(TicketExpandableItem);

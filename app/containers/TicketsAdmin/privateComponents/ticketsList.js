@@ -18,7 +18,13 @@ import { DateDetailContainer, DateText } from '../styledComponents';
 
 moment.locale('es');
 
-export function TicketsList({ tickets, date, onRefresh, dispatch }) {
+export function TicketsList({
+  tickets,
+  date,
+  onRefresh,
+  dispatch,
+  onTicketTimeChanged,
+}) {
   const [ticketSelected, setTicketSelected] = useState(null);
   const [isCloseTicketDialogOpen, setIsCloseTicketDialogOpen] = useState(false);
   const [isPayTicketDialogOpen, setIsPayTicketDialogOpen] = useState(false);
@@ -66,12 +72,13 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
     <div>
       <DateDetailContainer>
         <DateText>{displayDate}</DateText>
-        {tickets.map(ticket => (
+        {tickets.map((ticket, index) => (
           <TicketExpandableItem
             ticket={ticket}
             onButtonClicked={handleButtonClicked}
             dispatch={dispatch}
             key={ticket.id}
+            onTicketTimeChanged={time => onTicketTimeChanged(index, time)}
           />
         ))}
       </DateDetailContainer>
@@ -81,6 +88,7 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
         onClose={handleClose}
         id={get(ticketSelected, 'id', '').toString()}
         dispatch={dispatch}
+        time={get(ticketSelected, 'time', 0)}
       />
       <AssignTicketDialog
         open={isAssignTicketDialogOpen}
@@ -107,6 +115,11 @@ TicketsList.propTypes = {
   date: PropTypes.string,
   dispatch: PropTypes.func,
   onRefresh: PropTypes.func,
+  onTicketTimeChanged: PropTypes.func,
+};
+
+TicketsList.defaultProps = {
+  onTicketTimeChanged: () => {},
 };
 
 export default TicketsList;
