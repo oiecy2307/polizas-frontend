@@ -49,7 +49,7 @@ function PayTicketDialog({ open, onClose, dispatch, id, defaultTicket, cost }) {
       'DD-MM-YYYY',
     ).format(),
     totalPaid: get(defaultTicket, 'totalPaid', '') || '',
-    invoice: get(defaultTicket, 'Invoice', '') || '',
+    invoice: get(defaultTicket, 'invoice', '') || '',
   };
 
   const validationSchema = Yup.object({

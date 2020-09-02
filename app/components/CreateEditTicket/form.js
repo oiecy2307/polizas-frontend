@@ -10,19 +10,29 @@ import { GlobalValuesContext } from 'contexts/global-values';
 import { Field } from 'formik';
 import { find, get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
-import UploadEvidence from 'components/UploadEvidence';
-import Label from 'components/Label';
-// import FormikDebugger from 'components/FormikDebugger';
 
+// import FormikDebugger from 'components/FormikDebugger';
 import Input from 'components/InputText';
 import Select from 'components/Select';
 import Datepicker from 'components/Datepicker';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import UploadEvidence from 'components/UploadEvidence';
+import Label from 'components/Label';
+import { Divider } from 'utils/globalStyledComponents';
 
 import { Form, PriorityOptions } from './styledComponents';
 import getMessages from './messages';
 
 function CreateEditTicketForm(props) {
-  const { technicals, isClient, clients, dispatch, defaultEvidence } = props;
+  const {
+    technicals,
+    isClient,
+    clients,
+    dispatch,
+    defaultEvidence,
+    isClosed,
+  } = props;
   const { language } = useContext(GlobalValuesContext);
   moment.locale(language);
   const [messages] = useState(getMessages(language));
@@ -167,6 +177,108 @@ function CreateEditTicketForm(props) {
               />
             )}
           />
+          {isClosed && (
+            <React.Fragment>
+              <Divider size="32" />
+              <Field
+                name="timeNeeded"
+                defaultValues={values.timeNeeded}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    label="Tiempo empleado en solución (minutos)"
+                    helperText={touched.timeNeeded ? errors.timeNeeded : ''}
+                    error={touched.timeNeeded && Boolean(errors.timeNeeded)}
+                  />
+                )}
+              />
+              <Field
+                name="cost"
+                defaultValues={values.cost}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    label="Costo de la solución"
+                    helperText={touched.cost ? errors.cost : ''}
+                    error={touched.cost && Boolean(errors.cost)}
+                  />
+                )}
+              />
+              <Field
+                name="invoice"
+                defaultValues={values.invoice}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    label="Número de factura"
+                    helperText={touched.invoice ? errors.invoice : ''}
+                    error={touched.invoice && Boolean(errors.invoice)}
+                  />
+                )}
+              />
+              <Field
+                name="paid"
+                defaultValues={values.paid}
+                render={({ field }) => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={field.value}
+                        onChange={() => {
+                          setFieldTouched(field.name, true);
+                          setFieldValue(field.name, !values.paid);
+                        }}
+                        name="paid"
+                        color="primary"
+                      />
+                    }
+                    label="Pagado"
+                  />
+                )}
+              />
+              <Divider size="24" />
+              <Field
+                name="totalPaid"
+                defaultValues={values.totalPaid}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    label="Monto pagado"
+                    helperText={touched.totalPaid ? errors.totalPaid : ''}
+                    error={touched.totalPaid && Boolean(errors.totalPaid)}
+                    disabled={!values.paid}
+                  />
+                )}
+              />
+              <Divider size="24" />
+              <Field
+                name="paidDate"
+                defaultValues={values.paidDate}
+                render={({ field }) => (
+                  <Datepicker
+                    {...field}
+                    value={values.paidDate}
+                    id={field.name}
+                    label="Fecha de pago"
+                    language={language}
+                    onChange={newValue => {
+                      if (!newValue) {
+                        setFieldValue(field.name, null);
+                      } else {
+                        setFieldValue(
+                          field.name,
+                          moment(newValue, 'DD-MM-YYYY').format(),
+                        );
+                      }
+                    }}
+                    helperText={touched.paidDate ? errors.paidDate : ''}
+                    error={touched.paidDate && Boolean(errors.paidDate)}
+                    disabled={!values.paid}
+                  />
+                )}
+              />
+            </React.Fragment>
+          )}
           {/* <FormikDebugger /> */}
         </React.Fragment>
       )}
@@ -185,6 +297,7 @@ CreateEditTicketForm.propTypes = {
   isClient: PropTypes.bool,
   dispatch: PropTypes.func,
   defaultEvidence: PropTypes.array,
+  isClosed: PropTypes.bool,
 };
 
 export default memo(CreateEditTicketForm);

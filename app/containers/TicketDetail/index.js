@@ -454,6 +454,12 @@ export function TicketDetail({ dispatch, match }) {
               <div>{toMoneyFormat(cost)}</div>
             </React.Fragment>
           )}
+          {invoice && (
+            <React.Fragment>
+              <h5>Número de factura</h5>
+              <div>{invoice}</div>
+            </React.Fragment>
+          )}
           {showPaidInfo && showClosedInfo && (
             <React.Fragment>
               <h5>Está pagado</h5>
@@ -468,12 +474,6 @@ export function TicketDetail({ dispatch, match }) {
                 <React.Fragment>
                   <h5>Fecha de pago</h5>
                   <div>{moment(paidDate).format('LL')}</div>
-                </React.Fragment>
-              )}
-              {paid && invoice && (
-                <React.Fragment>
-                  <h5>Número de factura</h5>
-                  <div>{invoice}</div>
                 </React.Fragment>
               )}
             </React.Fragment>

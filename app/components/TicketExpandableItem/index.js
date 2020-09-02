@@ -144,18 +144,18 @@ function TicketExpandableItem({
               />
             </div>
           )}
+          {!!ticket.invoice && (
+            <div className="row">
+              <Invoice />
+              <div>{`El número de factura es ${ticket.invoice}`}</div>
+            </div>
+          )}
           {ticket.paid && (
             <div className="row">
               <Money />
               <div>{`Se pagaron ${Numeral(ticket.totalPaid || 0).format(
                 '$0,0.00',
               )} el ${moment(ticket.paidDate).format('LL')} `}</div>
-            </div>
-          )}
-          {!!ticket.invoice && (
-            <div className="row">
-              <Invoice />
-              <div>{`El número de factura es ${ticket.invoice}`}</div>
             </div>
           )}
           {ticket.technical && (

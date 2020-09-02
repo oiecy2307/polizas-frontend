@@ -42,6 +42,8 @@ function CreateEditTicket({
 
   const isEditing = Boolean(ticketToEdit);
 
+  const isClosed = get(ticketToEdit, 'status', '') === 'closed';
+
   useEffect(() => {
     if (!isClient) fetchUsers();
     moment.locale(language);
@@ -123,6 +125,8 @@ function CreateEditTicket({
     }
   }
 
+  const paidDate = get(ticketToEdit, 'paidDate', null);
+
   const defaultValues = {
     ticketTitle: get(ticketToEdit, 'shortName', ''),
     ticketDescription: get(ticketToEdit, 'description', ''),
@@ -131,6 +135,12 @@ function CreateEditTicket({
     clientId: get(ticketToEdit, 'clientId', ''),
     dueDate: get(ticketToEdit, 'dueDate', null),
     evidence: [],
+    timeNeeded: get(ticketToEdit, 'timeNeeded', '') || '',
+    cost: get(ticketToEdit, 'cost', '') || '',
+    invoice: get(ticketToEdit, 'invoice', '') || '',
+    paid: get(ticketToEdit, 'paid', false),
+    totalPaid: get(ticketToEdit, 'totalPaid', '') || '',
+    paidDate: paidDate ? moment(paidDate, 'DD-MM-YYYY').format() : null,
   };
 
   const schemaAdmin = Yup.object({
@@ -165,6 +175,37 @@ function CreateEditTicket({
         ),
     }),
     evidence: Yup.array(),
+    timeNeeded: Yup.number()
+      .typeError('Solo se permiten números')
+      [isClosed ? 'required' : 'notRequired'](messages.required)
+      .integer('Solo se permiten números enteros')
+      .positive('El tiempo debe ser positivo'),
+    cost: Yup.number()
+      .typeError('Solo se permiten números')
+      [isClosed ? 'required' : 'notRequired'](messages.required)
+      .positive('El costo debe ser positivo'),
+    invoice: Yup.string().trim(),
+    paid: Yup.boolean().notRequired(),
+    paidDate: Yup.date().when('paid', {
+      is: paid => paid,
+      then: Yup.date()
+        .required('Campo requerido')
+        .typeError('Campo requerido'),
+      otherwise: Yup.string()
+        .notRequired()
+        .typeError('Fecha no válida'),
+    }),
+    totalPaid: Yup.number().when('paid', {
+      is: paid => paid,
+      then: Yup.number()
+        .typeError('Solo se permiten números')
+        .required('Campo requerido')
+        .positive('El tiempo debe ser positivo'),
+      otherwise: Yup.number()
+        .typeError('Solo se permiten números')
+        .notRequired()
+        .positive('El tiempo debe ser positivo'),
+    }),
   });
 
   const schemaClient = Yup.object({
@@ -221,6 +262,7 @@ function CreateEditTicket({
             isClient={isClient}
             dispatch={dispatch}
             defaultEvidence={get(ticketToEdit, 'evidence', [])}
+            isClosed={isClosed}
           />
           {false && <FormikDebugger />}
         </Dialog>
