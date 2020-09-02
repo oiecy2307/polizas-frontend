@@ -236,6 +236,7 @@ export function TicketDetail({ dispatch, match }) {
   const reporterName = getFullName(get(ticket, 'reporter', {}));
   const reporterImg = get(ticket, 'reporter.image', {});
   const clientName = getFullName(get(ticket, 'client', {}));
+  const isFakeUser = get(ticket, 'client.isFakeUser', {});
   const companyName = get(ticket, 'client.company.name', {});
   const clientImg = get(ticket, 'client.image', {});
   const evidence = get(ticket, 'evidence', []);
@@ -249,8 +250,6 @@ export function TicketDetail({ dispatch, match }) {
   const invoice = get(ticket, 'invoice', '');
   const showPaidInfo = paid !== null;
   const formalName = get(ticket, 'client.company.formalName', '');
-
-  console.log('ticket', ticket);
 
   const buttonText = (() => {
     switch (status) {
@@ -411,7 +410,9 @@ export function TicketDetail({ dispatch, match }) {
               <div className="user">
                 <Avatar name={clientName} src={clientImg} />
                 <div>
-                  <div className="name">{`${clientName} (${companyName})`}</div>
+                  <div className="name">{`${clientName} ${
+                    isFakeUser ? '' : `(${companyName})`
+                  }`}</div>
                   {formalName && (
                     <div className="formal-name">{formalName}</div>
                   )}

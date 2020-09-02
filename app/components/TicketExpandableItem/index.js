@@ -78,8 +78,8 @@ function TicketExpandableItem({
   const currentUser = useContext(LoggedUser);
 
   const isClient = get(currentUser, 'role', '') === 'client';
-
   const formalName = get(ticket, 'client.company.formalName', '');
+  const isFakeUser = get(ticket, 'client.isFakeUser', false);
 
   const showButton =
     !isClient &&
@@ -177,8 +177,8 @@ function TicketExpandableItem({
               />
               <div>
                 <div>
-                  {getFullName(ticket.client)} (
-                  {get(ticket, 'client.company.name', '')})
+                  {getFullName(ticket.client)}{' '}
+                  {!isFakeUser && `(${get(ticket, 'client.company.name', '')})`}
                 </div>
                 {formalName && <div className="formal-name">{formalName}</div>}
               </div>

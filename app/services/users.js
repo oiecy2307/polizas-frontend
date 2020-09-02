@@ -14,6 +14,20 @@ export const wsGetUsersByType = async (type, offset, limit) => {
   });
 };
 
+export const wsGetAllClients = async () => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    get({
+      url: `/users/all-clients`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
+
 export const wsGetTechnicalsActivity = async () => {
   const token = await getToken();
   return new Promise((resolve, reject) => {

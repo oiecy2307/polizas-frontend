@@ -56,7 +56,7 @@ function CreateEditCompanyForm(props) {
           />
         )}
       />
-      <Field
+      {/* <Field
         name="rfc"
         defaultValues={values.rfc}
         render={({ field }) => (
@@ -68,7 +68,7 @@ function CreateEditCompanyForm(props) {
             error={touched.rfc && Boolean(errors.rfc)}
           />
         )}
-      />
+      /> */}
       {/* <FormikDebugger /> */}
     </Form>
   );

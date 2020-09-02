@@ -42,11 +42,11 @@ const columns = [
     label: 'Razón social',
     style: { minWidth: 160 },
   },
-  {
-    key: 'rfc',
-    label: 'RFC',
-    style: { minWidth: 100 },
-  },
+  // {
+  //   key: 'rfc',
+  //   label: 'RFC',
+  //   style: { minWidth: 100 },
+  // },
   {
     key: 'active',
     label: 'Estatus',

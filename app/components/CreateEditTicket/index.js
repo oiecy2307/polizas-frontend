@@ -13,7 +13,7 @@ import { get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { wsCreateTicket, wsUpdateTicket } from 'services/tickets';
-import { wsGetUsersByType } from 'services/users';
+import { wsGetUsersByType, wsGetAllClients } from 'services/users';
 import {
   getCurrentUser,
   textRegex,
@@ -60,12 +60,14 @@ function CreateEditTicket({
           label: `${t.name} ${t.lastname} (${t.email})`,
         })),
       );
-      const responseClients = await wsGetUsersByType('client');
+      const responseClients = await wsGetAllClients();
       setClients(
-        get(responseClients, 'data.rows', []).map(t => ({
+        get(responseClients, 'data', []).map(t => ({
           ...t,
           value: t.id,
-          label: `${t.name} ${t.lastname} (${get(t, 'company.name', '')})`,
+          label: t.isFakeUser
+            ? t.name
+            : `${t.name} ${t.lastname} (${get(t, 'company.name', '')})`,
         })),
       );
     } catch (e) {
