@@ -87,8 +87,7 @@ function CreateEditTicket({
         description: body.ticketDescription,
         clientId: body.clientId,
         status: body.technicalId ? 'assigned' : 'new',
-        reportedDate: moment().format(dateFormatToServer),
-        dueDate: moment(body.dueDate).format(dateFormatToServer),
+        reportedDate: moment(body.reportedDate).format(dateFormatToServer),
         shortName: body.ticketTitle,
         priority: body.ticketPriority,
         evidence: body.evidence,
@@ -100,7 +99,6 @@ function CreateEditTicket({
         status: 'new',
         priority: body.ticketPriority,
         reportedDate: moment().format(dateFormatToServer),
-        dueDate: moment().format(dateFormatToServer),
         shortName: body.ticketTitle,
         evidence: body.evidence,
       };
@@ -135,7 +133,7 @@ function CreateEditTicket({
     ticketPriority: get(ticketToEdit, 'priority', ''),
     technicalId: get(ticketToEdit, 'technicalId', '') || '',
     clientId: get(ticketToEdit, 'clientId', ''),
-    dueDate: get(ticketToEdit, 'dueDate', null),
+    reportedDate: get(ticketToEdit, 'reportedDate', null),
     evidence: [],
     timeNeeded: get(ticketToEdit, 'timeNeeded', '') || '',
     cost: get(ticketToEdit, 'cost', '') || '',
@@ -161,7 +159,7 @@ function CreateEditTicket({
       .matches(textRegex, messages.invalidCharacters),
     technicalId: Yup.number(),
     clientId: Yup.number().required(messages.required),
-    dueDate: Yup.date().when('clientId', {
+    reportedDate: Yup.date().when('clientId', {
       is: () => isEditing,
       then: Yup.date()
         .required(messages.required)

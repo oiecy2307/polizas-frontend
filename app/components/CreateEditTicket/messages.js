@@ -50,9 +50,9 @@ export default language => {
       es: 'Cliente',
       en: 'Client',
     },
-    dueDate: {
-      es: 'Fecha terminación estimada',
-      en: 'Estimated due date',
+    reportedDate: {
+      es: 'Fecha de reporte',
+      en: 'Reported date',
     },
     required: {
       es: 'Campo requerido',
@@ -108,7 +108,7 @@ export default language => {
       evidence: values.evidence[language],
       technicalId: values.technicalId[language],
       clientId: values.clientId[language],
-      dueDate: values.dueDate[language],
+      reportedDate: values.reportedDate[language],
     },
     required: values.required[language],
     invalidCharacters: values.invalidCharacters[language],

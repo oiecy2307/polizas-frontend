@@ -131,9 +131,7 @@ function TicketExpandableItem({
           <div className="row">
             <CalendarIcon />
             <div>
-              {`Creado el ${moment(ticket.createdAt).format(
-                'LL',
-              )} a las ${moment(ticket.createdAt).format('hh:mm a')}`}
+              {`Reportado el ${moment(ticket.reportedDate).format('LL')}`}
             </div>
           </div>
           {get(ticket, 'status', '') === 'assigned' && (

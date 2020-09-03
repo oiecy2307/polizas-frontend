@@ -41,7 +41,6 @@ import Label from 'components/Label';
 import Avatar from 'components/Avatar';
 import TimeTracker from 'components/TimeTracker';
 import Skeleton from '@material-ui/lab/Skeleton';
-import Tooltip from '@material-ui/core/Tooltip';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import EditIcon from '@material-ui/icons/Edit';
@@ -225,7 +224,7 @@ export function TicketDetail({ dispatch, match }) {
   }
 
   const shortName = get(ticket, 'shortName', '');
-  const createdAt = get(ticket, 'createdAt', '');
+  const reportedDate = get(ticket, 'reportedDate', '');
   const description = get(ticket, 'description', '');
   const priority = get(ticket, 'priority', '');
   const status = get(ticket, 'paid', false)
@@ -377,11 +376,9 @@ export function TicketDetail({ dispatch, match }) {
         <TopSection>
           <div>
             <h4>{shortName}</h4>
-            <Tooltip title={moment(createdAt).format('LL')}>
-              <div style={{ width: 'fit-content' }}>
-                {`Creado ${moment(createdAt).fromNow()}`}
-              </div>
-            </Tooltip>
+            <div style={{ width: 'fit-content' }}>
+              {`Reportado el ${moment(reportedDate).format('LL')}`}
+            </div>
           </div>
           {showButton && (
             <Button onClick={handleButtonClicked}>{buttonText}</Button>

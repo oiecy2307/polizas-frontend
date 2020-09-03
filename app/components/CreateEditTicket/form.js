@@ -153,14 +153,14 @@ function CreateEditTicketForm(props) {
             }}
           />
           <Field
-            name="dueDate"
-            defaultValues={values.dueDate}
+            name="reportedDate"
+            defaultValues={values.reportedDate}
             render={({ field }) => (
               <Datepicker
                 {...field}
-                value={values.dueDate}
-                id={messages.fields.dueDate}
-                label={messages.fields.dueDate}
+                value={values.reportedDate}
+                id={messages.fields.reportedDate}
+                label={messages.fields.reportedDate}
                 language={language}
                 onChange={newValue => {
                   if (!newValue) {
@@ -172,8 +172,8 @@ function CreateEditTicketForm(props) {
                     );
                   }
                 }}
-                helperText={touched.dueDate ? errors.dueDate : ''}
-                error={touched.dueDate && Boolean(errors.dueDate)}
+                helperText={touched.reportedDate ? errors.reportedDate : ''}
+                error={touched.reportedDate && Boolean(errors.reportedDate)}
               />
             )}
           />
