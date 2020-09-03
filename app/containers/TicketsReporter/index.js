@@ -11,7 +11,6 @@ import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 import { get, isEqual } from 'lodash';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
 import moment from 'moment/min/moment-with-locales';
 
 import { wsGetReport, wsGetReportFilters } from 'services/tickets';
@@ -115,6 +114,10 @@ const orderOptions = [
     label: 'Pagado',
   },
   {
+    value: 'invoice',
+    label: 'No. de factura',
+  },
+  {
     value: 'shortName',
     label: 'Nombre corto',
   },
@@ -186,6 +189,9 @@ export function TicketsReporter({ dispatch }) {
     endTotalPaid: '',
     startPaidDate: null,
     endPaidDate: null,
+    invoice: null,
+    invoiced: true,
+    notInvoiced: true,
   });
   const [fieldsActive, setFieldsActive] = useState({
     shortName: true,
@@ -200,6 +206,7 @@ export function TicketsReporter({ dispatch }) {
     cost: false,
     totalPaid: false,
     paidDate: false,
+    invoice: true,
   });
   const [temporalFilters, setTemporalFilters] = useState(null);
   const [activeFieldsOpen, setActiveFieldsOpen] = useState(false);
@@ -233,14 +240,6 @@ export function TicketsReporter({ dispatch }) {
       const lTechnicals = get(response, 'data.technicals', []) || [];
       setCompanies(lCompanies);
       setTechnicals(lTechnicals);
-      // setFiltersActive(f => ({
-      //   ...f,
-      //   companies: lCompanies.map(c => ({ value: c.id, label: c.name })),
-      //   technicals: lTechnicals.map(c => ({
-      //     value: c.id,
-      //     label: getFullName(c),
-      //   })),
-      // }));
     } catch (e) {
       const error = 'No se pudo obtener filtros para el reporte';
       dispatch(aOpenSnackbar(error, 'error'));
@@ -286,7 +285,9 @@ export function TicketsReporter({ dispatch }) {
     }
   };
 
-  const handleClickRow = item => item;
+  const handleClickRow = item => {
+    window.open(`/tickets/${item.id}`, '_blank');
+  };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -382,6 +383,9 @@ export function TicketsReporter({ dispatch }) {
                 {fieldsActive.creationDate && (
                   <TableCell align="right">Fecha de reporte</TableCell>
                 )}
+                {fieldsActive.invoice && (
+                  <TableCell align="left">No. de factura</TableCell>
+                )}
                 {fieldsActive.companies && (
                   <TableCell align="left">Empresa</TableCell>
                 )}
@@ -416,9 +420,7 @@ export function TicketsReporter({ dispatch }) {
                   key={item.id}
                 >
                   {fieldsActive.shortName && (
-                    <TableCell align="left">
-                      <Link to={`/tickets/${item.id}`}>{item.shortName}</Link>
-                    </TableCell>
+                    <TableCell align="left">{item.shortName}</TableCell>
                   )}
                   {fieldsActive.statuses && (
                     <TableCell align="left">
@@ -434,6 +436,9 @@ export function TicketsReporter({ dispatch }) {
                   )}
                   {fieldsActive.creationDate && (
                     <TableCell align="right">{item.reportedDate}</TableCell>
+                  )}
+                  {fieldsActive.invoice && (
+                    <TableCell align="left">{item.invoice}</TableCell>
                   )}
                   {fieldsActive.companies && (
                     <TableCell align="left">
@@ -608,7 +613,39 @@ export function TicketsReporter({ dispatch }) {
             }
             label="Mostrar NO pagados"
           />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={filtersActive.invoiced}
+                onChange={e =>
+                  handleChangeFilters('invoiced', e.target.checked)
+                }
+                name="invoiced"
+                color="primary"
+              />
+            }
+            label="Mostrar facturados"
+          />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={filtersActive.notInvoiced}
+                onChange={e =>
+                  handleChangeFilters('notInvoiced', e.target.checked)
+                }
+                name="notInvoiced"
+                color="primary"
+              />
+            }
+            label="Mostrar NO facturados"
+          />
           <Divider size="32" />
+          <InputText
+            value={filtersActive.invoice}
+            onChange={e => handleChangeFilters('invoice', e.target.value)}
+            label="No. de factura"
+          />
+          <Divider size="16" />
           <Select
             placeholder="Prioridad"
             value={
@@ -764,6 +801,19 @@ export function TicketsReporter({ dispatch }) {
               />
             }
             label="Empresa"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.invoice}
+                onChange={e =>
+                  handleChangeCheckbox('invoice', e.target.checked)
+                }
+                name="invoice"
+                color="primary"
+              />
+            }
+            label="No. de factura"
           />
           <FormControlLabel
             control={
