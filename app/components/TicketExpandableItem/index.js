@@ -134,7 +134,7 @@ function TicketExpandableItem({
               {`Reportado el ${moment(ticket.reportedDate).format('LL')}`}
             </div>
           </div>
-          {get(ticket, 'status', '') === 'assigned' && (
+          {!isClient && get(ticket, 'status', '') === 'assigned' && (
             <div className="row">
               <ClockIcon />
               <TimeTracker

@@ -39,6 +39,7 @@ function NewInvitationDialog({
   callback,
   dispatch,
   defaultEmail,
+  isForClient,
 }) {
   const [email, setEmail] = useState('');
   const [emailTouched, setEmailTouched] = useState(false);
@@ -90,7 +91,8 @@ function NewInvitationDialog({
     onClose();
   };
   const showError = !!email && !isEmail(email) && emailTouched;
-  const disabled = !isEmail(email) || (!role && !isClientAdmin) || busy;
+  const disabled =
+    !isEmail(email) || (!role && !isClientAdmin && !isForClient) || busy;
 
   return (
     <Dialog
@@ -114,7 +116,7 @@ function NewInvitationDialog({
         onBlur={() => setEmailTouched(true)}
         disabled={Boolean(defaultEmail)}
       />
-      {!isClientAdmin && (
+      {!isClientAdmin && !isForClient && (
         <Select
           value={role}
           onChange={value => setRole(value)}
@@ -133,6 +135,7 @@ NewInvitationDialog.propTypes = {
   callback: PropTypes.func,
   dispatch: PropTypes.func,
   defaultEmail: PropTypes.string,
+  isForClient: PropTypes.bool,
 };
 
 export default memo(NewInvitationDialog);

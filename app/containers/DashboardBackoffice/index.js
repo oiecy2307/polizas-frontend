@@ -22,6 +22,7 @@ import ContactIcon from '@material-ui/icons/ContactMail';
 import WarningIcon from '@material-ui/icons/ErrorOutlined';
 import Money from '@material-ui/icons/AttachMoney';
 import Skeleton from '@material-ui/lab/Skeleton';
+import TimeTracker from 'components/TimeTracker';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { wsGetDashboardInformation } from 'services/dashboard';
@@ -66,6 +67,7 @@ export function DashboardBackoffice({ dispatch }) {
   const [technicalsWork, setTechnicalsWork] = useState([]);
   const [technicalsActivity, setTechnicalsActivity] = useState([]);
   const [todayTickets, setTodayTickets] = useState([]);
+  const [openTickets, setOpenTickets] = useState([]);
   const [clientTickets, setClientTickets] = useState([]);
   const [ticketsByCompany, setTicketsByCompany] = useState([]);
   const { isResponsiveXs } = useContext(GlobalValuesContext);
@@ -89,6 +91,7 @@ export function DashboardBackoffice({ dispatch }) {
         const technicals = get(response, 'data.technicalsWork', []);
         const technicalsOfDay = get(response, 'data.technicalsWorkOfDay', []);
         const lTodayTickets = get(response, 'data.todayTickets', []);
+        const lOpenTickets = get(response, 'data.openTickets', []);
         const lClientTickets = get(response, 'data.clientTickets', []);
         const lTicketsByCompany = get(response, 'data.ticketCompanyCount', []);
         setTicketStatusCount(
@@ -114,6 +117,7 @@ export function DashboardBackoffice({ dispatch }) {
         );
         setTechnicalsActivity(technicalsOfDay);
         setTodayTickets(lTodayTickets);
+        setOpenTickets(lOpenTickets);
         setClientTickets(lClientTickets);
       }
       setInitialLoading(false);
@@ -178,6 +182,38 @@ export function DashboardBackoffice({ dispatch }) {
               )}
             </TechnicalCheckbox>
           ))}
+        </Paper>
+      )}
+      {(isAdmin || isTechnical) && (
+        <Paper>
+          <h3>Tickets abiertos</h3>
+          {!openTickets.length && (
+            <EmptyState small message="¡Felicidades, estás al día!" />
+          )}
+          <TodayTicketsSection>
+            {openTickets.map(ticket => (
+              <div className="item" key={ticket.id}>
+                <IconGreen isRed={ticket.status === 'closed' && !ticket.paid}>
+                  {getIcon(ticket)}
+                </IconGreen>
+                <ItemMainInfo>
+                  <Link to={`/tickets/${ticket.id}`}>
+                    <ItemMessage>{ticket.shortName}</ItemMessage>
+                  </Link>
+                  <TimeTracker
+                    ticket={ticket}
+                    dispatch={dispatch}
+                    onTimeChanged={() => {}}
+                  />
+                  {/*
+                  <ItemCompany>
+                    {get(ticket, 'client.company.name', '-')}
+                  </ItemCompany>
+                  */}
+                </ItemMainInfo>
+              </div>
+            ))}
+          </TodayTicketsSection>
         </Paper>
       )}
       {(isAdmin || isTechnical) && (

@@ -417,7 +417,7 @@ export function TicketDetail({ dispatch, match }) {
               </div>
             </React.Fragment>
           )}
-          {get(ticket, 'status', '') === 'assigned' && (
+          {!isClient && get(ticket, 'status', '') === 'assigned' && (
             <React.Fragment>
               <h5>Tiempo trabajado</h5>
               <div>

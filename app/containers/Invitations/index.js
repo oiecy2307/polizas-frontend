@@ -37,6 +37,11 @@ const columns = [
     style: { minWidth: 200 },
   },
   {
+    key: 'type',
+    label: 'Tipo de usuario',
+    style: { minWidth: 200 },
+  },
+  {
     key: 'expiresOn',
     label: 'Expira',
     style: { minWidth: 160 },
@@ -54,6 +59,7 @@ export function Invitations({ dispatch }) {
   const [newInvitationOpen, setNewInvitationOpen] = useState(false);
   const [urlInvitation, setUrlInvitation] = useState('');
   const [defaultEmail, setDefaultEmail] = useState('');
+  const [isForClient, setIsForClient] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
@@ -107,6 +113,7 @@ export function Invitations({ dispatch }) {
 
   const handleSendInvitation = invitation => {
     setDefaultEmail(invitation.email);
+    setIsForClient(invitation.type === 'Cliente');
     setNewInvitationOpen(true);
   };
 
@@ -135,11 +142,13 @@ export function Invitations({ dispatch }) {
     fetchInvitations();
     setNewInvitationOpen(false);
     setDefaultEmail('');
+    setIsForClient(false);
   };
 
   const handleCloseNewInvitation = () => {
     setNewInvitationOpen(false);
     setDefaultEmail('');
+    setIsForClient(false);
   };
 
   const handleCopyUrlToClipboard = () => {
@@ -172,19 +181,13 @@ export function Invitations({ dispatch }) {
     },
   ];
 
-  const items = invitations
-    .filter(i => {
-      if (optionSelected === 'all') return true;
-      if (optionSelected === 'actives' && !i.expired) return true;
-      if (optionSelected === 'expired' && i.expired) return true;
-      return false;
-    })
-    .map(i => ({
-      id: i.id,
-      email: i.email,
-      expiresOn: i.expired ? 'Expirado' : moment(i.expiresOn).fromNow(),
-      createdAt: moment(i.updatedAt).format('LLL'),
-    }));
+  const items = invitations.map(i => ({
+    id: i.id,
+    email: i.email,
+    type: i.companyId ? 'Cliente' : 'Usuario del sistema',
+    expiresOn: i.expired ? 'Expirado' : moment(i.expiresOn).fromNow(),
+    createdAt: moment(i.updatedAt).format('LLL'),
+  }));
 
   const urlDialogOpen = Boolean(urlInvitation);
 
@@ -247,6 +250,7 @@ export function Invitations({ dispatch }) {
         callback={handleNewInvitationSent}
         dispatch={dispatch}
         defaultEmail={defaultEmail}
+        isForClient={isForClient}
       />
       <Fab onClick={() => setNewInvitationOpen(true)} />
       <Dialog
