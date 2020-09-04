@@ -105,6 +105,13 @@ export const ItemMainInfo = styled.div`
   display: flex;
   justify-content: space-between;
   width: calc(100% - 48px);
+  align-items: center;
+
+  & .formal-name {
+    font-size: 12px;
+    color: gray;
+    margin-top: 4px;
+  }
 `;
 
 export const ItemMessage = styled.div`

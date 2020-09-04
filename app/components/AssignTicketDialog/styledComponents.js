@@ -22,7 +22,7 @@ export const TechnicalCheckbox = styled.div`
 export const Note = styled.div`
   color: #454f5b;
   font-size: 14px;
-  margin-bottom: 48px;
+  margin-bottom: 24px;
 `;
 
 export const PersonalInfo = styled.div`
@@ -54,4 +54,12 @@ export const Label = styled.div`
   ${mediaQueryS} {
     width: 86px;
   }
+`;
+
+export const PriorityOptions = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+  max-width: 100%;
+  margin-top: 16px;
 `;

@@ -106,7 +106,7 @@ function CreateEditTicket({
         clientId: user.id,
         description: body.ticketDescription,
         status: 'new',
-        priority: body.ticketPriority,
+        priority: null,
         reportedDate: moment().format(dateFormatToServer),
         shortName: body.ticketTitle,
         evidence: body.evidence,
@@ -139,7 +139,7 @@ function CreateEditTicket({
   const defaultValues = {
     ticketTitle: get(ticketToEdit, 'shortName', ''),
     ticketDescription: get(ticketToEdit, 'description', ''),
-    ticketPriority: get(ticketToEdit, 'priority', ''),
+    ticketPriority: get(ticketToEdit, 'priority', '') || 'new',
     technicalId: get(ticketToEdit, 'technicalId', '') || '',
     clientId: get(ticketToEdit, 'clientId', ''),
     reportedDate: get(ticketToEdit, 'reportedDate', null),

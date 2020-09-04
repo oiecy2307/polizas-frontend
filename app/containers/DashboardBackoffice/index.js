@@ -26,7 +26,7 @@ import TimeTracker from 'components/TimeTracker';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { wsGetDashboardInformation } from 'services/dashboard';
-import { getStatusLabel, getFullName } from 'utils/helper';
+import { getStatusLabel, getFullName, formatToFolio } from 'utils/helper';
 import PieChartItem from 'components/PieChartItem';
 import Avatar from 'components/Avatar';
 import EmptyState from 'components/EmptyState';
@@ -199,6 +199,9 @@ export function DashboardBackoffice({ dispatch }) {
                 <ItemMainInfo>
                   <Link to={`/tickets/${ticket.id}`}>
                     <ItemMessage>{ticket.shortName}</ItemMessage>
+                    <div className="formal-name">
+                      Folio #{formatToFolio(get(ticket, 'number', ''))}
+                    </div>
                   </Link>
                   <TimeTracker
                     ticket={ticket}
@@ -231,6 +234,9 @@ export function DashboardBackoffice({ dispatch }) {
                 <ItemMainInfo>
                   <Link to={`/tickets/${ticket.id}`}>
                     <ItemMessage>{ticket.shortName}</ItemMessage>
+                    <div className="formal-name">
+                      Folio #{formatToFolio(get(ticket, 'number', ''))}
+                    </div>
                   </Link>
                   <ItemCompany>
                     {get(ticket, 'client.company.name', '-')}

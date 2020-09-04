@@ -389,7 +389,7 @@ export function TicketDetail({ dispatch, match }) {
         <Header>
           <div className="description">{description}</div>
           <div className="labels">
-            <Label option={priority} />
+            {priority && <Label option={priority} />}
             <Label onClick={handleOpenMenu} option={status} />
           </div>
         </Header>
@@ -543,6 +543,7 @@ export function TicketDetail({ dispatch, match }) {
               onClose={handleCloseModals}
               dispatch={dispatch}
               id={get(ticket, 'id', '').toString()}
+              defaultPriority={get(ticket, 'priority', null)}
             />
             {isPayTicketDialogOpen && (
               <PayTicketDialog

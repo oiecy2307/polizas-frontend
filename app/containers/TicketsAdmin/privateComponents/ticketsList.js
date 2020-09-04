@@ -95,6 +95,7 @@ export function TicketsList({
         onClose={handleClose}
         dispatch={dispatch}
         id={get(ticketSelected, 'id', '').toString()}
+        defaultPriority={get(ticketSelected, 'priority', null)}
       />
       <PayTicketDialog
         open={isPayTicketDialogOpen}

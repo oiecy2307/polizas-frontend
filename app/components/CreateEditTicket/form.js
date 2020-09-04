@@ -76,32 +76,32 @@ function CreateEditTicketForm(props) {
         dispatch={dispatch}
         defaultEvidence={defaultEvidence}
       />
-      <h4>{messages.fields.ticketPriority}</h4>
-      <Field
-        defaultValue={values.ticketPriority}
-        name="ticketPriority"
-        render={({ field }) => (
-          <PriorityOptions>
-            <Label
-              option={field.value === 'low' ? 'low' : 'unselected'}
-              defaultText={messages.levels.lowLevel}
-              onClick={() => setFieldValue(field.name, 'low')}
-            />
-            <Label
-              option={field.value === 'medium' ? 'medium' : 'unselected'}
-              defaultText={messages.levels.mediumLevel}
-              onClick={() => setFieldValue(field.name, 'medium')}
-            />
-            <Label
-              option={field.value === 'high' ? 'high' : 'unselected'}
-              defaultText={messages.levels.highLevel}
-              onClick={() => setFieldValue(field.name, 'high')}
-            />
-          </PriorityOptions>
-        )}
-      />
       {!isClient && (
         <React.Fragment>
+          <h4>{messages.fields.ticketPriority}</h4>
+          <Field
+            defaultValue={values.ticketPriority}
+            name="ticketPriority"
+            render={({ field }) => (
+              <PriorityOptions>
+                <Label
+                  option={field.value === 'low' ? 'low' : 'unselected'}
+                  defaultText={messages.levels.lowLevel}
+                  onClick={() => setFieldValue(field.name, 'low')}
+                />
+                <Label
+                  option={field.value === 'medium' ? 'medium' : 'unselected'}
+                  defaultText={messages.levels.mediumLevel}
+                  onClick={() => setFieldValue(field.name, 'medium')}
+                />
+                <Label
+                  option={field.value === 'high' ? 'high' : 'unselected'}
+                  defaultText={messages.levels.highLevel}
+                  onClick={() => setFieldValue(field.name, 'high')}
+                />
+              </PriorityOptions>
+            )}
+          />
           <Field
             defaultValue={values.technicalId}
             name="technicalId"

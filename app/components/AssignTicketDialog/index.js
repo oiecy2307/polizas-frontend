@@ -12,6 +12,7 @@ import { GlobalValuesContext } from 'contexts/global-values';
 
 import Avatar from 'components/Avatar';
 import Dialog from 'components/Dialog';
+import LabelComponent from 'components/Label';
 import Radio from '@material-ui/core/Radio';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
@@ -23,15 +24,25 @@ import {
   TechnicalCheckbox,
   PersonalInfo,
   Label,
+  PriorityOptions,
 } from './styledComponents';
 
-function AssignTicketDialog({ onClose, dispatch, open, id }) {
+function AssignTicketDialog({ onClose, dispatch, open, id, defaultPriority }) {
   const [technicals, setTechnicals] = useState([]);
   const [technicalSelected, setTechnicalSelected] = useState(null);
+  const [prioritySelected, setPrioritySelected] = useState(defaultPriority);
+  const [buttonClicked, setButtonClicked] = useState(false);
   const { isResponsiveXs } = useContext(GlobalValuesContext);
+
   useEffect(() => {
-    if (open) fetchTechnicals();
+    if (open) {
+      fetchTechnicals();
+      setPrioritySelected(defaultPriority);
+    } else {
+      setPrioritySelected(null);
+    }
   }, [open]);
+
   const fetchTechnicals = async () => {
     try {
       dispatch(aSetLoadingState(true));
@@ -53,8 +64,12 @@ function AssignTicketDialog({ onClose, dispatch, open, id }) {
   const handleAssignTicket = async () => {
     if (!technicalSelected) return;
     try {
+      setButtonClicked(true);
       dispatch(aSetLoadingState(true));
-      const body = { technicalId: technicalSelected };
+      const body = {
+        technicalId: technicalSelected,
+        priority: prioritySelected,
+      };
       const response = await wsAssignTicket(id, body);
       if (response.error) {
         dispatch(
@@ -70,6 +85,7 @@ function AssignTicketDialog({ onClose, dispatch, open, id }) {
     } finally {
       dispatch(aSetLoadingState(false));
       setTechnicalSelected(null);
+      setButtonClicked(false);
     }
   };
   const handleClose = () => {
@@ -85,7 +101,7 @@ function AssignTicketDialog({ onClose, dispatch, open, id }) {
       onNegativeAction={handleClose}
       positiveAction="Asignar ticket"
       onPositiveAction={handleAssignTicket}
-      disabled={!technicalSelected}
+      disabled={!technicalSelected || !prioritySelected || buttonClicked}
     >
       <Note>Selecciona al técnico de soporte para asignar el ticket.</Note>
       {technicals.map(technical => (
@@ -114,6 +130,26 @@ function AssignTicketDialog({ onClose, dispatch, open, id }) {
           <Radio color="primary" checked={technicalSelected === technical.id} />
         </TechnicalCheckbox>
       ))}
+      <Note style={{ marginTop: 32 }}>
+        Selecciona el nivel de prioridad del ticket
+      </Note>
+      <PriorityOptions>
+        <LabelComponent
+          option={prioritySelected === 'low' ? 'low' : 'unselected'}
+          defaultText="Nivel bajo"
+          onClick={() => setPrioritySelected('low')}
+        />
+        <LabelComponent
+          option={prioritySelected === 'medium' ? 'medium' : 'unselected'}
+          defaultText="Nivel medio"
+          onClick={() => setPrioritySelected('medium')}
+        />
+        <LabelComponent
+          option={prioritySelected === 'high' ? 'high' : 'unselected'}
+          defaultText="Nivel alto"
+          onClick={() => setPrioritySelected('high')}
+        />
+      </PriorityOptions>
     </Dialog>
   );
 }
@@ -123,6 +159,11 @@ AssignTicketDialog.propTypes = {
   onClose: PropTypes.func,
   dispatch: PropTypes.func,
   id: PropTypes.string,
+  defaultPriority: PropTypes.string,
+};
+
+AssignTicketDialog.defaultProps = {
+  defaultPriority: null,
 };
 
 export default memo(AssignTicketDialog);

@@ -114,7 +114,7 @@ function TicketExpandableItem({
               <DescriptionIcon />
               <div>{ticket.description}</div>
             </div>
-            <Label option={ticket.priority} />
+            {ticket.priority && <Label option={ticket.priority} />}
           </SpaceBetween>
           {!!ticket.timeNeeded && (
             <div className="row">
