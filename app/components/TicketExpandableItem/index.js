@@ -7,7 +7,7 @@
 import React, { memo, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { LoggedUser } from 'contexts/logged-user';
-import { minutesToHours, getFullName } from 'utils/helper';
+import { minutesToHours, getFullName, formatToFolio } from 'utils/helper';
 import moment from 'moment/min/moment-with-locales';
 import { get } from 'lodash';
 import Numeral from 'numeral';
@@ -80,6 +80,7 @@ function TicketExpandableItem({
   const isClient = get(currentUser, 'role', '') === 'client';
   const formalName = get(ticket, 'client.company.formalName', '');
   const isFakeUser = get(ticket, 'client.isFakeUser', false);
+  const folio = get(ticket, 'number', '') || '';
 
   const showButton =
     !isClient &&
@@ -97,6 +98,9 @@ function TicketExpandableItem({
           <ItemMainInfo>
             <Link to={`/tickets/${ticket.id}`}>
               <ItemMessage>{ticket.shortName}</ItemMessage>
+              {folio && (
+                <div className="formal-name">Folio #{formatToFolio(folio)}</div>
+              )}
             </Link>
             <ItemCompany>{get(ticket, 'client.company.name', '-')}</ItemCompany>
           </ItemMainInfo>

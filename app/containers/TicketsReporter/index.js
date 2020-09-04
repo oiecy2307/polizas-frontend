@@ -22,6 +22,7 @@ import {
   toMoneyFormat,
   trimObject,
   dateFormatToServer,
+  formatToFolio,
 } from 'utils/helper';
 
 import { Paper, Divider, FloatRight } from 'utils/globalStyledComponents';
@@ -98,6 +99,22 @@ const priorityOptions = [
 
 const orderOptions = [
   {
+    value: 'number',
+    label: 'Folio',
+  },
+  {
+    value: 'reportedDate',
+    label: 'Fecha de creación',
+  },
+  {
+    value: 'shortName',
+    label: 'Nombre corto',
+  },
+  {
+    value: 'invoice',
+    label: 'No. de factura',
+  },
+  {
     value: 'companyId',
     label: 'Empresa',
   },
@@ -110,24 +127,12 @@ const orderOptions = [
     label: 'Estatus',
   },
   {
-    value: 'paid',
-    label: 'Pagado',
-  },
-  {
-    value: 'invoice',
-    label: 'No. de factura',
-  },
-  {
-    value: 'shortName',
-    label: 'Nombre corto',
-  },
-  {
     value: 'priority',
     label: 'Prioridad',
   },
   {
-    value: 'reportedDate',
-    label: 'Fecha de creación',
+    value: 'paid',
+    label: 'Pagado',
   },
   {
     value: 'finishedDate',
@@ -192,8 +197,10 @@ export function TicketsReporter({ dispatch }) {
     invoice: null,
     invoiced: true,
     notInvoiced: true,
+    number: '',
   });
   const [fieldsActive, setFieldsActive] = useState({
+    number: true,
     shortName: true,
     statuses: true,
     priority: true,
@@ -371,6 +378,9 @@ export function TicketsReporter({ dispatch }) {
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
+                {fieldsActive.number && (
+                  <TableCell align="left">Folio</TableCell>
+                )}
                 {fieldsActive.shortName && (
                   <TableCell align="left">Nombre corto</TableCell>
                 )}
@@ -419,6 +429,11 @@ export function TicketsReporter({ dispatch }) {
                   onClick={() => handleClickRow(item)}
                   key={item.id}
                 >
+                  {fieldsActive.number && (
+                    <TableCell align="left">
+                      {formatToFolio(item.number)}
+                    </TableCell>
+                  )}
                   {fieldsActive.shortName && (
                     <TableCell align="left">{item.shortName}</TableCell>
                   )}
@@ -518,6 +533,11 @@ export function TicketsReporter({ dispatch }) {
           >
             <CloseIcon />
           </IconButton>
+          <InputText
+            value={filtersActive.number}
+            onChange={e => handleChangeFilters('number', e.target.value)}
+            label="Folio"
+          />
           <InputText
             value={filtersActive.shortName}
             onChange={e => handleChangeFilters('shortName', e.target.value)}
@@ -737,6 +757,17 @@ export function TicketsReporter({ dispatch }) {
           >
             <CloseIcon />
           </IconButton>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={fieldsActive.number}
+                onChange={e => handleChangeCheckbox('number', e.target.checked)}
+                name="number"
+                color="primary"
+              />
+            }
+            label="Folio"
+          />
           <FormControlLabel
             control={
               <Checkbox

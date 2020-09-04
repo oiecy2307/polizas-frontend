@@ -19,6 +19,7 @@ import {
   textRegex,
   trimObject,
   dateFormatToServer,
+  formatToFolio,
 } from 'utils/helper';
 
 import FormikDebugger from 'components/FormikDebugger';
@@ -26,6 +27,14 @@ import Dialog from 'components/Dialog';
 import Form from './form';
 
 import getMessages from './messages';
+
+const getEditTitle = (text, folio) => {
+  try {
+    return `${text} (#${formatToFolio(folio)})`;
+  } catch (e) {
+    return text;
+  }
+};
 
 function CreateEditTicket({
   open,
@@ -226,7 +235,9 @@ function CreateEditTicket({
 
   const validationSchema = isClient ? schemaClient : schemaAdmin;
 
-  const dialogTitle = isEditing ? messages.title.edit : messages.title.create;
+  const dialogTitle = isEditing
+    ? getEditTitle(messages.title.edit, ticketToEdit.number)
+    : messages.title.create;
 
   return (
     <Formik

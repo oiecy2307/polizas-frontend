@@ -16,6 +16,7 @@ import {
   getIsImage,
   minutesToHours,
   toMoneyFormat,
+  formatToFolio,
 } from 'utils/helper';
 import { LoggedUser } from 'contexts/logged-user';
 
@@ -249,6 +250,7 @@ export function TicketDetail({ dispatch, match }) {
   const invoice = get(ticket, 'invoice', '');
   const showPaidInfo = paid !== null;
   const formalName = get(ticket, 'client.company.formalName', '');
+  const folio = get(ticket, 'number', '');
 
   const buttonText = (() => {
     switch (status) {
@@ -392,6 +394,12 @@ export function TicketDetail({ dispatch, match }) {
           </div>
         </Header>
         <Body>
+          {folio && (
+            <React.Fragment>
+              <h5>Folio</h5>
+              <div>#{formatToFolio(folio)}</div>
+            </React.Fragment>
+          )}
           {reporterName && (
             <React.Fragment>
               <h5>Creado por</h5>

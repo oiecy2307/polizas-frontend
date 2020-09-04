@@ -105,7 +105,15 @@ export const LabelPurple = styled.div`
 export const ItemMainInfo = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: calc(100% - 100px);
+
+  & .formal-name {
+    font-size: 12px;
+    color: gray;
+    margin-top: 4px;
+  }
+
   @media (max-width: 576px) {
     width: calc(100% - 90px);
   }

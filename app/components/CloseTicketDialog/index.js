@@ -95,6 +95,7 @@ function CloseTicketDialog({ open, onClose, dispatch, id, time }) {
       }}
       validationSchema={validationSchema}
       initialValues={defaultValues}
+      isInitialValid={Boolean(defaultValues.timeNeeded && defaultValues.cost)}
       render={p => (
         <Dialog
           open={open}
