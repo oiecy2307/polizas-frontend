@@ -394,7 +394,7 @@ export function TicketDetail({ dispatch, match }) {
           </div>
         </Header>
         <Body>
-          {folio && (
+          {Boolean(folio) && (
             <React.Fragment>
               <h5>Folio</h5>
               <div>#{formatToFolio(folio)}</div>
