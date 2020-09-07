@@ -32,6 +32,7 @@ const FloatingLabel = styled.span`
 `;
 
 function SelectStyled(props) {
+  const { customEmpty } = props;
   const borderBottom = props.error
     ? '2px solid rgb(244, 67, 54)'
     : '1px solid #919191';
@@ -44,10 +45,12 @@ function SelectStyled(props) {
       ? {}
       : { menuPlacement: 'bottom', menuPosition: 'fixed' };
 
+  const noOptionsMessage = customEmpty || (() => <span>Sin resultados</span>);
+
   return (
     <SelectContainer>
       <Select
-        noOptionsMessage={() => <span>Sin resultados</span>}
+        noOptionsMessage={noOptionsMessage}
         styles={{
           control: provided => ({
             ...provided,
@@ -102,6 +105,7 @@ SelectStyled.propTypes = {
   value: PropTypes.any,
   placeholder: PropTypes.any,
   isMulti: PropTypes.bool,
+  customEmpty: PropTypes.func,
 };
 
 export default memo(SelectStyled);

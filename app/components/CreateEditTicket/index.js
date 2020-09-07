@@ -23,6 +23,7 @@ import {
 } from 'utils/helper';
 
 import FormikDebugger from 'components/FormikDebugger';
+import CreateEditCompany from 'components/CreateEditCompany';
 import Dialog from 'components/Dialog';
 import Form from './form';
 
@@ -48,6 +49,7 @@ function CreateEditTicket({
   const [messages] = useState(getMessages(language));
   const [sTechnicals, setTechnicals] = useState([]);
   const [sClients, setClients] = useState([]);
+  const [sFormCompanyOpen, setFormCompanyOpen] = useState(false);
 
   const isEditing = Boolean(ticketToEdit);
 
@@ -240,45 +242,54 @@ function CreateEditTicket({
     : messages.title.create;
 
   return (
-    <Formik
-      onSubmit={(values, actions) => {
-        handleCreateTicket(values, actions);
-      }}
-      validationSchema={validationSchema}
-      initialValues={defaultValues}
-      render={p => (
-        <Dialog
-          onClose={() => {
-            onClose();
-            p.handleReset();
-          }}
-          title={dialogTitle}
-          open={open}
-          withActions
-          negativeAction={messages.actions.cancel}
-          positiveAction={messages.actions.save}
-          onNegativeAction={() => {
-            onClose();
-            p.handleReset();
-          }}
-          onPositiveAction={() => p.handleSubmit(p.values)}
-          disabled={!p.isValid || p.isSubmitting}
-        >
-          <Form
-            {...p}
-            disabled={false}
-            isEditing={isEditing}
-            technicals={sTechnicals}
-            clients={sClients}
-            isClient={isClient}
-            dispatch={dispatch}
-            defaultEvidence={get(ticketToEdit, 'evidence', [])}
-            isClosed={isClosed}
-          />
-          {false && <FormikDebugger />}
-        </Dialog>
-      )}
-    />
+    <React.Fragment>
+      <Formik
+        onSubmit={(values, actions) => {
+          handleCreateTicket(values, actions);
+        }}
+        validationSchema={validationSchema}
+        initialValues={defaultValues}
+        render={p => (
+          <Dialog
+            onClose={() => {
+              onClose();
+              p.handleReset();
+            }}
+            title={dialogTitle}
+            open={open}
+            withActions
+            negativeAction={messages.actions.cancel}
+            positiveAction={messages.actions.save}
+            onNegativeAction={() => {
+              onClose();
+              p.handleReset();
+            }}
+            onPositiveAction={() => p.handleSubmit(p.values)}
+            disabled={!p.isValid || p.isSubmitting}
+          >
+            <Form
+              {...p}
+              disabled={false}
+              isEditing={isEditing}
+              technicals={sTechnicals}
+              clients={sClients}
+              isClient={isClient}
+              dispatch={dispatch}
+              defaultEvidence={get(ticketToEdit, 'evidence', [])}
+              isClosed={isClosed}
+              onCreateCompany={() => setFormCompanyOpen(true)}
+            />
+            {false && <FormikDebugger />}
+          </Dialog>
+        )}
+      />
+      <CreateEditCompany
+        open={sFormCompanyOpen}
+        onClose={() => setFormCompanyOpen(false)}
+        callback={fetchUsers}
+        dispatch={dispatch}
+      />
+    </React.Fragment>
   );
 }
 

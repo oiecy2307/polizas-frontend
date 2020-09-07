@@ -19,6 +19,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import UploadEvidence from 'components/UploadEvidence';
 import Label from 'components/Label';
+import Button from 'components/Button';
 import { Divider } from 'utils/globalStyledComponents';
 
 import { Form, PriorityOptions } from './styledComponents';
@@ -32,6 +33,7 @@ function CreateEditTicketForm(props) {
     dispatch,
     defaultEvidence,
     isClosed,
+    onCreateCompany,
   } = props;
   const { language } = useContext(GlobalValuesContext);
   moment.locale(language);
@@ -148,6 +150,19 @@ function CreateEditTicketForm(props) {
                       : ''
                   }
                   onBlur={() => setFieldTouched(field.name, true)}
+                  customEmpty={() => (
+                    <div style={{ padding: '16px 0' }}>
+                      <div>Sin resultados</div>
+                      <Divider size="24" />
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={onCreateCompany}
+                      >
+                        Agregar nueva empresa
+                      </Button>
+                    </div>
+                  )}
                 />
               );
             }}
@@ -298,6 +313,7 @@ CreateEditTicketForm.propTypes = {
   dispatch: PropTypes.func,
   defaultEvidence: PropTypes.array,
   isClosed: PropTypes.bool,
+  onCreateCompany: PropTypes.func,
 };
 
 export default memo(CreateEditTicketForm);
