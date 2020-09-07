@@ -50,6 +50,7 @@ function CreateEditTicket({
   const [sTechnicals, setTechnicals] = useState([]);
   const [sClients, setClients] = useState([]);
   const [sFormCompanyOpen, setFormCompanyOpen] = useState(false);
+  const [sAnchorEl, setAnchorEl] = useState(null);
 
   const isEditing = Boolean(ticketToEdit);
 
@@ -277,7 +278,10 @@ function CreateEditTicket({
               dispatch={dispatch}
               defaultEvidence={get(ticketToEdit, 'evidence', [])}
               isClosed={isClosed}
-              onCreateCompany={() => setFormCompanyOpen(true)}
+              onCreateCompany={ref => {
+                setAnchorEl(ref);
+                setFormCompanyOpen(true);
+              }}
             />
             {false && <FormikDebugger />}
           </Dialog>
@@ -288,6 +292,8 @@ function CreateEditTicket({
         onClose={() => setFormCompanyOpen(false)}
         callback={fetchUsers}
         dispatch={dispatch}
+        usePopover
+        anchorEl={sAnchorEl}
       />
     </React.Fragment>
   );

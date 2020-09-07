@@ -11,3 +11,13 @@ export const Form = styled.div`
     margin: 0;
   }
 `;
+
+export const PopoverContent = styled.div`
+  max-width: 300px;
+  padding: 0 24px 24px;
+
+  & .actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+`;

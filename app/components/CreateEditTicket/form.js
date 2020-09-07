@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo, useState, useContext } from 'react';
+import React, { memo, useState, useContext, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { GlobalValuesContext } from 'contexts/global-values';
 import { Field } from 'formik';
@@ -38,6 +38,7 @@ function CreateEditTicketForm(props) {
   const { language } = useContext(GlobalValuesContext);
   moment.locale(language);
   const [messages] = useState(getMessages(language));
+  const clientRef = useRef(null);
 
   const { setFieldValue, setFieldTouched, values, touched, errors } = props;
   return (
@@ -136,34 +137,36 @@ function CreateEditTicketForm(props) {
               const { label } = find(clients, { value: field.value }) || {};
               const value = field.value ? { value: field.value, label } : null;
               return (
-                <Select
-                  {...field}
-                  value={value}
-                  onChange={newValue => {
-                    setFieldValue(field.name, get(newValue, 'value', ''));
-                  }}
-                  options={clients}
-                  placeholder={messages.fields.clientId}
-                  error={
-                    touched[field.name] && Boolean(errors[field.name])
-                      ? errors[field.name]
-                      : ''
-                  }
-                  onBlur={() => setFieldTouched(field.name, true)}
-                  customEmpty={() => (
-                    <div style={{ padding: '16px 0' }}>
-                      <div>Sin resultados</div>
-                      <Divider size="24" />
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={onCreateCompany}
-                      >
-                        Agregar nueva empresa
-                      </Button>
-                    </div>
-                  )}
-                />
+                <div ref={clientRef}>
+                  <Select
+                    {...field}
+                    value={value}
+                    onChange={newValue => {
+                      setFieldValue(field.name, get(newValue, 'value', ''));
+                    }}
+                    options={clients}
+                    placeholder={messages.fields.clientId}
+                    error={
+                      touched[field.name] && Boolean(errors[field.name])
+                        ? errors[field.name]
+                        : ''
+                    }
+                    onBlur={() => setFieldTouched(field.name, true)}
+                    customEmpty={() => (
+                      <div style={{ padding: '16px 0' }}>
+                        <div>Sin resultados</div>
+                        <Divider size="24" />
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => onCreateCompany(clientRef.current)}
+                        >
+                          Agregar nueva empresa
+                        </Button>
+                      </div>
+                    )}
+                  />
+                </div>
               );
             }}
           />

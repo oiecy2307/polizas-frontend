@@ -16,8 +16,11 @@ import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { trimObject } from 'utils/helper';
 
 import Dialog from 'components/Dialog';
+import Button from 'components/Button';
+import Popover from '@material-ui/core/Popover';
 import Form from './form';
 
+import { PopoverContent } from './styledComponents';
 import getMessages from './messages';
 
 function CreateEditCompany({
@@ -26,6 +29,8 @@ function CreateEditCompany({
   callback,
   dispatch,
   defaultCompany,
+  usePopover,
+  anchorEl,
 }) {
   const { language } = useContext(GlobalValuesContext);
   const [messages] = useState(getMessages(language));
@@ -98,27 +103,70 @@ function CreateEditCompany({
       }}
       validationSchema={validationSchema}
       initialValues={defaultValues}
-      render={p => (
-        <Dialog
-          onClose={() => {
-            onClose();
-            p.handleReset();
-          }}
-          title={dialogTitle}
-          open={open}
-          withActions
-          negativeAction={messages.actions.cancel}
-          positiveAction={messages.actions.save}
-          onNegativeAction={() => {
-            onClose();
-            p.handleReset();
-          }}
-          onPositiveAction={() => p.handleSubmit(p.values)}
-          disabled={!p.isValid || p.isSubmitting}
-        >
-          <Form {...p} disabled={false} />
-        </Dialog>
-      )}
+      render={p =>
+        usePopover ? (
+          <Popover
+            id="company-popover"
+            open={open}
+            anchorEl={anchorEl}
+            onClose={() => {
+              onClose();
+              p.handleReset();
+            }}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+          >
+            <PopoverContent>
+              <h4>Nueva empresa</h4>
+              <Form {...p} disabled={false} />
+              <div className="actions">
+                <Button
+                  variant="text"
+                  onClick={() => {
+                    onClose();
+                    p.handleReset();
+                  }}
+                  style={{ marginRight: 16 }}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  disabled={!p.isValid || p.isSubmitting}
+                  onClick={() => p.handleSubmit(p.values)}
+                >
+                  Guardar
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        ) : (
+          <Dialog
+            onClose={() => {
+              onClose();
+              p.handleReset();
+            }}
+            title={dialogTitle}
+            open={open}
+            withActions
+            negativeAction={messages.actions.cancel}
+            positiveAction={messages.actions.save}
+            onNegativeAction={() => {
+              onClose();
+              p.handleReset();
+            }}
+            onPositiveAction={() => p.handleSubmit(p.values)}
+            disabled={!p.isValid || p.isSubmitting}
+          >
+            <Form {...p} disabled={false} />
+          </Dialog>
+        )
+      }
     />
   );
 }
@@ -129,6 +177,8 @@ CreateEditCompany.propTypes = {
   callback: PropTypes.func,
   dispatch: PropTypes.func,
   defaultCompany: PropTypes.object,
+  usePopover: PropTypes.bool,
+  anchorEl: PropTypes.any,
 };
 
 export default memo(CreateEditCompany);
