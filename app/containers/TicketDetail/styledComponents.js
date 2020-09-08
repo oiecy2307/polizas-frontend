@@ -17,6 +17,10 @@ export const Container = styled.div`
     margin: 0;
   }
 
+  & h4 {
+    padding-right: 8px;
+  }
+
   & h5 {
     margin-bottom: 16px;
     color: #108043;
@@ -63,6 +67,9 @@ export const Header = styled.div`
   & .description {
     padding-right: 16px;
     text-align: justify;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
   }
 `;
 

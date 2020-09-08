@@ -117,6 +117,7 @@ export const ItemMainInfo = styled.div`
 export const ItemMessage = styled.div`
   color: #454f5b;
   font-size: 14px;
+  padding-right: 8px;
 `;
 
 export const ItemCompany = styled.div`
