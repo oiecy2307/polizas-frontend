@@ -18,8 +18,9 @@ import { Link } from 'react-router-dom';
 
 import LayersIcon from '@material-ui/icons/Layers';
 import DoneIcon from '@material-ui/icons/Done';
-import ContactIcon from '@material-ui/icons/ContactMail';
+import ContactIcon from '@material-ui/icons/Build';
 import WarningIcon from '@material-ui/icons/ErrorOutlined';
+import CloseIcon from '@material-ui/icons/Close';
 import Money from '@material-ui/icons/AttachMoney';
 import Skeleton from '@material-ui/lab/Skeleton';
 import TimeTracker from 'components/TimeTracker';
@@ -56,6 +57,8 @@ const getIcon = ticket => {
       return <ContactIcon />;
     case 'closed':
       return <DoneIcon />;
+    case 'cancelled':
+      return <CloseIcon />;
     default:
       return <LayersIcon />;
   }
@@ -159,28 +162,30 @@ export function DashboardBackoffice({ dispatch }) {
         <Paper>
           <h3>Actividad actual de técnicos</h3>
           {technicalsActivity.map(technical => (
-            <TechnicalCheckbox key={technical.id}>
-              {!isResponsiveXs && (
-                <Avatar src={technical.image} name={technical.name} />
-              )}
-              <PersonalInfo>
-                <div className="name text-ellipsis">
-                  {getFullName(technical)}
-                </div>
-                <div className="email text-ellipsis">{technical.email}</div>
-              </PersonalInfo>
-              {get(technical, 'technicalTickets', []).length > 0 ? (
-                <Label background="#FBEAE5" color="#DE3618">{`${
-                  get(technical, 'technicalTickets', []).length
-                } ${
-                  get(technical, 'technicalTickets', []).length === 1
-                    ? 'ticket'
-                    : 'tickets'
-                }`}</Label>
-              ) : (
-                <Label>Libre</Label>
-              )}
-            </TechnicalCheckbox>
+            <Link to={`/perfil/${technical.id}`}>
+              <TechnicalCheckbox key={technical.id}>
+                {!isResponsiveXs && (
+                  <Avatar src={technical.image} name={technical.name} />
+                )}
+                <PersonalInfo>
+                  <div className="name text-ellipsis">
+                    {getFullName(technical)}
+                  </div>
+                  <div className="email text-ellipsis">{technical.email}</div>
+                </PersonalInfo>
+                {get(technical, 'technicalTickets', []).length > 0 ? (
+                  <Label background="#FBEAE5" color="#DE3618">{`${
+                    get(technical, 'technicalTickets', []).length
+                  } ${
+                    get(technical, 'technicalTickets', []).length === 1
+                      ? 'ticket'
+                      : 'tickets'
+                  }`}</Label>
+                ) : (
+                  <Label>Libre</Label>
+                )}
+              </TechnicalCheckbox>
+            </Link>
           ))}
         </Paper>
       )}
@@ -193,7 +198,12 @@ export function DashboardBackoffice({ dispatch }) {
           <TodayTicketsSection>
             {openTickets.map(ticket => (
               <div className="item" key={ticket.id}>
-                <IconGreen isRed={ticket.status === 'closed' && !ticket.paid}>
+                <IconGreen
+                  isRed={
+                    (ticket.status === 'closed' && !ticket.paid) ||
+                    ticket.status === 'cancelled'
+                  }
+                >
                   {getIcon(ticket)}
                 </IconGreen>
                 <ItemMainInfo>
@@ -228,7 +238,12 @@ export function DashboardBackoffice({ dispatch }) {
           <TodayTicketsSection>
             {todayTickets.map(ticket => (
               <div className="item" key={ticket.id}>
-                <IconGreen isRed={ticket.status === 'closed' && !ticket.paid}>
+                <IconGreen
+                  isRed={
+                    (ticket.status === 'closed' && !ticket.paid) ||
+                    ticket.status === 'cancelled'
+                  }
+                >
                   {getIcon(ticket)}
                 </IconGreen>
                 <ItemMainInfo>

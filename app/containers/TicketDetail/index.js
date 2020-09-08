@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
+import { Link } from 'react-router-dom';
 import { get, times } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import {
@@ -45,7 +46,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import EditIcon from '@material-ui/icons/Edit';
-import SendIcon from '@material-ui/icons/SendOutlined';
+import SendIcon from '@material-ui/icons/Send';
 import IconButton from '@material-ui/core/IconButton';
 
 import { Divider, FloatRight } from 'utils/globalStyledComponents';
@@ -155,6 +156,7 @@ export function TicketDetail({ dispatch, match }) {
 
   const handleSaveComment = async () => {
     try {
+      if (!comment.trim()) return;
       const id = get(match, 'params.id', null);
       dispatch(aSetLoadingState(true));
       const response = await wsCreateComment(id, {
@@ -237,7 +239,9 @@ export function TicketDetail({ dispatch, match }) {
   const technicalImg = get(ticket, 'technical.image', {});
   const reporterName = getFullName(get(ticket, 'reporter', {}));
   const reporterImg = get(ticket, 'reporter.image', {});
+  const reporterId = get(ticket, 'reporter.id', '');
   const clientName = getFullName(get(ticket, 'client', {}));
+  const clientId = get(ticket, 'client.id', '');
   const isFakeUser = get(ticket, 'client.isFakeUser', {});
   const companyName = get(ticket, 'client.company.name', {});
   const clientImg = get(ticket, 'client.image', {});
@@ -405,38 +409,30 @@ export function TicketDetail({ dispatch, match }) {
           {reporterName && (
             <React.Fragment>
               <h5>Creado por</h5>
-              <div className="user">
-                <Avatar name={reporterName} src={reporterImg} />
-                <span className="name">{reporterName}</span>
-              </div>
+              <Link to={`/perfil/${reporterId}`}>
+                <div className="user">
+                  <Avatar name={reporterName} src={reporterImg} />
+                  <span className="name">{reporterName}</span>
+                </div>
+              </Link>
             </React.Fragment>
           )}
           {clientName && (
             <React.Fragment>
               <h5>Cliente</h5>
-              <div className="user">
-                <Avatar name={clientName} src={clientImg} />
-                <div>
-                  <div className="name">{`${clientName} ${
-                    isFakeUser ? '' : `(${companyName})`
-                  }`}</div>
-                  {formalName && (
-                    <div className="formal-name">{formalName}</div>
-                  )}
+              <Link to={`/perfil/${clientId}`}>
+                <div className="user">
+                  <Avatar name={clientName} src={clientImg} />
+                  <div>
+                    <div className="name">{`${clientName} ${
+                      isFakeUser ? '' : `(${companyName})`
+                    }`}</div>
+                    {formalName && (
+                      <div className="formal-name">{formalName}</div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </React.Fragment>
-          )}
-          {!isClient && get(ticket, 'status', '') === 'assigned' && (
-            <React.Fragment>
-              <h5>Tiempo trabajado</h5>
-              <div>
-                <TimeTracker
-                  ticket={ticket}
-                  dispatch={dispatch}
-                  onTimeChanged={handleTicketTimeChanged}
-                />
-              </div>
+              </Link>
             </React.Fragment>
           )}
           {technicalName && (
@@ -450,6 +446,18 @@ export function TicketDetail({ dispatch, match }) {
                 <Avatar name={technicalName} src={technicalImg} />
                 <span className="name">{technicalName}</span>
               </Div>
+            </React.Fragment>
+          )}
+          {!isClient && get(ticket, 'status', '') === 'assigned' && (
+            <React.Fragment>
+              <h5>Tiempo trabajado</h5>
+              <div>
+                <TimeTracker
+                  ticket={ticket}
+                  dispatch={dispatch}
+                  onTimeChanged={handleTicketTimeChanged}
+                />
+              </div>
             </React.Fragment>
           )}
           {finishedDate && (
@@ -581,7 +589,7 @@ export function TicketDetail({ dispatch, match }) {
               value={comment}
               onChange={e => setComment(e.target.value)}
             />
-            <IconButton onClick={handleSaveComment} disabled={!comment.trim()}>
+            <IconButton onClick={handleSaveComment}>
               <SendIcon />
             </IconButton>
           </div>

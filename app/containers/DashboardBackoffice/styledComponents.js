@@ -36,6 +36,10 @@ export const Paper = styled.div`
     margin-right: 0;
     width: 100%;
   }
+
+  & a {
+    width: 100%;
+  }
 `;
 
 export const Label = styled.div`
@@ -125,6 +129,7 @@ export const ItemCompany = styled.div`
   font-size: 14px;
   padding-left: 8px;
   text-align: right;
+  flex-shrink: 0;
 `;
 
 export const TodayTicketsSection = styled.div`

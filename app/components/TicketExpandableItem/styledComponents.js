@@ -176,6 +176,7 @@ export const TicketInformation = styled.div`
   & .row {
     display: flex;
     padding-right: 8px;
+    align-items: center;
   }
 
   & .row .time {

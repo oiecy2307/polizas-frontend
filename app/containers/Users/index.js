@@ -152,6 +152,10 @@ export function Users(props) {
     }
   }
 
+  const handleUserClicked = item => {
+    window.open(`/perfil/${item.id}`, '_blank');
+  };
+
   const handleSelectOption = option => () => {
     setOptionSelected(option);
   };
@@ -228,7 +232,8 @@ export function Users(props) {
           items={items}
           withMenu
           optionsMenu={optionsMenu}
-          isClickable={false}
+          isClickable
+          onRowClicked={handleUserClicked}
           showPagination
           count={count}
           rowsPerPage={rowsPerPage}

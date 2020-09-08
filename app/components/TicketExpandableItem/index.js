@@ -82,6 +82,12 @@ function TicketExpandableItem({
   const isFakeUser = get(ticket, 'client.isFakeUser', false);
   const folio = get(ticket, 'number', '') || '';
 
+  const clientLink = isFakeUser
+    ? `/empresas/${get(ticket, 'client.company.id')}`
+    : `/perfil/${get(ticket, 'client.id')}`;
+
+  const technicalLink = `/perfil/${get(ticket, 'technical.id', '')}`;
+
   const showButton =
     !isClient &&
     ticket.status !== 'cancelled' &&
@@ -163,27 +169,38 @@ function TicketExpandableItem({
             </div>
           )}
           {ticket.technical && (
-            <div className="row row-technical">
-              <Avatar
-                name={get(ticket, 'technical.name', '')}
-                src={get(ticket, 'technical.image', '')}
-              />
-              <div>{getFullName(ticket.technical)} (técnico)</div>
+            <div>
+              <Link to={technicalLink}>
+                <div className="row row-technical">
+                  <Avatar
+                    name={get(ticket, 'technical.name', '')}
+                    src={get(ticket, 'technical.image', '')}
+                  />
+                  <div>{getFullName(ticket.technical)} (técnico)</div>
+                </div>
+              </Link>
             </div>
           )}
           {ticket.client && (
-            <div className="row row-technical">
-              <Avatar
-                name={get(ticket, 'client.name', '')}
-                src={get(ticket, 'client.image', '')}
-              />
-              <div>
-                <div>
-                  {getFullName(ticket.client)}{' '}
-                  {!isFakeUser && `(${get(ticket, 'client.company.name', '')})`}
+            <div>
+              <Link to={clientLink}>
+                <div className="row row-technical">
+                  <Avatar
+                    name={get(ticket, 'client.name', '')}
+                    src={get(ticket, 'client.image', '')}
+                  />
+                  <div>
+                    <div>
+                      {getFullName(ticket.client)}{' '}
+                      {!isFakeUser &&
+                        `(${get(ticket, 'client.company.name', '')})`}
+                    </div>
+                    {formalName && (
+                      <div className="formal-name">{formalName}</div>
+                    )}
+                  </div>
                 </div>
-                {formalName && <div className="formal-name">{formalName}</div>}
-              </div>
+              </Link>
             </div>
           )}
           <SpaceBetween>

@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
+import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { get, times } from 'lodash';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
@@ -207,7 +208,9 @@ export function UserProfile({ match, dispatch }) {
         {company && (
           <React.Fragment>
             <h5>Empresa</h5>
-            <div>{company}</div>
+            <Link to={`/empresas/${get(profile, 'company.id', '')}`}>
+              <div>{company}</div>
+            </Link>
           </React.Fragment>
         )}
         {phoneNumber && (

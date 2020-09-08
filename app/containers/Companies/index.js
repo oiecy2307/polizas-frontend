@@ -149,6 +149,10 @@ export function Companies({ dispatch }) {
     setPage(0);
   };
 
+  const handleCompanyClicked = item => {
+    window.open(`/empresas/${item.id}`, '_blank');
+  };
+
   const optionsMenu = [
     {
       option: 'Editar',
@@ -228,7 +232,8 @@ export function Companies({ dispatch }) {
           items={items}
           withMenu
           optionsMenu={optionsMenu}
-          isClickable={false}
+          isClickable
+          onRowClicked={handleCompanyClicked}
           showPagination
           count={count}
           rowsPerPage={rowsPerPage}

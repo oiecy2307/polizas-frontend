@@ -58,3 +58,17 @@ export const wsAssignOrSendInvitation = async body => {
       .catch(err => reject(err));
   });
 };
+
+export const wsGetCompanyById = async id => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    get({
+      url: `/companies/by-id/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
