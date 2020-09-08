@@ -42,6 +42,10 @@ export const TopSection = styled.div`
     font-size: 12px;
     margin-top: 4px;
   }
+
+  & button {
+    flex-shrink: 0;
+  }
 `;
 
 export const Header = styled.div`
@@ -110,6 +114,25 @@ export const Body = styled.div`
     height: 160px;
     margin-bottom: 16px;
     text-align: center;
+  }
+
+  & .comment-input {
+    position: relative;
+  }
+
+  & .comment-input > button svg {
+    color: #108043;
+  }
+
+  & .comment-input > button {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+  }
+
+  & .comment-input > div > div {
+    padding-bottom: 48px;
+    position: relative;
   }
 `;
 

@@ -29,6 +29,10 @@ export const Container = styled.div`
   & h5:not(:first-child) {
     margin-top: 24px;
   }
+
+  & .comment-input {
+    background: red;
+  }
 `;
 
 export const TopSection = styled.div`

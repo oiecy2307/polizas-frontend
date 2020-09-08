@@ -45,6 +45,8 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import EditIcon from '@material-ui/icons/Edit';
+import SendIcon from '@material-ui/icons/SendOutlined';
+import IconButton from '@material-ui/core/IconButton';
 
 import { Divider, FloatRight } from 'utils/globalStyledComponents';
 import {
@@ -571,22 +573,29 @@ export function TicketDetail({ dispatch, match }) {
             />
           ))}
           <Divider size="24" />
-          <Input
-            multiline
-            rows={4}
-            label="Escribe un comentario"
-            value={comment}
-            onChange={e => setComment(e.target.value)}
-          />
-          <FloatRight>
-            <Button
-              variant="text"
-              onClick={handleSaveComment}
-              disabled={!comment.trim()}
-            >
-              Comentar
-            </Button>
-          </FloatRight>
+          <div className="comment-input">
+            <Input
+              multiline
+              rows={4}
+              label="Escribe un comentario"
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+            />
+            <IconButton onClick={handleSaveComment} disabled={!comment.trim()}>
+              <SendIcon />
+            </IconButton>
+          </div>
+          {false && (
+            <FloatRight>
+              <Button
+                variant="text"
+                onClick={handleSaveComment}
+                disabled={!comment.trim()}
+              >
+                Comentar
+              </Button>
+            </FloatRight>
+          )}
         </Body>
       </Container>
     </MainContainer>

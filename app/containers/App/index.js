@@ -43,6 +43,7 @@ import Solutions from 'containers/Solutions/Loadable';
 import SolutionDetail from 'containers/SolutionDetail/Loadable';
 import Notifications from 'containers/Notifications/Loadable';
 import Invitations from 'containers/Invitations';
+import CompanyDetail from 'containers/CompanyDetail/Loadable';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -201,6 +202,13 @@ function App({ app, dispatch }) {
             layout={MainLayout}
             responsiveTitle="Notificaciones"
             component={Notifications}
+          />
+          <AppRoute
+            exact
+            path="/empresas/:id"
+            layout={MainLayout}
+            responsiveTitle="Detalle de empresa"
+            component={CompanyDetail}
           />
           <Route exact path="/inicio-sesion" component={HomePage} />
           <Route exact path="/registro/:token" component={Register} />
