@@ -242,6 +242,7 @@ export function TicketDetail({ dispatch, match }) {
   const reporterId = get(ticket, 'reporter.id', '');
   const clientName = getFullName(get(ticket, 'client', {}));
   const clientId = get(ticket, 'client.id', '');
+  const technicalId = get(ticket, 'technical.id', '');
   const isFakeUser = get(ticket, 'client.isFakeUser', {});
   const companyName = get(ticket, 'client.company.name', {});
   const clientImg = get(ticket, 'client.image', {});
@@ -435,7 +436,7 @@ export function TicketDetail({ dispatch, match }) {
               </Link>
             </React.Fragment>
           )}
-          {technicalName && (
+          {!isClient && technicalName && (
             <React.Fragment>
               <h5>Técnico asignado</h5>
               <Div
@@ -446,6 +447,17 @@ export function TicketDetail({ dispatch, match }) {
                 <Avatar name={technicalName} src={technicalImg} />
                 <span className="name">{technicalName}</span>
               </Div>
+            </React.Fragment>
+          )}
+          {isClient && technicalName && (
+            <React.Fragment>
+              <h5>Técnico asignado</h5>
+              <Link to={`/perfil/${technicalId}`}>
+                <Div style={{ cursor: 'pointer' }} className="user">
+                  <Avatar name={technicalName} src={technicalImg} />
+                  <span className="name">{technicalName}</span>
+                </Div>
+              </Link>
             </React.Fragment>
           )}
           {!isClient && get(ticket, 'status', '') === 'assigned' && (
