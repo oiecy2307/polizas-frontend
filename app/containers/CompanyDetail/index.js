@@ -12,20 +12,15 @@ import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import moment from 'moment/min/moment-with-locales';
 import { get, times } from 'lodash';
-import { getFullName, formatToFolio } from 'utils/helper';
+import { getFullName } from 'utils/helper';
 
 import { wsGetCompanyById } from 'services/companies';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import Avatar from 'components/Avatar';
 import EmptyState from 'components/EmptyState';
+import SimpleTicketItem from 'components/SimpleTicketItem';
 
 import Skeleton from '@material-ui/lab/Skeleton';
-import LayersIcon from '@material-ui/icons/Layers';
-import DoneIcon from '@material-ui/icons/Done';
-import ContactIcon from '@material-ui/icons/Build';
-import WarningIcon from '@material-ui/icons/ErrorOutlined';
-import CloseIcon from '@material-ui/icons/Close';
-import Money from '@material-ui/icons/AttachMoney';
 
 import {
   Container,
@@ -33,28 +28,7 @@ import {
   Header,
   Body,
   MainContainer,
-  IconGreen,
-  ItemMainInfo,
-  ItemMessage,
 } from './styledComponents';
-
-const getIcon = ticket => {
-  if (ticket.status === 'closed' && !ticket.paid) {
-    return <Money />;
-  }
-  switch (ticket.status) {
-    case 'new':
-      return <WarningIcon />;
-    case 'assigned':
-      return <ContactIcon />;
-    case 'closed':
-      return <DoneIcon />;
-    case 'cancelled':
-      return <CloseIcon />;
-    default:
-      return <LayersIcon />;
-  }
-};
 
 export function CompanyDetail({ dispatch, match }) {
   const [company, setCompany] = useState({});
@@ -166,24 +140,7 @@ export function CompanyDetail({ dispatch, match }) {
         <Body>
           <h5>Últimos tickets</h5>
           {tickets.map(ticket => (
-            <div className="item" key={ticket.id}>
-              <IconGreen
-                isRed={
-                  (ticket.status === 'closed' && !ticket.paid) ||
-                  ticket.status === 'cancelled'
-                }
-              >
-                {getIcon(ticket)}
-              </IconGreen>
-              <ItemMainInfo>
-                <Link to={`/tickets/${ticket.id}`}>
-                  <ItemMessage>{ticket.shortName}</ItemMessage>
-                  <div className="formal-name">
-                    Folio #{formatToFolio(get(ticket, 'number', ''))}
-                  </div>
-                </Link>
-              </ItemMainInfo>
-            </div>
+            <SimpleTicketItem ticket={ticket} key={ticket.id} />
           ))}
           {!tickets.length && (
             <div style={{ textAlign: 'center' }}>

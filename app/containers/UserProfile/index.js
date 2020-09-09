@@ -26,6 +26,8 @@ import Fab from 'components/Fab';
 import CreateEditUser from 'components/CreateEditUser';
 import ChangePasswordDialog from 'components/ChangePasswordDialog';
 import EmptyState from 'components/EmptyState';
+import ExpandableItem from 'components/ExpandableItem';
+import SimpleTicketItem from 'components/SimpleTicketItem';
 
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -40,11 +42,15 @@ import {
   ComplementInfo,
   Input,
   Span,
+  Div,
 } from './styledComponents';
 
 export function UserProfile({ match, dispatch }) {
   useInjectReducer({ key: 'userProfile', reducer });
   const [profile, setProfile] = useState({});
+  const [todayTickets, setTodayTickets] = useState([]);
+  const [yesterdayTickets, setYesterdayTickets] = useState([]);
+  const [restTickets, setRestTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -71,7 +77,10 @@ export function UserProfile({ match, dispatch }) {
         dispatch(aOpenSnackbar('Error al obtener perfil', 'error'));
         setNotFound(true);
       } else {
-        setProfile(response.data);
+        setProfile(get(response, 'data.user', {}));
+        setTodayTickets(get(response, 'data.todayTickets', []) || []);
+        setYesterdayTickets(get(response, 'data.yesterdayTickets', []) || []);
+        setRestTickets(get(response, 'data.restTickets', []) || []);
       }
     } catch (e) {
       dispatch(aOpenSnackbar('Error al obtener perfil', 'error'));
@@ -134,7 +143,51 @@ export function UserProfile({ match, dispatch }) {
     );
   }
 
-  const showRightInfo = false;
+  const name = getFullName(profile);
+  const title = name || 'Perfil';
+  const company = get(profile, 'company.name', '');
+  const companyId = get(profile, 'company.id', '');
+  const phoneNumber = get(profile, 'phoneNumber', '');
+  const role = get(profile, 'role', '');
+  const createdAt = moment(get(profile, 'createdAt', new Date())).format('LL');
+  const email = get(profile, 'email', '');
+  const username = get(profile, 'username', '');
+  const image = get(profile, 'image', '');
+
+  const showRightInfo =
+    isMyOwnProfile ||
+    currentUser.role !== 'client' ||
+    (currentUser.role === 'client' && companyId === currentUser.companyId);
+
+  const texts = (() => {
+    switch (role) {
+      case 'admin':
+      case 'technical':
+        return [
+          'Asignados recientemente',
+          'Asignados ayer',
+          'Asignados la semana pasada',
+        ];
+      case 'salesman':
+        return [
+          'Reportados recientemente',
+          'Reportados ayer',
+          'Reportados la semana pasada',
+        ];
+      case 'client':
+        return [
+          'Creados recientemente',
+          'Creados ayer',
+          'Creados la semana pasada',
+        ];
+      default:
+        return [
+          'Asignados recientemente',
+          'Asignados ayer',
+          'Asignados la semana pasada',
+        ];
+    }
+  })();
 
   if (loading) {
     return (
@@ -173,16 +226,6 @@ export function UserProfile({ match, dispatch }) {
       </Content>
     );
   }
-
-  const name = getFullName(profile);
-  const title = name || 'Perfil';
-  const company = get(profile, 'company.name', '');
-  const phoneNumber = get(profile, 'phoneNumber', '');
-  const role = get(profile, 'role', '');
-  const createdAt = moment(get(profile, 'createdAt', new Date())).format('LL');
-  const email = get(profile, 'email', '');
-  const username = get(profile, 'username', '');
-  const image = get(profile, 'image', '');
 
   return (
     <Content showRightInfo={showRightInfo}>
@@ -260,6 +303,41 @@ export function UserProfile({ match, dispatch }) {
       {showRightInfo && (
         <ComplementInfo className="shadow">
           <h4>Últimos tickets</h4>
+          <div className="expandibles-container">
+            <ExpandableItem
+              header={<div>{texts[0]}</div>}
+              content={
+                <div>
+                  {todayTickets.map(ticket => (
+                    <SimpleTicketItem ticket={ticket} key={ticket.id} />
+                  ))}
+                  {!todayTickets.length && <Div>Sin tickets</Div>}
+                </div>
+              }
+            />
+            <ExpandableItem
+              header={<div>{texts[1]}</div>}
+              content={
+                <div>
+                  {yesterdayTickets.map(ticket => (
+                    <SimpleTicketItem ticket={ticket} key={ticket.id} />
+                  ))}
+                  {!yesterdayTickets.length && <Div>Sin tickets</Div>}
+                </div>
+              }
+            />
+            <ExpandableItem
+              header={<div>{texts[2]}</div>}
+              content={
+                <div>
+                  {restTickets.map(ticket => (
+                    <SimpleTicketItem ticket={ticket} key={ticket.id} />
+                  ))}
+                  {!restTickets.length && <Div>Sin tickets</Div>}
+                </div>
+              }
+            />
+          </div>
         </ComplementInfo>
       )}
       {isMyOwnProfile && (

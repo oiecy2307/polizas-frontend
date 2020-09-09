@@ -66,6 +66,16 @@ export const ComplementInfo = styled.div`
   border-radius: 12px;
   padding: 24px;
   flex-grow: 1;
+
+  & .expandibles-container > div {
+    border: none;
+    margin-bottom: 24px;
+  }
+
+  & .expandibles-container > div > div:last-child > div {
+    padding: 16px;
+    border-radius: 2px;
+  }
 `;
 
 export const Input = styled.input`
@@ -73,3 +83,7 @@ export const Input = styled.input`
 `;
 
 export const Span = styled.span``;
+
+export const Div = styled.div`
+  text-align: center;
+`;
