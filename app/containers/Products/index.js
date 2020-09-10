@@ -21,6 +21,9 @@ import Table from 'components/Table';
 import EmptyState from 'components/EmptyState';
 import CreateEditProduct from 'components/CreateEditProduct';
 import Fab from 'components/Fab';
+import Searcher from 'components/Searcher';
+
+import { FiltersContainer } from './styledComponents';
 
 const columns = [
   {
@@ -53,6 +56,8 @@ export function Products({ dispatch }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
+  const [searchText, setSearchText] = useState('');
+  const [lastSearch, setLastSearch] = useState('');
 
   useEffect(() => {
     fetchProducts();
@@ -65,6 +70,7 @@ export function Products({ dispatch }) {
         optionSelected,
         page * rowsPerPage,
         rowsPerPage,
+        searchText,
       );
       const lProducts = get(response, 'data.rows', []);
       setProducts(lProducts);
@@ -76,6 +82,7 @@ export function Products({ dispatch }) {
       dispatch(aOpenSnackbar(error, 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
+      setLastSearch(searchText);
     }
   };
 
@@ -171,7 +178,16 @@ export function Products({ dispatch }) {
       <Helmet>
         <title>Productos</title>
       </Helmet>
-      <div>
+      <FiltersContainer>
+        <Searcher
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+          onSearch={() => {
+            if (lastSearch !== searchText) {
+              fetchProducts();
+            }
+          }}
+        />
         <TabButton
           selected={optionSelected === 'actives'}
           onClick={() => setOptionSelected('actives')}
@@ -184,7 +200,7 @@ export function Products({ dispatch }) {
         >
           Desactivados
         </TabButton>
-      </div>
+      </FiltersContainer>
       {products.length > 0 && (
         <Table
           columns={columns}
