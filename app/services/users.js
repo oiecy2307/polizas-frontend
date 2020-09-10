@@ -1,10 +1,10 @@
 import { get, getToken, patch, post, deleteRequest } from 'utils/http';
 
-export const wsGetUsersByType = async (type, offset, limit) => {
+export const wsGetUsersByType = async (type, offset, limit, filter) => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
     get({
-      url: `/users/type/${type}?offset=${offset}&limit=${limit}`,
+      url: `/users/type/${type}?offset=${offset}&limit=${limit}&text=${filter}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -69,6 +69,7 @@ export const TabButton = styled.button`
   margin-right: ${({ noMargin }) => (noMargin ? 0 : 16)}px;
   margin-bottom: ${({ noMargin }) => (noMargin ? 0 : 16)}px;
   position: relative;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 
   &:hover {
     background: #e3f1df;

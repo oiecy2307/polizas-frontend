@@ -20,6 +20,7 @@ import { TabButton } from 'utils/globalStyledComponents';
 import EmptyState from 'components/EmptyState';
 import CreateEditUser from 'components/CreateEditUser';
 import SkeletonLoader from 'components/SkeletonLoader';
+import Searcher from 'components/Searcher';
 
 import { wsGetUsersByType, wsUpdateUser } from 'services/users';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
@@ -28,6 +29,7 @@ import { useInjectReducer } from 'utils/injectReducer';
 import makeSelectUsers from './selectors';
 import reducer from './reducer';
 import getMessages from './messages';
+import { FiltersContainer } from './styledComponents';
 
 export function Users(props) {
   useInjectReducer({ key: 'users', reducer });
@@ -46,6 +48,8 @@ export function Users(props) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
+  const [lastSearch, setLastSearch] = useState('');
 
   const { dispatch } = props;
 
@@ -132,13 +136,14 @@ export function Users(props) {
     fetchUsers(optionSelected);
   }, [optionSelected, page, rowsPerPage]);
 
-  async function fetchUsers(type) {
+  async function fetchUsers(type = optionSelected) {
     try {
       dispatch(aSetLoadingState(true));
       const rUsers = await wsGetUsersByType(
         type,
         page * rowsPerPage,
         rowsPerPage,
+        searchText,
       );
       setCount(get(rUsers, 'data.count', 0));
       if (rUsers.error)
@@ -149,6 +154,7 @@ export function Users(props) {
     } finally {
       dispatch(aSetLoadingState(false));
       setInitialLoading(false);
+      setLastSearch(searchText);
     }
   }
 
@@ -190,7 +196,16 @@ export function Users(props) {
         <title>Usuarios</title>
         <meta name="description" content="crud de usuarios" />
       </Helmet>
-      <div>
+      <FiltersContainer>
+        <Searcher
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+          onSearch={() => {
+            if (lastSearch !== searchText) {
+              fetchUsers();
+            }
+          }}
+        />
         {!isClientAdmin && (
           <React.Fragment>
             <TabButton
@@ -225,7 +240,7 @@ export function Users(props) {
         >
           {messages.tabs.inactive}
         </TabButton>
-      </div>
+      </FiltersContainer>
       {Boolean(users.length) && (
         <Table
           columns={columns}
