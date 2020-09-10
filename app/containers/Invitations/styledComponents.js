@@ -5,3 +5,8 @@ export const Input = styled.textarea`
   width: 360px;
   max-width: 100%;
 `;
+
+export const FiltersContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;

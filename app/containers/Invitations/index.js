@@ -24,11 +24,12 @@ import NewInvitationDialog from 'components/NewInvitationDialog';
 import Dialog from 'components/Dialog';
 import EmptyState from 'components/EmptyState';
 import SkeletonLoader from 'components/SkeletonLoader';
+import Searcher from 'components/Searcher';
 
 import { TabButton } from 'utils/globalStyledComponents';
 import Table from 'components/Table';
 
-import { Input } from './styledComponents';
+import { Input, FiltersContainer } from './styledComponents';
 
 const columns = [
   {
@@ -64,6 +65,8 @@ export function Invitations({ dispatch }) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
+  const [lastSearch, setLastSearch] = useState('');
 
   const urlRef = useRef(null);
 
@@ -78,6 +81,7 @@ export function Invitations({ dispatch }) {
         optionSelected,
         page * rowsPerPage,
         rowsPerPage,
+        searchText,
       );
       if (response.error) {
         dispatch(aOpenSnackbar('Error al obtener invitaciones', 'error'));
@@ -90,6 +94,7 @@ export function Invitations({ dispatch }) {
     } finally {
       dispatch(aSetLoadingState(false));
       setInitialLoading(false);
+      setLastSearch(searchText);
     }
   };
 
@@ -207,7 +212,16 @@ export function Invitations({ dispatch }) {
       <Helmet>
         <title>Invitaciones</title>
       </Helmet>
-      <div>
+      <FiltersContainer>
+        <Searcher
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+          onSearch={() => {
+            if (lastSearch !== searchText) {
+              fetchInvitations();
+            }
+          }}
+        />
         <TabButton
           selected={optionSelected === 'all'}
           onClick={() => setOptionSelected('all')}
@@ -226,7 +240,7 @@ export function Invitations({ dispatch }) {
         >
           Expiradas
         </TabButton>
-      </div>
+      </FiltersContainer>
       {Boolean(items.length) && (
         <Table
           columns={columns}

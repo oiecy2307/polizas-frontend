@@ -57,11 +57,11 @@ export const wsUpdateUser = async (id, body) => {
   });
 };
 
-export const wsGetInvitations = async (status, offset, limit) => {
+export const wsGetInvitations = async (status, offset, limit, text = '') => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
     get({
-      url: `/users/invitations?status=${status}&offset=${offset}&limit=${limit}`,
+      url: `/users/invitations?status=${status}&offset=${offset}&limit=${limit}&text=${text}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
