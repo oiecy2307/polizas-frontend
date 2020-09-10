@@ -23,8 +23,10 @@ import Table from 'components/Table';
 import Fab from 'components/Fab';
 import EmptyState from 'components/EmptyState';
 import CreateEditCompany from 'components/CreateEditCompany';
+import Searcher from 'components/Searcher';
 
 import AssignCompanyAdminForm from './assignCompanyAdminForm';
+import { FiltersContainer } from './styledComponents';
 
 const columns = [
   {
@@ -42,11 +44,6 @@ const columns = [
     label: 'Razón social',
     style: { minWidth: 160 },
   },
-  // {
-  //   key: 'rfc',
-  //   label: 'RFC',
-  //   style: { minWidth: 100 },
-  // },
   {
     key: 'active',
     label: 'Estatus',
@@ -72,6 +69,8 @@ export function Companies({ dispatch }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
+  const [searchText, setSearchText] = useState('');
+  const [lastSearch, setLastSearch] = useState('');
 
   useEffect(() => {
     fetchCompanies();
@@ -84,6 +83,7 @@ export function Companies({ dispatch }) {
         optionSelected,
         page * rowsPerPage,
         rowsPerPage,
+        searchText,
       );
       const lCompanies = get(response, 'data.rows', []);
       setCompanies(lCompanies);
@@ -95,6 +95,7 @@ export function Companies({ dispatch }) {
     } finally {
       dispatch(aSetLoadingState(false));
       setInitialLoading(false);
+      setLastSearch(searchText);
     }
   };
 
@@ -212,7 +213,16 @@ export function Companies({ dispatch }) {
       <Helmet>
         <title>Empresas</title>
       </Helmet>
-      <div>
+      <FiltersContainer>
+        <Searcher
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+          onSearch={() => {
+            if (lastSearch !== searchText) {
+              fetchCompanies();
+            }
+          }}
+        />
         <TabButton
           selected={optionSelected === 'actives'}
           onClick={() => setOptionSelected('actives')}
@@ -225,7 +235,7 @@ export function Companies({ dispatch }) {
         >
           Desactivadas
         </TabButton>
-      </div>
+      </FiltersContainer>
       {Boolean(items.length) && (
         <Table
           columns={columns}
