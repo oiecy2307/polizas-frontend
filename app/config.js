@@ -1,6 +1,7 @@
 import dev from './config.dev';
 import local from './config.local';
 import staging from './config.staging';
+import production from './config.production';
 
 const config = (() => {
   switch (process.env.NODE_ENV) {
@@ -12,7 +13,7 @@ const config = (() => {
       return dev;
     case 'production':
     default:
-      return dev;
+      return production;
   }
 })();
 

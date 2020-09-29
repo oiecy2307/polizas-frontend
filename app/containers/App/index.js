@@ -109,7 +109,10 @@ function App({ app, dispatch }) {
           titleTemplate="%s - Suppdesk"
           defaultTitle="Backoffice - Suppdesk"
         >
-          <meta name="description" content="Backoffice de la primavera" />
+          <meta
+            name="description"
+            content="Suppdesk - administración de tickets"
+          />
         </Helmet>
         <Switch>
           <AppRoute
