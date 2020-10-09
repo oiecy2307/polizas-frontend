@@ -55,6 +55,7 @@ function RecoverPasswordForm(props) {
           type="email"
           value={email}
           label="Correo electrónico"
+          maxLength="150"
         />
         <Field
           name="password"
@@ -66,6 +67,7 @@ function RecoverPasswordForm(props) {
               label="Contraseña"
               helperText={touched.password ? errors.password : ''}
               error={touched.password && Boolean(errors.password)}
+              maxLength="150"
             />
           )}
         />
@@ -84,6 +86,7 @@ function RecoverPasswordForm(props) {
                 touched.passwordConfirmation &&
                 Boolean(errors.passwordConfirmation)
               }
+              maxLength="150"
             />
           )}
         />

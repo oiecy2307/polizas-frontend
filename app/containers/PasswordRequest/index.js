@@ -73,6 +73,7 @@ function PasswordRequest({ history, dispatch }) {
             type="email"
             error={false}
             onChange={e => setUsername(e.target.value)}
+            maxLength="150"
           />
           <SpaceBetween>
             <span />

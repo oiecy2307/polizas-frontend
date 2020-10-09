@@ -88,6 +88,7 @@ function AssignCompanyAdminForm({
           helperText={showError && 'Ingrese un correo válido'}
           error={showError}
           onChange={e => setEmail(e.target.value)}
+          maxLength="150"
         />
       </div>
     </Dialog>

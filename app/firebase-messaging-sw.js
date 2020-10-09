@@ -8,9 +8,9 @@ importScripts('https://www.gstatic.com/firebasejs/6.3.4/firebase-messaging.js');
 // Initialize the Firebase app in the service worker by passing in the
 // messagingSenderId.
 firebase.initializeApp({
-  // 'messagingSenderId': '240768090264', // staging
+  'messagingSenderId': '240768090264', // staging
   // 'messagingSenderId': '870477871428', // dev
-  'messagingSenderId': '371971045564', // production
+  // 'messagingSenderId': '371971045564', // production
 });
 
 // Retrieve an instance of Firebase Messaging so that it can handle background
@@ -30,9 +30,9 @@ messaging.setBackgroundMessageHandler(function(payload) {
 });
 
 self.addEventListener('notificationclick', function(event) {
-    // let url = 'https://suppdesk-staging.web.app'; // staging
+    let url = 'https://suppdesk-staging.web.app'; // staging
     // let url = 'https://suppdesk-271403.firebaseapp.com'; // dev
-    let url = 'https://app.suppdesk.mx'; // production
+    // let url = 'https://app.suppdesk.mx'; // production
     event.notification.close(); // Android needs explicit close.
     event.waitUntil(
         clients.matchAll({type: 'window'}).then( windowClients => {

@@ -25,6 +25,8 @@ function CreateEditTicketForm(props) {
             label="Tiempo empleado en solución (minutos)"
             helperText={touched.timeNeeded ? errors.timeNeeded : ''}
             error={touched.timeNeeded && Boolean(errors.timeNeeded)}
+            type="number"
+            maxLength="4"
           />
         )}
       />
@@ -37,6 +39,8 @@ function CreateEditTicketForm(props) {
             label="Costo de la solución"
             helperText={touched.cost ? errors.cost : ''}
             error={touched.cost && Boolean(errors.cost)}
+            type="number"
+            maxLength="12"
           />
         )}
       />

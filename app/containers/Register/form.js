@@ -62,9 +62,11 @@ function RegisterForm(props) {
           render={({ field }) => (
             <Input
               {...field}
+              type="text"
               label="Nombre"
               helperText={touched.name ? errors.name : ''}
               error={touched.name && Boolean(errors.name)}
+              maxLength="100"
             />
           )}
         />
@@ -74,9 +76,11 @@ function RegisterForm(props) {
           render={({ field }) => (
             <Input
               {...field}
+              type="text"
               label="Apellido paterno"
               helperText={touched.lastname ? errors.lastname : ''}
               error={touched.lastname && Boolean(errors.lastname)}
+              maxLength="100"
             />
           )}
         />
@@ -86,9 +90,11 @@ function RegisterForm(props) {
           render={({ field }) => (
             <Input
               {...field}
+              type="text"
               label="Apellido materno"
               helperText={touched.secondLastName ? errors.secondLastName : ''}
               error={touched.secondLastName && Boolean(errors.secondLastName)}
+              maxLength="100"
             />
           )}
         />
@@ -99,9 +105,11 @@ function RegisterForm(props) {
             render={({ field }) => (
               <Input
                 {...field}
+                type="text"
                 label="Username"
                 helperText={touched.username ? errors.username : ''}
                 error={touched.username && Boolean(errors.username)}
+                maxLength="150"
               />
             )}
           />
@@ -116,6 +124,7 @@ function RegisterForm(props) {
               label="Contraseña"
               helperText={touched.password ? errors.password : ''}
               error={touched.password && Boolean(errors.password)}
+              maxLength="150"
             />
           )}
         />
@@ -134,6 +143,7 @@ function RegisterForm(props) {
                 touched.passwordConfirmation &&
                 Boolean(errors.passwordConfirmation)
               }
+              maxLength="150"
             />
           )}
         />
@@ -143,9 +153,11 @@ function RegisterForm(props) {
           render={({ field }) => (
             <Input
               {...field}
+              type="tel"
               label="Número de teléfono (opcional)"
               helperText={touched.phoneNumber ? errors.phoneNumber : ''}
               error={touched.phoneNumber && Boolean(errors.phoneNumber)}
+              maxLength="16"
             />
           )}
         />

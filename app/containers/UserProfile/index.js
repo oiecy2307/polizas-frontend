@@ -347,6 +347,7 @@ export function UserProfile({ match, dispatch }) {
             type="file"
             value=""
             onChange={handleChangeFiles}
+            accept=".png, .jpg, .jpeg"
           />
           <Fab onClick={handleOpenEditUser} icon={<EditIcon />} />
           <CreateEditUser

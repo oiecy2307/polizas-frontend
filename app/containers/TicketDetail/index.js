@@ -595,6 +595,7 @@ export function TicketDetail({ dispatch, match }) {
           <Divider size="24" />
           <div className="comment-input">
             <Input
+              type="text"
               multiline
               rows={4}
               label="Escribe un comentario"

@@ -30,6 +30,7 @@ function ChangePasswordDialogForm(props) {
             label={messages.fields.oldPassword}
             helperText={touched.oldPassword ? errors.oldPassword : ''}
             error={touched.oldPassword && Boolean(errors.oldPassword)}
+            maxLength="255"
           />
         )}
       />
@@ -43,6 +44,7 @@ function ChangePasswordDialogForm(props) {
             label={messages.fields.password}
             helperText={touched.password ? errors.password : ''}
             error={touched.password && Boolean(errors.password)}
+            maxLength="255"
           />
         )}
       />
@@ -61,6 +63,7 @@ function ChangePasswordDialogForm(props) {
               touched.passwordConfirmation &&
               Boolean(errors.passwordConfirmation)
             }
+            maxLength="255"
           />
         )}
       />

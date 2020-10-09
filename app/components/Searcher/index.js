@@ -22,6 +22,7 @@ function Searcher({ value, onChange, onSearch }) {
     <Container>
       <SearchIcon />
       <Input
+        type="text"
         placeholder="Buscar..."
         value={value}
         onChange={onChange}

@@ -54,6 +54,7 @@ function CreateEditUserForm(props) {
         render={({ field }) => (
           <Input
             {...field}
+            type="text"
             label={messages.fields.name}
             helperText={touched.name ? errors.name : ''}
             error={touched.name && Boolean(errors.name)}
@@ -67,6 +68,7 @@ function CreateEditUserForm(props) {
         render={({ field }) => (
           <Input
             {...field}
+            type="text"
             label={messages.fields.lastname}
             helperText={touched.lastname ? errors.lastname : ''}
             error={touched.lastname && Boolean(errors.lastname)}
@@ -80,6 +82,7 @@ function CreateEditUserForm(props) {
         render={({ field }) => (
           <Input
             {...field}
+            type="text"
             label={messages.fields.secondLastName}
             helperText={touched.secondLastName ? errors.secondLastName : ''}
             error={touched.secondLastName && Boolean(errors.secondLastName)}
@@ -110,6 +113,7 @@ function CreateEditUserForm(props) {
           render={({ field }) => (
             <Input
               {...field}
+              type="text"
               label={messages.fields.username}
               helperText={touched.username ? errors.username : ''}
               error={touched.username && Boolean(errors.username)}
@@ -191,6 +195,7 @@ function CreateEditUserForm(props) {
         render={({ field }) => (
           <Input
             {...field}
+            type="tel"
             label={messages.fields.phoneNumber}
             helperText={touched.phoneNumber ? errors.phoneNumber : ''}
             error={touched.phoneNumber && Boolean(errors.phoneNumber)}

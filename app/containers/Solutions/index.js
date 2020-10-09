@@ -347,9 +347,11 @@ export function Solutions({ dispatch }) {
             <CloseIcon />
           </IconButton>
           <InputText
+            type="text"
             value={filtersActive.shortName}
             onChange={e => handleChangeFilters('shortName', e.target.value)}
             label="Nombre solución"
+            maxLength="100"
           />
           <Select
             placeholder="Productos"

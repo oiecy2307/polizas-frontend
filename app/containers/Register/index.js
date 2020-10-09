@@ -97,16 +97,16 @@ export function Register({ dispatch, match, history }) {
     name: Yup.string('Nombre')
       .trim()
       .required('Campo requerido')
-      .max(150, 'El texto es muy largo')
+      .max(100, 'El texto es muy largo')
       .matches(textRegex, 'Texto no válido'),
     lastname: Yup.string('Apellido paterno')
       .trim()
       .required('Campo requerido')
-      .max(150, 'El texto es muy largo')
+      .max(100, 'El texto es muy largo')
       .matches(textRegex, 'Texto no válido'),
     secondLastName: Yup.string('Apellido materno')
       .trim()
-      .max(150, 'El texto es muy largo')
+      .max(100, 'El texto es muy largo')
       .matches(textRegex, 'Texto no válido'),
     username: Yup.string('Username')
       .trim()

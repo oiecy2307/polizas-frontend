@@ -534,12 +534,14 @@ export function TicketsReporter({ dispatch }) {
             <CloseIcon />
           </IconButton>
           <InputText
+            type="number"
             value={filtersActive.number}
             onChange={e => handleChangeFilters('number', e.target.value)}
             label="Folio"
             maxLength="255"
           />
           <InputText
+            type="text"
             value={filtersActive.shortName}
             onChange={e => handleChangeFilters('shortName', e.target.value)}
             label="Nombre ticket"
@@ -663,6 +665,7 @@ export function TicketsReporter({ dispatch }) {
           />
           <Divider size="32" />
           <InputText
+            type="text"
             value={filtersActive.invoice}
             onChange={e => handleChangeFilters('invoice', e.target.value)}
             label="No. de factura"
@@ -684,6 +687,7 @@ export function TicketsReporter({ dispatch }) {
           <h5>Tiempo implementado (rango)</h5>
           <PairInputsRow>
             <InputText
+              type="number"
               onChange={e =>
                 handleChangeFilters('startTimeUsed', e.target.value)
               }
@@ -692,6 +696,7 @@ export function TicketsReporter({ dispatch }) {
               maxLength="255"
             />
             <InputText
+              type="number"
               onChange={e => handleChangeFilters('endTimeUsed', e.target.value)}
               label="Hasta"
               value={filtersActive.endTimeUsed}
@@ -701,12 +706,14 @@ export function TicketsReporter({ dispatch }) {
           <h5>Costo registrado (rango)</h5>
           <PairInputsRow>
             <InputText
+              type="number"
               onChange={e => handleChangeFilters('startCost', e.target.value)}
               label="Desde"
               value={filtersActive.startCost}
               maxLength="255"
             />
             <InputText
+              type="number"
               onChange={e => handleChangeFilters('endCost', e.target.value)}
               label="Hasta"
               value={filtersActive.endCost}
@@ -716,6 +723,7 @@ export function TicketsReporter({ dispatch }) {
           <h5>Total pagado (rango)</h5>
           <PairInputsRow>
             <InputText
+              type="number"
               onChange={e =>
                 handleChangeFilters('startTotalPaid', e.target.value)
               }
@@ -724,6 +732,7 @@ export function TicketsReporter({ dispatch }) {
               maxLength="255"
             />
             <InputText
+              type="number"
               onChange={e =>
                 handleChangeFilters('endTotalPaid', e.target.value)
               }

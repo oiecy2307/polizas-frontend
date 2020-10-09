@@ -59,10 +59,12 @@ function PayTicketForm(props) {
         render={({ field }) => (
           <Input
             {...field}
+            type="number"
             label={`Monto pagado${costLabel}`}
             helperText={touched.totalPaid ? errors.totalPaid : ''}
             error={touched.totalPaid && Boolean(errors.totalPaid)}
             disabled={!values.paid}
+            maxLength="12"
           />
         )}
       />
@@ -100,10 +102,12 @@ function PayTicketForm(props) {
         render={({ field }) => (
           <Input
             {...field}
+            type="text"
             label="Número de factura"
             helperText={touched.invoice ? errors.invoice : ''}
             error={touched.invoice && Boolean(errors.invoice)}
             disabled={!values.paid}
+            maxLength="255"
           />
         )}
       />

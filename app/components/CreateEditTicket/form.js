@@ -49,6 +49,7 @@ function CreateEditTicketForm(props) {
         render={({ field }) => (
           <Input
             {...field}
+            type="text"
             label={messages.fields.ticketTitle}
             helperText={touched.ticketTitle ? errors.ticketTitle : ''}
             error={touched.ticketTitle && Boolean(errors.ticketTitle)}
@@ -62,6 +63,7 @@ function CreateEditTicketForm(props) {
         render={({ field }) => (
           <Input
             {...field}
+            type="text"
             label={messages.fields.ticketDescription}
             helperText={
               touched.ticketDescription ? errors.ticketDescription : ''
@@ -206,6 +208,7 @@ function CreateEditTicketForm(props) {
                 render={({ field }) => (
                   <Input
                     {...field}
+                    type="number"
                     label="Tiempo empleado en solución (minutos)"
                     helperText={touched.timeNeeded ? errors.timeNeeded : ''}
                     error={touched.timeNeeded && Boolean(errors.timeNeeded)}
@@ -219,6 +222,7 @@ function CreateEditTicketForm(props) {
                 render={({ field }) => (
                   <Input
                     {...field}
+                    type="number"
                     label="Costo de la solución"
                     helperText={touched.cost ? errors.cost : ''}
                     error={touched.cost && Boolean(errors.cost)}
@@ -232,6 +236,7 @@ function CreateEditTicketForm(props) {
                 render={({ field }) => (
                   <Input
                     {...field}
+                    type="text"
                     label="Número de factura"
                     helperText={touched.invoice ? errors.invoice : ''}
                     error={touched.invoice && Boolean(errors.invoice)}
@@ -266,6 +271,7 @@ function CreateEditTicketForm(props) {
                 render={({ field }) => (
                   <Input
                     {...field}
+                    type="number"
                     label="Monto pagado"
                     helperText={touched.totalPaid ? errors.totalPaid : ''}
                     error={touched.totalPaid && Boolean(errors.totalPaid)}
