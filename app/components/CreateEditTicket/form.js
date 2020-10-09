@@ -52,6 +52,7 @@ function CreateEditTicketForm(props) {
             label={messages.fields.ticketTitle}
             helperText={touched.ticketTitle ? errors.ticketTitle : ''}
             error={touched.ticketTitle && Boolean(errors.ticketTitle)}
+            maxLength="255"
           />
         )}
       />
@@ -70,6 +71,7 @@ function CreateEditTicketForm(props) {
             }
             multiline
             rows="4"
+            maxLength="10000"
           />
         )}
       />
@@ -207,6 +209,7 @@ function CreateEditTicketForm(props) {
                     label="Tiempo empleado en solución (minutos)"
                     helperText={touched.timeNeeded ? errors.timeNeeded : ''}
                     error={touched.timeNeeded && Boolean(errors.timeNeeded)}
+                    maxLength="4"
                   />
                 )}
               />
@@ -219,6 +222,7 @@ function CreateEditTicketForm(props) {
                     label="Costo de la solución"
                     helperText={touched.cost ? errors.cost : ''}
                     error={touched.cost && Boolean(errors.cost)}
+                    maxLength="12"
                   />
                 )}
               />
@@ -231,6 +235,7 @@ function CreateEditTicketForm(props) {
                     label="Número de factura"
                     helperText={touched.invoice ? errors.invoice : ''}
                     error={touched.invoice && Boolean(errors.invoice)}
+                    maxLength="255"
                   />
                 )}
               />
@@ -265,6 +270,7 @@ function CreateEditTicketForm(props) {
                     helperText={touched.totalPaid ? errors.totalPaid : ''}
                     error={touched.totalPaid && Boolean(errors.totalPaid)}
                     disabled={!values.paid}
+                    maxLength="12"
                   />
                 )}
               />

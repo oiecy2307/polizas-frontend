@@ -164,11 +164,11 @@ function CreateEditTicket({
     ticketTitle: Yup.string(messages.fields.ticketTitle)
       .trim()
       .required(messages.required)
-      .max(150, messages.tooLong),
+      .max(255, messages.tooLong),
     ticketDescription: Yup.string(messages.fields.ticketDescription)
       .trim()
       .required(messages.required)
-      .max(5000, messages.tooLong),
+      .max(10000, messages.tooLong),
     ticketPriority: Yup.string(messages.fields.ticketPriority)
       .trim()
       .required(messages.required)
@@ -201,7 +201,9 @@ function CreateEditTicket({
       .typeError('Solo se permiten números')
       [isClosed ? 'required' : 'notRequired'](messages.required)
       .positive('El costo debe ser positivo'),
-    invoice: Yup.string().trim(),
+    invoice: Yup.string()
+      .trim()
+      .max(255, messages.tooLong),
     paid: Yup.boolean().notRequired(),
     paidDate: Yup.date().when('paid', {
       is: paid => paid,

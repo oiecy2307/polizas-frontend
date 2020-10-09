@@ -115,6 +115,7 @@ function NewInvitationDialog({
         style={{ width: '360px', maxWidth: '100%' }}
         onBlur={() => setEmailTouched(true)}
         disabled={Boolean(defaultEmail)}
+        maxLength="150"
       />
       {!isClientAdmin && !isForClient && (
         <Select

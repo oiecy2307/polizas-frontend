@@ -57,6 +57,7 @@ function CreateEditUserForm(props) {
             label={messages.fields.name}
             helperText={touched.name ? errors.name : ''}
             error={touched.name && Boolean(errors.name)}
+            maxLength="100"
           />
         )}
       />
@@ -69,6 +70,7 @@ function CreateEditUserForm(props) {
             label={messages.fields.lastname}
             helperText={touched.lastname ? errors.lastname : ''}
             error={touched.lastname && Boolean(errors.lastname)}
+            maxLength="100"
           />
         )}
       />
@@ -81,6 +83,7 @@ function CreateEditUserForm(props) {
             label={messages.fields.secondLastName}
             helperText={touched.secondLastName ? errors.secondLastName : ''}
             error={touched.secondLastName && Boolean(errors.secondLastName)}
+            maxLength="100"
           />
         )}
       />
@@ -95,6 +98,7 @@ function CreateEditUserForm(props) {
               label={messages.fields.email}
               helperText={touched.email ? errors.email : ''}
               error={touched.email && Boolean(errors.email)}
+              maxLength="150"
             />
           )}
         />
@@ -125,6 +129,7 @@ function CreateEditUserForm(props) {
                 label={messages.fields.password}
                 helperText={touched.password ? errors.password : ''}
                 error={touched.password && Boolean(errors.password)}
+                maxLength="150"
               />
             )}
           />
@@ -145,6 +150,7 @@ function CreateEditUserForm(props) {
                   touched.passwordConfirmation &&
                   Boolean(errors.passwordConfirmation)
                 }
+                maxLength="150"
               />
             )}
           />
@@ -188,6 +194,7 @@ function CreateEditUserForm(props) {
             label={messages.fields.phoneNumber}
             helperText={touched.phoneNumber ? errors.phoneNumber : ''}
             error={touched.phoneNumber && Boolean(errors.phoneNumber)}
+            maxLength="16"
           />
         )}
       />

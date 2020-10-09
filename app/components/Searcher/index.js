@@ -27,6 +27,7 @@ function Searcher({ value, onChange, onSearch }) {
         onChange={onChange}
         onBlur={onSearch}
         onKeyPress={handleKeyPress}
+        maxLength="255"
       />
     </Container>
   );

@@ -103,6 +103,8 @@ export function MainLayout({
 
   const fetchUserInfo = async () => {
     try {
+      const token = await getToken();
+      if (!token) return;
       dispatch(aSetLoadingState(true));
       const response = await wsGetUserInfo();
 
@@ -139,6 +141,8 @@ export function MainLayout({
 
   const fetchNotificationsCount = async () => {
     try {
+      const token = await getToken();
+      if (!token) return;
       const response = await wsGetNotificationsCount();
       if (!response.error) {
         const count = get(response, 'data', 0);

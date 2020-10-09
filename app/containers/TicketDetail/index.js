@@ -81,7 +81,7 @@ export function TicketDetail({ dispatch, match }) {
   useEffect(() => {
     fetchTicket();
     fetchComments();
-  }, []);
+  }, [get(match, 'params.id', null)]);
 
   const fetchTicket = async () => {
     try {
@@ -600,6 +600,7 @@ export function TicketDetail({ dispatch, match }) {
               label="Escribe un comentario"
               value={comment}
               onChange={e => setComment(e.target.value)}
+              maxLength="1000"
             />
             <IconButton onClick={handleSaveComment}>
               <SendIcon />

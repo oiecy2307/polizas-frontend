@@ -26,6 +26,7 @@ function CreateEditProductForm(props) {
             label="Nombre"
             helperText={touched.name ? errors.name : ''}
             error={touched.name && Boolean(errors.name)}
+            maxLength="100"
           />
         )}
       />
@@ -39,6 +40,7 @@ function CreateEditProductForm(props) {
             label="Descripción"
             helperText={touched.description ? errors.description : ''}
             error={touched.description && Boolean(errors.description)}
+            maxLength="255"
           />
         )}
       />
@@ -52,6 +54,7 @@ function CreateEditProductForm(props) {
             label="Versión actual"
             helperText={touched.actualVersion ? errors.actualVersion : ''}
             error={touched.actualVersion && Boolean(errors.actualVersion)}
+            maxLength="50"
           />
         )}
       />

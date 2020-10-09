@@ -31,15 +31,16 @@ const styles = () => ({
 });
 
 function Input(props) {
-  const { classes } = props;
+  const { classes, maxLength } = props;
   return (
     <ThemeProvider theme={theme}>
       <TextField
         {...props}
         className={classNames(classes.root)}
         variant="filled"
-        InputProps={{
-          ...props.InputProps,
+        inputProps={{
+          maxLength,
+          ...props.inputProps,
         }}
       />
     </ThemeProvider>
@@ -48,7 +49,8 @@ function Input(props) {
 
 Input.propTypes = {
   classes: PropTypes.object,
-  InputProps: PropTypes.object,
+  inputProps: PropTypes.object,
+  maxLength: 255,
 };
 
 export default withStyles(styles)(memo(Input));

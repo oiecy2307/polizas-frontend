@@ -33,6 +33,7 @@ function CreateEditSolutionForm(props) {
             label="Nombre"
             helperText={touched.shortName ? errors.shortName : ''}
             error={touched.shortName && Boolean(errors.shortName)}
+            maxLength="100"
           />
         )}
       />

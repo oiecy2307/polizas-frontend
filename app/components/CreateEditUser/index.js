@@ -78,16 +78,16 @@ function CreateEditUser({
     name: Yup.string(messages.fields.name)
       .trim()
       .required(messages.required)
-      .max(150, messages.tooLong)
+      .max(100, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
     lastname: Yup.string(messages.fields.lastname)
       .trim()
       .required(messages.required)
-      .max(150, messages.tooLong)
+      .max(100, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
     secondLastName: Yup.string(messages.fields.secondLastName)
       .trim()
-      .max(150, messages.tooLong)
+      .max(100, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
     email: Yup.string(messages.fields.email)
       .trim()

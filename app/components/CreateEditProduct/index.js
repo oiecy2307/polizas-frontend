@@ -71,15 +71,15 @@ function CreateEditProduct({
     name: Yup.string('Nombre')
       .trim()
       .required('Campo requerido')
-      .max(150, 'Texto demasiado largo'),
+      .max(100, 'Texto demasiado largo'),
     description: Yup.string('Dirección')
       .trim()
       .notRequired('')
-      .max(250, 'Texto demasiado largo'),
+      .max(255, 'Texto demasiado largo'),
     actualVersion: Yup.string('Versión')
       .trim()
       .required('Campo requerido')
-      .max(150, 'Texto demasiado largo'),
+      .max(50, 'Texto demasiado largo'),
   });
 
   const dialogTitle = isEditing ? 'Editar producto' : 'Nuevo producto';

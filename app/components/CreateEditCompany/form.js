@@ -27,6 +27,7 @@ function CreateEditCompanyForm(props) {
             label="Nombre comercial"
             helperText={touched.name ? errors.name : ''}
             error={touched.name && Boolean(errors.name)}
+            maxLength="100"
           />
         )}
       />
@@ -40,6 +41,7 @@ function CreateEditCompanyForm(props) {
             label="Dirección"
             helperText={touched.address ? errors.address : ''}
             error={touched.address && Boolean(errors.address)}
+            maxLength="255"
           />
         )}
       />
@@ -53,6 +55,7 @@ function CreateEditCompanyForm(props) {
             label="Razón social"
             helperText={touched.formalName ? errors.formalName : ''}
             error={touched.formalName && Boolean(errors.formalName)}
+            maxLength="255"
           />
         )}
       />
@@ -66,6 +69,7 @@ function CreateEditCompanyForm(props) {
             label="RFC"
             helperText={touched.rfc ? errors.rfc : ''}
             error={touched.rfc && Boolean(errors.rfc)}
+            maxLength="255"
           />
         )}
       /> */}

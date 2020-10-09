@@ -75,7 +75,7 @@ function CreateEditSolution({
     shortName: Yup.string('Nombre corto')
       .trim()
       .required('Campo requerido')
-      .max(250, 'Texto demasiado largo'),
+      .max(100, 'Texto demasiado largo'),
     products: Yup.array(),
   });
 

@@ -77,19 +77,19 @@ function CreateEditCompany({
     name: Yup.string('Nombre comercial')
       .trim()
       .required('Campo requerido')
-      .max(150, 'Texto demasiado largo'),
+      .max(100, 'Texto demasiado largo'),
     address: Yup.string('Dirección')
       .trim()
       .notRequired('')
-      .max(250, 'Texto demasiado largo'),
+      .max(255, 'Texto demasiado largo'),
     formalName: Yup.string('Razón social')
       .trim()
       .notRequired('')
-      .max(250, 'Texto demasiado largo'),
+      .max(255, 'Texto demasiado largo'),
     rfc: Yup.string('RFC')
       .trim()
       .notRequired('')
-      .max(250, 'Texto demasiado largo'),
+      .max(255, 'Texto demasiado largo'),
   });
 
   const dialogTitle = isEditing ? 'Editar empresa' : 'Nueva empresa';
