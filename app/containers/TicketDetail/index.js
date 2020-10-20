@@ -258,6 +258,11 @@ export function TicketDetail({ dispatch, match }) {
   const showPaidInfo = paid !== null;
   const formalName = get(ticket, 'client.company.formalName', '');
   const folio = get(ticket, 'number', '');
+  const clientData = get(ticket, 'clientData', '') || '';
+  const anonymousClient = clientData ? JSON.parse(clientData) : null;
+  const anonymousName = get(anonymousClient, 'name', '');
+  const anonymousEmail = get(anonymousClient, 'email', '');
+  const anonymousPhone = get(anonymousClient, 'phone', '');
 
   const buttonText = (() => {
     switch (status) {
@@ -416,6 +421,23 @@ export function TicketDetail({ dispatch, match }) {
                   <span className="name">{reporterName}</span>
                 </div>
               </Link>
+            </React.Fragment>
+          )}
+          {!reporterName && anonymousClient && (
+            <React.Fragment>
+              <h5>Cliente (vía suppdesk)</h5>
+              <div className="user">
+                <Avatar name={anonymousName} src={null} />
+                <div>
+                  <div className="name">{anonymousName}</div>
+                  {anonymousEmail && (
+                    <div className="formal-name">{anonymousEmail}</div>
+                  )}
+                  {anonymousPhone && (
+                    <div className="formal-name">{anonymousPhone}</div>
+                  )}
+                </div>
+              </div>
             </React.Fragment>
           )}
           {clientName && (

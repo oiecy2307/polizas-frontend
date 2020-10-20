@@ -387,14 +387,14 @@ export function TicketsReporter({ dispatch }) {
                 {fieldsActive.statuses && (
                   <TableCell align="left">Estatus</TableCell>
                 )}
+                {fieldsActive.invoice && (
+                  <TableCell align="left">No. de factura</TableCell>
+                )}
                 {fieldsActive.priority && (
                   <TableCell align="left">Prioridad</TableCell>
                 )}
                 {fieldsActive.creationDate && (
                   <TableCell align="right">Fecha de reporte</TableCell>
-                )}
-                {fieldsActive.invoice && (
-                  <TableCell align="left">No. de factura</TableCell>
                 )}
                 {fieldsActive.companies && (
                   <TableCell align="left">Empresa</TableCell>
@@ -442,6 +442,9 @@ export function TicketsReporter({ dispatch }) {
                       {getStatusLabel(item.status, item.paid)}
                     </TableCell>
                   )}
+                  {fieldsActive.invoice && (
+                    <TableCell align="left">{item.invoice}</TableCell>
+                  )}
                   {fieldsActive.priority && (
                     <TableCell align="left">
                       <div style={{ maxWidth: 110 }}>
@@ -451,9 +454,6 @@ export function TicketsReporter({ dispatch }) {
                   )}
                   {fieldsActive.creationDate && (
                     <TableCell align="right">{item.reportedDate}</TableCell>
-                  )}
-                  {fieldsActive.invoice && (
-                    <TableCell align="left">{item.invoice}</TableCell>
                   )}
                   {fieldsActive.companies && (
                     <TableCell align="left">
@@ -547,6 +547,14 @@ export function TicketsReporter({ dispatch }) {
             label="Nombre ticket"
             maxLength="255"
           />
+          <InputText
+            type="text"
+            value={filtersActive.invoice}
+            onChange={e => handleChangeFilters('invoice', e.target.value)}
+            label="No. de factura"
+            maxLength="255"
+          />
+          <Divider size="16" />
           <Select
             placeholder="Empresas"
             value={
@@ -664,14 +672,6 @@ export function TicketsReporter({ dispatch }) {
             label="Mostrar NO facturados"
           />
           <Divider size="32" />
-          <InputText
-            type="text"
-            value={filtersActive.invoice}
-            onChange={e => handleChangeFilters('invoice', e.target.value)}
-            label="No. de factura"
-            maxLength="255"
-          />
-          <Divider size="16" />
           <Select
             placeholder="Prioridad"
             value={
@@ -815,6 +815,19 @@ export function TicketsReporter({ dispatch }) {
           <FormControlLabel
             control={
               <Checkbox
+                checked={fieldsActive.invoice}
+                onChange={e =>
+                  handleChangeCheckbox('invoice', e.target.checked)
+                }
+                name="invoice"
+                color="primary"
+              />
+            }
+            label="No. de factura"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
                 checked={fieldsActive.priority}
                 onChange={e =>
                   handleChangeCheckbox('priority', e.target.checked)
@@ -850,19 +863,6 @@ export function TicketsReporter({ dispatch }) {
               />
             }
             label="Empresa"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={fieldsActive.invoice}
-                onChange={e =>
-                  handleChangeCheckbox('invoice', e.target.checked)
-                }
-                name="invoice"
-                color="primary"
-              />
-            }
-            label="No. de factura"
           />
           <FormControlLabel
             control={

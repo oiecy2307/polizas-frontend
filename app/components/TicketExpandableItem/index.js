@@ -81,6 +81,9 @@ function TicketExpandableItem({
   const formalName = get(ticket, 'client.company.formalName', '');
   const isFakeUser = get(ticket, 'client.isFakeUser', false);
   const folio = get(ticket, 'number', '') || '';
+  const clientData = get(ticket, 'clientData', '') || '';
+
+  const anonymousClient = clientData ? JSON.parse(clientData) : null;
 
   const clientLink = isFakeUser
     ? `/empresas/${get(ticket, 'client.company.id')}`
@@ -108,7 +111,13 @@ function TicketExpandableItem({
                 <div className="formal-name">Folio #{formatToFolio(folio)}</div>
               )}
             </Link>
-            <ItemCompany>{get(ticket, 'client.company.name', '-')}</ItemCompany>
+            {get(anonymousClient, 'name', '') ? (
+              <ItemCompany>{get(anonymousClient, 'name', '')}</ItemCompany>
+            ) : (
+              <ItemCompany>
+                {get(ticket, 'client.company.name', '-')}
+              </ItemCompany>
+            )}
           </ItemMainInfo>
           {false && <LabelPurple>{ticket.status}</LabelPurple>}
         </React.Fragment>
@@ -203,12 +212,33 @@ function TicketExpandableItem({
               </Link>
             </div>
           )}
+          {clientData && (
+            <React.Fragment>
+              <div className="row row-technical">
+                <Avatar name={get(anonymousClient, 'name', '')} src={null} />
+                <div>
+                  <div>{get(anonymousClient, 'name', '')}</div>
+                  {get(anonymousClient, 'email', '') && (
+                    <div className="formal-name">
+                      {get(anonymousClient, 'email', '')}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </React.Fragment>
+          )}
           <SpaceBetween>
             <div className="row">
               {get(ticket, 'client.phoneNumber', '') && (
                 <React.Fragment>
                   <PhoneIcon />
                   <div>{get(ticket, 'client.phoneNumber', '')} (cliente)</div>
+                </React.Fragment>
+              )}
+              {get(anonymousClient, 'phone', '') && (
+                <React.Fragment>
+                  <PhoneIcon />
+                  <div>{get(anonymousClient, 'phone', '')} (cliente)</div>
                 </React.Fragment>
               )}
             </div>

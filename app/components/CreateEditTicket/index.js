@@ -147,7 +147,7 @@ function CreateEditTicket({
   const defaultValues = {
     ticketTitle: get(ticketToEdit, 'shortName', ''),
     ticketDescription: get(ticketToEdit, 'description', ''),
-    ticketPriority: get(ticketToEdit, 'priority', '') || 'new',
+    ticketPriority: get(ticketToEdit, 'priority', '') || 'low',
     technicalId: get(ticketToEdit, 'technicalId', '') || '',
     clientId: get(ticketToEdit, 'clientId', ''),
     reportedDate: get(ticketToEdit, 'reportedDate', null),
@@ -183,13 +183,13 @@ function CreateEditTicket({
         .typeError(messages.required),
       otherwise: Yup.date()
         .required(messages.required)
-        .typeError(messages.required)
-        .min(
-          moment(new Date(), 'DD-MM-YYYY')
-            .add(-1, 'days')
-            .format(),
-          messages.errorDate,
-        ),
+        .typeError(messages.required),
+      // .min(
+      //   moment(new Date(), 'DD-MM-YYYY')
+      //     .add(-1, 'days')
+      //     .format(),
+      //   messages.errorDate,
+      // ),
     }),
     evidence: Yup.array(),
     timeNeeded: Yup.number()
@@ -210,9 +210,9 @@ function CreateEditTicket({
       then: Yup.date()
         .required('Campo requerido')
         .typeError('Campo requerido'),
-      otherwise: Yup.string()
-        .notRequired()
-        .typeError('Fecha no válida'),
+      otherwise: Yup.date()
+        .nullable()
+        .notRequired(),
     }),
     totalPaid: Yup.number().when('paid', {
       is: paid => paid,

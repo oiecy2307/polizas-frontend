@@ -14,6 +14,7 @@ import { get } from 'lodash';
 import { wsCreateProduct, wsUpdateProduct } from 'services/products';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { trimObject } from 'utils/helper';
+import FormikDebugger from 'components/FormikDebugger';
 
 import Dialog from 'components/Dialog';
 import Form from './form';
@@ -112,6 +113,7 @@ function CreateEditProduct({
           disabled={!p.isValid || p.isSubmitting}
         >
           <Form {...p} disabled={false} />
+          {false && <FormikDebugger />}
         </Dialog>
       )}
     />

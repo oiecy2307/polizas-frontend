@@ -42,12 +42,11 @@ function PayTicketDialog({ open, onClose, dispatch, id, defaultTicket, cost }) {
     }
   };
 
+  const paidDate = get(defaultTicket, 'paidDate', null);
+
   const defaultValues = {
     paid: get(defaultTicket, 'paid', false),
-    paidDate: moment(
-      get(defaultTicket, 'paidDate', new Date()) || new Date(),
-      'DD-MM-YYYY',
-    ).format(),
+    paidDate: paidDate ? moment(paidDate, 'DD-MM-YYYY').format() : null,
     totalPaid: get(defaultTicket, 'totalPaid', '') || '',
     invoice: get(defaultTicket, 'invoice', '') || '',
   };
@@ -59,7 +58,9 @@ function PayTicketDialog({ open, onClose, dispatch, id, defaultTicket, cost }) {
       then: Yup.date()
         .required('Campo requerido')
         .typeError('Campo requerido'),
-      otherwise: Yup.date().typeError('Campo requerido'),
+      otherwise: Yup.date()
+        .nullable()
+        .typeError('Campo requerido'),
     }),
     totalPaid: Yup.number().when('paid', {
       is: paid => paid,
