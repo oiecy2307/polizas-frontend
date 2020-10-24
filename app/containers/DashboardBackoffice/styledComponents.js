@@ -130,6 +130,7 @@ export const ItemCompany = styled.div`
   padding-left: 8px;
   text-align: right;
   flex-shrink: 0;
+  max-width: 50%;
 `;
 
 export const TodayTicketsSection = styled.div`
