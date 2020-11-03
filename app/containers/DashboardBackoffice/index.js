@@ -113,8 +113,8 @@ export function DashboardBackoffice({ dispatch }) {
         );
         setTicketsByCompany(
           lTicketsByCompany.map(t => ({
-            name: t.companyName,
-            label: t.companyName,
+            name: t.companyName || 'Anónimos',
+            label: t.companyName || 'Anónimos',
             value: t.count,
           })),
         );

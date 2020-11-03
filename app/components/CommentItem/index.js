@@ -26,9 +26,11 @@ function CommentItem({ comment, onDelete, ...restProps }) {
     setCurrentUser(await getCurrentUser());
   };
 
-  const userFullName = getFullName(comment.user);
+  const userFullName =
+    get(comment, 'unregisteredName', '') || getFullName(comment.user);
   const time = moment(get(comment, 'createdAt', new Date())).fromNow();
-  const canDelete = currentUser.id === get(comment, 'user.id', '');
+  const canDelete =
+    currentUser && currentUser.id === get(comment, 'user.id', '');
   return (
     <Container {...restProps}>
       <Avatar src={get(comment, 'user.image', '')} name={userFullName} />

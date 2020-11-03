@@ -12,6 +12,8 @@ import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import { get, times } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
+import { ImmortalDB } from 'immortal-db';
+
 import {
   getFullName,
   getIsImage,
@@ -58,11 +60,12 @@ import {
   Div,
   Canceled,
   MainContainer,
+  LoaderContainer,
 } from './styledComponents';
 
 moment.locale('es');
 
-export function TicketDetail({ dispatch, match }) {
+export function TicketDetail({ dispatch, match, history }) {
   const currentUser = useContext(LoggedUser);
   const [ticket, setTicket] = useState(null);
   const [notFound, setNotFound] = useState(false);
@@ -79,9 +82,20 @@ export function TicketDetail({ dispatch, match }) {
   const [comment, setComment] = useState('');
 
   useEffect(() => {
+    validateIsLogged();
+  });
+
+  useEffect(() => {
     fetchTicket();
     fetchComments();
   }, [get(match, 'params.id', null)]);
+
+  const validateIsLogged = async () => {
+    const token = await ImmortalDB.get('token');
+    if (token) {
+      history.push(`/tickets/${get(match, 'params.id', null)}`);
+    }
+  };
 
   const fetchTicket = async () => {
     try {
@@ -159,9 +173,13 @@ export function TicketDetail({ dispatch, match }) {
       if (!comment.trim()) return;
       const id = get(match, 'params.id', null);
       dispatch(aSetLoadingState(true));
-      const response = await wsCreateComment(id, {
+      const body = {
         text: comment.trim(),
-      });
+      };
+      if (anonymousClient && !get(currentUser, 'id', '')) {
+        body.unregisteredName = anonymousName;
+      }
+      const response = await wsCreateComment(id, body);
       if (response.error) {
         dispatch(aOpenSnackbar('No fue posible comentar', 'error'));
       } else {
@@ -208,7 +226,7 @@ export function TicketDetail({ dispatch, match }) {
 
   if (initialLoading) {
     return (
-      <div>
+      <LoaderContainer>
         <Helmet>
           <title>Detalle ticket</title>
           <meta name="description" content="Description of TicketDetail" />
@@ -224,7 +242,7 @@ export function TicketDetail({ dispatch, match }) {
             />
           </React.Fragment>
         ))}
-      </div>
+      </LoaderContainer>
     );
   }
 
@@ -649,6 +667,7 @@ export function TicketDetail({ dispatch, match }) {
 TicketDetail.propTypes = {
   dispatch: PropTypes.func.isRequired,
   match: PropTypes.object,
+  history: PropTypes.object,
 };
 
 function mapDispatchToProps(dispatch) {

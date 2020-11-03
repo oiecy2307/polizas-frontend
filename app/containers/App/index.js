@@ -225,6 +225,12 @@ function App({ app, dispatch }) {
             path="/solicitar-contrasena"
             component={PasswordRequest}
           />
+          <Route
+            exact
+            path="/seguimiento-ticket/:id"
+            responsiveTitle="Detalle de ticket"
+            component={TicketDetail}
+          />
           <Route component={NotFoundPage} />
         </Switch>
         <GlobalStyle />
