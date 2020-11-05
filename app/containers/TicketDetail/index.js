@@ -80,6 +80,7 @@ export function TicketDetail({ dispatch, match, history }) {
   );
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState('');
+  const [withOutSession, setWithOutSession] = useState(false);
 
   useEffect(() => {
     validateIsLogged();
@@ -94,6 +95,8 @@ export function TicketDetail({ dispatch, match, history }) {
     const token = await ImmortalDB.get('token');
     if (token) {
       history.push(`/tickets/${get(match, 'params.id', null)}`);
+    } else {
+      setWithOutSession(true);
     }
   };
 
@@ -448,10 +451,10 @@ export function TicketDetail({ dispatch, match, history }) {
                 <Avatar name={anonymousName} src={null} />
                 <div>
                   <div className="name">{anonymousName}</div>
-                  {anonymousEmail && (
+                  {anonymousEmail && !withOutSession && (
                     <div className="formal-name">{anonymousEmail}</div>
                   )}
-                  {anonymousPhone && (
+                  {anonymousPhone && !withOutSession && (
                     <div className="formal-name">{anonymousPhone}</div>
                   )}
                 </div>

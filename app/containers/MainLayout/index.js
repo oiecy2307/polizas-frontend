@@ -111,6 +111,7 @@ export function MainLayout({
       if (!response) return;
 
       const newData = response.data;
+      if (!newData) return;
       const oldData = JSON.parse(await ImmortalDB.get('user'));
 
       if (
@@ -173,6 +174,9 @@ export function MainLayout({
     const token = await getToken();
     const lCurrentUser = await getCurrentUser();
     if (!token || !lCurrentUser) {
+      await ImmortalDB.remove('user');
+      await ImmortalDB.remove('token');
+      await ImmortalDB.remove('notificationToken');
       history.push('/inicio-sesion');
       return;
     }
