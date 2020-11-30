@@ -84,7 +84,7 @@ export function TicketDetail({ dispatch, match, history }) {
 
   useEffect(() => {
     validateIsLogged();
-  });
+  }, []);
 
   useEffect(() => {
     fetchTicket();
@@ -93,7 +93,7 @@ export function TicketDetail({ dispatch, match, history }) {
 
   const validateIsLogged = async () => {
     const token = await ImmortalDB.get('token');
-    if (token) {
+    if (token && !get(match, 'path', '').includes('/tickets/')) {
       history.push(`/tickets/${get(match, 'params.id', null)}`);
     } else {
       setWithOutSession(true);

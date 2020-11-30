@@ -32,6 +32,7 @@ import CompanyAddIcon from '@material-ui/icons/BusinessOutlined';
 import AssignmentAddIcon from '@material-ui/icons/AssignmentOutlined';
 import ProductsIcon from '@material-ui/icons/CategoryOutlined';
 import SolutionsIcon from '@material-ui/icons/EmojiObjectsOutlined';
+import SettingsIcon from '@material-ui/icons/SettingsOutlined';
 
 import Drawer from '@material-ui/core/SwipeableDrawer';
 import Avatar from 'components/Avatar';
@@ -369,6 +370,14 @@ export function MainLayout({
       >
         <AccountCircleIcon />
         <SidebarItemText>{messages.menu.profile}</SidebarItemText>
+      </SidebarItem>
+      <SidebarItem
+        onClick={handleChangeRoute}
+        to="/configuracion"
+        selected={optionSelected === 'configuracion'}
+      >
+        <SettingsIcon />
+        <SidebarItemText>{messages.menu.config}</SidebarItemText>
       </SidebarItem>
       <SidebarItemWOLink onClick={handleLogOut}>
         <ExitIcon />

@@ -120,7 +120,7 @@ module.exports = require('./webpack.base.babel')({
     }),
 
     new WebpackPwaManifest({
-      name: 'Suppdesk Backoffice',
+      name: 'Suppdesk',
       short_name: 'Suppdesk',
       description: 'Suppdesk - administrador de tickets',
       background_color: '#fafafa',

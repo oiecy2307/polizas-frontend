@@ -50,6 +50,10 @@ export default language => {
       es: 'Mi perfil',
       en: 'My profile',
     },
+    config: {
+      es: 'Configuración',
+      en: 'Settings',
+    },
     logout: {
       es: 'Cerrar sesión',
       en: 'Log out',
@@ -71,6 +75,7 @@ export default language => {
       products: values.products[language],
       solutions: values.solutions[language],
       profile: values.profile[language],
+      config: values.config[language],
       logout: values.logout[language],
     },
   });
