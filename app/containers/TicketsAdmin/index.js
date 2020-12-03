@@ -187,7 +187,6 @@ export function TicketsAdmin({ dispatch }) {
     <div>
       <Helmet>
         <title>Tickets</title>
-        <meta name="description" content="Description of TicketsAdmin" />
       </Helmet>
       <ButtonsSection>
         <TabButton
