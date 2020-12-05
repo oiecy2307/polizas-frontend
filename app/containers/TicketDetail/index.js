@@ -220,7 +220,6 @@ export function TicketDetail({ dispatch, match, history }) {
       <div>
         <Helmet>
           <title>Detalle ticket</title>
-          <meta name="description" content="Description of TicketDetail" />
         </Helmet>
         <EmptyState message="No se encontró el ticket" />
       </div>
@@ -232,7 +231,6 @@ export function TicketDetail({ dispatch, match, history }) {
       <LoaderContainer>
         <Helmet>
           <title>Detalle ticket</title>
-          <meta name="description" content="Description of TicketDetail" />
         </Helmet>
         {times(10, i => (
           <React.Fragment key={i}>
@@ -404,7 +402,6 @@ export function TicketDetail({ dispatch, match, history }) {
     <MainContainer>
       <Helmet>
         <title>{shortName || 'Detalle ticket'}</title>
-        <meta name="description" content="Description of TicketDetail" />
       </Helmet>
       {isCancelled && <Canceled>Ticket cancelado</Canceled>}
       <Container>

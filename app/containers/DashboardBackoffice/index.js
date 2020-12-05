@@ -162,7 +162,7 @@ export function DashboardBackoffice({ dispatch }) {
         <Paper>
           <h3>Actividad actual de técnicos</h3>
           {technicalsActivity.map(technical => (
-            <Link to={`/perfil/${technical.id}`}>
+            <Link to={`/perfil/${technical.id}`} key={technical.id}>
               <TechnicalCheckbox key={technical.id}>
                 {!isResponsiveXs && (
                   <Avatar src={technical.image} name={technical.name} />

@@ -3,6 +3,14 @@ import styled from 'styled-components';
 export const Container = styled.div`
   max-width: 500px;
   margin: 0 auto;
+
+  & .content {
+    margin-top: 16px;
+  }
+
+  & .content > div:not(:last-child) {
+    margin-bottom: 40px;
+  }
 `;
 
 export const ConfigSection = styled.div`
@@ -29,6 +37,15 @@ export const ConfigSection = styled.div`
     justify-content: space-between;
     width: 600px;
     max-width: 100%;
+  }
+
+  & .input-pair {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  & .input-pair > div {
+    width: 48%;
   }
 `;
 
@@ -87,8 +104,9 @@ export const DayItem = styled.div`
   & .selects-section {
     display: flex;
     align-items: center;
-    width: 360px;
-    max-width: calc(100% - 60px);
+    width: 100%;
+    // width: 360px;
+    // max-width: calc(100% - 60px);
   }
 
   & .select-schedule {

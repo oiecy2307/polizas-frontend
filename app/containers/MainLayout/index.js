@@ -374,7 +374,7 @@ export function MainLayout({
       <SidebarItem
         onClick={handleChangeRoute}
         to="/configuracion"
-        selected={optionSelected === 'configuracion'}
+        selected={optionSelected === '/configuracion'}
       >
         <SettingsIcon />
         <SidebarItemText>{messages.menu.config}</SidebarItemText>

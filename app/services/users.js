@@ -113,3 +113,32 @@ export const wsCancelInvitation = async id => {
       .catch(err => reject(err));
   });
 };
+
+export const wsGetUsersSettings = async () => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    get({
+      url: `/users/settings`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
+
+export const wsUpdateUsersSettings = async body => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    patch({
+      url: `/users/settings/update`,
+      body,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};
