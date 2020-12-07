@@ -50,6 +50,10 @@ function Input(props) {
 Input.propTypes = {
   classes: PropTypes.object,
   inputProps: PropTypes.object,
+  maxLength: PropTypes.any,
+};
+
+Input.defaultValue = {
   maxLength: 255,
 };
 

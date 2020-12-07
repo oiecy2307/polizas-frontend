@@ -16,37 +16,17 @@ import { wsGetUsersSettings, wsUpdateUsersSettings } from 'services/users';
 
 import { TabButton, Paper, Divider } from 'utils/globalStyledComponents';
 import Checkbox from '@material-ui/core/Checkbox';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined';
-import Select from '@material-ui/core/Select';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import Button from 'components/Button';
-import Input from 'components/InputText';
 
 import CompanyInfo from './forms/companyInfo';
+import CostConfig from './forms/costConfig';
+import PopupConfig from './forms/popupConfig';
+import ValidOrigins from './forms/validOrigins';
+import Schedules from './forms/schedules';
 
-import {
-  Container,
-  ConfigSection,
-  DomainItem,
-  SaveSection,
-  DayItem,
-} from './styledComponents';
-
-const days = [
-  'Lunes',
-  'Martes',
-  'Miércoles',
-  'Jueves',
-  'Viernes',
-  'Sábado',
-  'Domingo',
-];
+import { Container, ConfigSection, SaveSection } from './styledComponents';
 
 const ButtonRight = ({ disabled, onClick }) => (
   <SaveSection>
@@ -62,12 +42,11 @@ ButtonRight.propTypes = {
 };
 
 export function UserSettings({ dispatch }) {
-  const [optionSelected, setOptionSelected] = useState(0);
+  const [optionSelected, setOptionSelected] = useState(1);
   const [notificationsSettings, setNotificationsSettings] = useState({
     emailsEnabled: false,
     notificationsEnabled: false,
   });
-  const [monday, setMonday] = useState(0);
   const [initialSettings, setInitialSettings] = useState(null);
   const [initialLoading, setInitialLoading] = useState(true);
 
@@ -181,160 +160,26 @@ export function UserSettings({ dispatch }) {
 
   const instanceContent = (
     <React.Fragment>
-      <CompanyInfo dispatch={dispatch} />
-      <Paper>
-        <ConfigSection>
-          <h3>Precio por servicio</h3>
-          <div className="description">
-            Define los precios correspondientes a cada fracción de tiempo
-          </div>
-          <Input type="number" label="1 hora" />
-          <Input type="number" label="1/2 hora" />
-          <Input type="number" label="< 1/2 hora" />
-          <ButtonRight />
-        </ConfigSection>
-      </Paper>
-      <Paper>
-        <ConfigSection>
-          <h3>Popup</h3>
-          <div className="description">
-            Configura el contenido que mostraremos en tu Popup de tickets
-          </div>
-          <Input type="text" label="Texto en modo minimizado" />
-          <Input type="text" label="Título" />
-          <Input type="text" label="Texto introductorio" />
-          <Input type="text" label="Texto de confirmación" />
-          <div className="description">
-            Activa o desactiva los campos que quieres solicitar a tus clientes
-          </div>
-          <div>
-            <FormControlLabel
-              control={<Checkbox name="checkedB" color="primary" />}
-              label="Nombre"
-            />
-          </div>
-          <div>
-            <FormControlLabel
-              control={<Checkbox name="checkedB" color="primary" />}
-              label="Correo electrónico"
-            />
-          </div>
-          <div>
-            <FormControlLabel
-              control={<Checkbox name="checkedB" color="primary" />}
-              label="Número de teléfono"
-            />
-          </div>
-          <div>
-            <FormControlLabel
-              control={<Checkbox name="checkedB" color="primary" />}
-              label="Título del problema"
-            />
-          </div>
-          <div>
-            <FormControlLabel
-              control={<Checkbox name="checkedB" color="primary" />}
-              label="Descripción del problema"
-            />
-          </div>
-          <div>
-            <FormControlLabel
-              control={<Checkbox name="checkedB" color="primary" />}
-              label="Evidencia (archivos, imágenes, etc)"
-            />
-          </div>
-          <Divider size="32" />
-          <ButtonRight />
-        </ConfigSection>
-      </Paper>
-      <Paper>
-        <ConfigSection>
-          <h3>Dominios</h3>
-          <div className="description">
-            Ingresa los dominios habilitados para usar el Popup de tickets
-          </div>
-          <div>
-            <DomainItem>
-              <div className="name">https://tecint.mx</div>
-              <div className="actions">
-                <DeleteOutlinedIcon className="action-icon" />
-                <CreateOutlinedIcon className="action-icon" />
-              </div>
-            </DomainItem>
-            <DomainItem>
-              <div className="name">https://tecint.mx</div>
-              <div className="actions">
-                <DeleteOutlinedIcon className="action-icon" />
-                <CreateOutlinedIcon className="action-icon" />
-              </div>
-            </DomainItem>
-            <DomainItem>
-              <div className="name">https://tecint.mx</div>
-              <div className="actions">
-                <DeleteOutlinedIcon className="action-icon" />
-                <CreateOutlinedIcon className="action-icon" />
-              </div>
-            </DomainItem>
-            <Button variant="contained" fullWidth color="primary">
-              Agregar dominio
-            </Button>
-          </div>
-        </ConfigSection>
-      </Paper>
-      <Paper>
-        <ConfigSection>
-          <h3>Horario</h3>
-          <div className="description">
-            Esta información se mostrará en tu perfil en Suppdesk
-          </div>
-          {days.map(day => (
-            <DayItem key={day}>
-              <h4>
-                {day}
-                <Checkbox
-                  name="monday-active"
-                  color="primary"
-                  className="checkbox-day"
-                />
-              </h4>
-              <div className="schedule-item">
-                <div className="selects-section">
-                  <FormControl variant="filled" className="select-schedule">
-                    <InputLabel id="monday-label">Abre</InputLabel>
-                    <Select
-                      labelId="monday-label"
-                      id="monday-select"
-                      value={monday}
-                      onChange={event => setMonday(event.target.value)}
-                    >
-                      <MenuItem value={0}>00:00</MenuItem>
-                      <MenuItem value={30}>00:30</MenuItem>
-                      <MenuItem value={60}>01:00</MenuItem>
-                      <MenuItem value={90}>01:30</MenuItem>
-                    </Select>
-                  </FormControl>
-                  <span className="separator">-</span>
-                  <FormControl variant="filled" className="select-schedule">
-                    <InputLabel id="tuesday-label">Cierra</InputLabel>
-                    <Select
-                      labelId="tuesday-label"
-                      id="tuesday-select"
-                      value={monday}
-                    >
-                      <MenuItem value={0}>00:00</MenuItem>
-                      <MenuItem value={30}>00:30</MenuItem>
-                      <MenuItem value={60}>01:00</MenuItem>
-                      <MenuItem value={90}>01:30</MenuItem>
-                    </Select>
-                  </FormControl>
-                </div>
-              </div>
-            </DayItem>
-          ))}
-          <Divider size="32" />
-          <ButtonRight />
-        </ConfigSection>
-      </Paper>
+      <CompanyInfo
+        dispatch={dispatch}
+        instance={get(initialSettings, 'instance', {})}
+      />
+      <CostConfig
+        dispatch={dispatch}
+        instance={get(initialSettings, 'instance', {})}
+      />
+      <PopupConfig
+        dispatch={dispatch}
+        instance={get(initialSettings, 'instance', {})}
+      />
+      <ValidOrigins
+        dispatch={dispatch}
+        instance={get(initialSettings, 'instance', {})}
+      />
+      <Schedules
+        dispatch={dispatch}
+        instance={get(initialSettings, 'instance', {})}
+      />
     </React.Fragment>
   );
 
