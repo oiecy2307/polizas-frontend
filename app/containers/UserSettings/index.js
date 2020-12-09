@@ -42,7 +42,7 @@ ButtonRight.propTypes = {
 };
 
 export function UserSettings({ dispatch }) {
-  const [optionSelected, setOptionSelected] = useState(1);
+  const [optionSelected, setOptionSelected] = useState(0);
   const [notificationsSettings, setNotificationsSettings] = useState({
     emailsEnabled: false,
     notificationsEnabled: false,

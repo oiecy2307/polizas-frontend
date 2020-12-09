@@ -66,6 +66,10 @@ export const validateRoute = async route => {
       route: 'Detalle de empresa',
       roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
     },
+    {
+      route: 'Configuración',
+      roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
+    },
   ];
 
   const role =

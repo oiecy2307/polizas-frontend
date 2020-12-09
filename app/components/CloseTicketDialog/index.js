@@ -4,12 +4,15 @@
  *
  */
 
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment/min/moment-with-locales';
+import { get } from 'lodash';
+
 import { wsCloseTicket } from 'services/tickets';
+import { wsGetTicketCosts } from 'services/instances';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { trimObject, dateFormatToServer } from 'utils/helper';
 
@@ -18,11 +21,29 @@ import Form from './form';
 
 import messages from './messages';
 
-const hourCost = 500;
-const halfHourCost = 300;
-const quaterHourCost = 150;
-
 function CloseTicketDialog({ open, onClose, dispatch, id, time }) {
+  const [hourCost, setHourCost] = useState(0);
+  const [halfHourCost, setHalfHourCost] = useState(0);
+  const [quaterHourCost, setQuaterHourCost] = useState(0);
+
+  useEffect(() => {
+    fetchCosts();
+  }, []);
+
+  const fetchCosts = async () => {
+    try {
+      dispatch(aSetLoadingState(true));
+      const response = await wsGetTicketCosts();
+      if (response) {
+        setHourCost(get(response, 'data.hour', 0));
+        setHalfHourCost(get(response, 'data.halfHour', 0));
+        setQuaterHourCost(get(response, 'data.fraction', 0));
+      }
+    } finally {
+      dispatch(aSetLoadingState(false));
+    }
+  };
+
   async function handleCloseTicket(body, resetValues) {
     try {
       dispatch(aSetLoadingState(true));
