@@ -29,6 +29,7 @@ import {
   wsGetTicketComments,
   wsCreateComment,
   wsDeleteComment,
+  wsUndoTicketCancelled,
 } from 'services/tickets';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import CreateEditTicket from 'components/CreateEditTicket';
@@ -39,6 +40,7 @@ import PayTicketDialog from 'components/PayTicketDialog';
 import Input from 'components/InputText';
 import CommentItem from 'components/CommentItem';
 import EmptyState from 'components/EmptyState';
+import Dialog from 'components/Dialog';
 
 import Button from 'components/Button';
 import Label from 'components/Label';
@@ -81,6 +83,8 @@ export function TicketDetail({ dispatch, match, history }) {
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState('');
   const [withOutSession, setWithOutSession] = useState(false);
+  const [undoCancelledTicketOpen, setUndoCancelledTicketOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     validateIsLogged();
@@ -145,7 +149,11 @@ export function TicketDetail({ dispatch, match, history }) {
   };
 
   const handleOpenMenu = event => {
-    if (isClient || isCancelled) return;
+    if (isClient) return;
+    if (isCancelled) {
+      setUndoCancelledTicketOpen(true);
+      return;
+    }
     setAnchorEl(event.currentTarget);
   };
 
@@ -213,6 +221,28 @@ export function TicketDetail({ dispatch, match, history }) {
     } finally {
       dispatch(aSetLoadingState(false));
     }
+  };
+
+  const handleUndoCancel = async () => {
+    try {
+      setIsSubmitting(true);
+      const id = get(match, 'params.id', null);
+      dispatch(aSetLoadingState(true));
+      await wsUndoTicketCancelled(id);
+      fetchTicket();
+      setUndoCancelledTicketOpen(false);
+    } catch (e) {
+      const errorMessage =
+        get(e, 'data.message', '') || 'Ocurrió un error, intente de nuevo';
+      dispatch(aOpenSnackbar(errorMessage, 'error'));
+    } finally {
+      dispatch(aSetLoadingState(false));
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCloseUndoCancel = () => {
+    setUndoCancelledTicketOpen(false);
   };
 
   if (notFound) {
@@ -660,6 +690,21 @@ export function TicketDetail({ dispatch, match, history }) {
           )}
         </Body>
       </Container>
+      <Dialog
+        open={undoCancelledTicketOpen}
+        onClose={handleCloseUndoCancel}
+        title="Deshacer cancelación"
+        withActions
+        negativeAction="Cerrar"
+        onNegativeAction={handleCloseUndoCancel}
+        positiveAction="Deshacer cancelación"
+        onPositiveAction={handleUndoCancel}
+        disabled={isSubmitting}
+      >
+        <div style={{ minWidth: 300 }}>
+          Se volverá a activar el ticket <b>{` "${shortName}"`}</b>
+        </div>
+      </Dialog>
     </MainContainer>
   );
 }

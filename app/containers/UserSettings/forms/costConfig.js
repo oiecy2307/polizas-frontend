@@ -48,26 +48,26 @@ function CostConfig({ dispatch, instance }) {
   };
 
   const defaultValues = {
-    hour: get(instance, 'costsConfig.hour', '') || '',
-    halfHour: get(instance, 'costsConfig.halfHour', '') || '',
-    fraction: get(instance, 'costsConfig.fraction', '') || '',
+    hour: get(instance, 'costsConfig.hour', '') || '0',
+    halfHour: get(instance, 'costsConfig.halfHour', '') || '0',
+    fraction: get(instance, 'costsConfig.fraction', '') || '0',
   };
 
   const validationSchema = Yup.object({
     hour: Yup.number('1 hora')
       .required('Campo requerido')
       .typeError('Ingrese un valor válido')
-      .positive('Ingrese un valor positivo')
+      .min(0, 'Ingrese un valor positivo')
       .max(9999999999999999, 'Valor demasiado grande'),
     halfHour: Yup.number('1 hora')
       .required('Campo requerido')
       .typeError('Ingrese un valor válido')
-      .positive('Ingrese un valor positivo')
+      .min(0, 'Ingrese un valor positivo')
       .max(9999999999999999, 'Valor demasiado grande'),
     fraction: Yup.number('1 hora')
       .required('Campo requerido')
       .typeError('Ingrese un valor válido')
-      .positive('Ingrese un valor positivo')
+      .min(0, 'Ingrese un valor positivo')
       .max(9999999999999999, 'Valor demasiado grande'),
   });
 

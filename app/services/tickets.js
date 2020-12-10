@@ -301,3 +301,17 @@ export const wsPauseTimeTracker = async (body, id) => {
       .catch(err => reject(err));
   });
 };
+
+export const wsUndoTicketCancelled = async id => {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    patch({
+      url: `/tickets/undo-cancel/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => resolve(response))
+      .catch(err => reject(err));
+  });
+};

@@ -82,6 +82,10 @@ const statusOptions = [
     value: 'closed',
     label: 'Cerrado',
   },
+  {
+    value: 'cancelled',
+    label: 'Cancelado',
+  },
 ];
 
 const priorityOptions = [

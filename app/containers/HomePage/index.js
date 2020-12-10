@@ -17,6 +17,14 @@ import { ImmortalDB } from 'immortal-db';
 
 import Input from 'components/InputText';
 import LayersIcon from '@material-ui/icons/Layers';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import IconButton from '@material-ui/core/IconButton';
+import FilledInput from '@material-ui/core/FilledInput';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+
 import {
   SpaceBetween,
   LabelButton,
@@ -37,6 +45,7 @@ function HomePage({ history, dispatch }) {
   const [messages] = useState(getMessages(language));
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     evaluateToken();
@@ -76,6 +85,10 @@ function HomePage({ history, dispatch }) {
     }
   };
 
+  const handleMouseDownPassword = event => {
+    event.preventDefault();
+  };
+
   const disabled = !username || !password;
 
   return (
@@ -93,13 +106,34 @@ function HomePage({ history, dispatch }) {
             error={false}
             onChange={e => setUsername(e.target.value)}
           />
-          <Input
-            label={messages.password}
-            type="password"
-            error={false}
-            onChange={e => setPassword(e.target.value)}
-            onKeyPress={handleKeyPressPassword}
-          />
+          <FormControl variant="filled">
+            <InputLabel htmlFor="filled-adornment-password">
+              Contraseña
+            </InputLabel>
+            <FilledInput
+              id="filled-adornment-password"
+              label={messages.password}
+              type={showPassword ? 'text' : 'password'}
+              error={false}
+              onChange={e => setPassword(e.target.value)}
+              onKeyPress={handleKeyPressPassword}
+              fullWidth
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() =>
+                      setShowPassword(_showPassword => !_showPassword)
+                    }
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
           <SpaceBetween>
             <LabelButton onClick={handleGoToPasswordRequest}>
               Olvidé mi contraseña
