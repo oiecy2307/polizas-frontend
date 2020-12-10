@@ -44,6 +44,8 @@ import SelectMU from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import CloseIcon from '@material-ui/icons/Close';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Menu from '@material-ui/core/Menu';
 
 import EmptyState from 'components/EmptyState';
 import Label from 'components/Label';
@@ -219,6 +221,7 @@ export function TicketsReporter({ dispatch }) {
   const [activeFieldsOpen, setActiveFieldsOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState('reportedDate');
   const [filterDesc, setFilterDesc] = useState(true);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     fetchFilters();
@@ -253,7 +256,7 @@ export function TicketsReporter({ dispatch }) {
     }
   };
 
-  const fetchTickets = async () => {
+  const fetchTickets = async (isExcel = false) => {
     try {
       dispatch(aSetLoadingState(true));
       const filter = {
@@ -274,9 +277,23 @@ export function TicketsReporter({ dispatch }) {
         },
         orderBy: selectedOrder || 'reportedDate',
         orientation: filterDesc ? 'DESC' : 'ASC',
+        excel: isExcel,
       };
       const response = await wsGetReport(trimObject(filter));
       if (!response) return;
+
+      if (isExcel) {
+        const bytes = new Uint8Array(response.data.data); // pass your byte response to this constructor
+
+        const blob = new Blob([bytes], { type: 'application/vnd.ms-excel' }); // change resultByte to bytes
+
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `reporte-tickets-${moment().format('DD-MM-YYYY')}.xlsx`;
+        link.click();
+        return;
+      }
+
       const lCount = get(response, 'data.count', 0);
       const lItems = get(response, 'data.rows', []);
       setItems(lItems);
@@ -317,6 +334,14 @@ export function TicketsReporter({ dispatch }) {
       ...f,
       [field]: value,
     }));
+  };
+
+  const handleOpenActionsMenu = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseActionsMenu = () => {
+    setAnchorEl(null);
   };
 
   const companiesOptions = companies.map(c => ({ value: c.id, label: c.name }));
@@ -369,9 +394,12 @@ export function TicketsReporter({ dispatch }) {
             </IconButton>
           </div>
         </div>
-        <Button onClick={() => setActiveFieldsOpen(true)} variant="outlined">
+        <IconButton onClick={handleOpenActionsMenu}>
+          <MoreVertIcon />
+        </IconButton>
+        {/* <Button onClick={() => setActiveFieldsOpen(true)} variant="outlined">
           Cambiar campos
-        </Button>
+        </Button> */}
       </TopSection>
       <Paper>
         {Boolean(items.length) && (
@@ -957,6 +985,30 @@ export function TicketsReporter({ dispatch }) {
         </DrawerContent>
       </Drawer>
       {!items.length && <EmptyState text="No se encontraron tickets" />}
+      <Menu
+        id="actions-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleCloseActionsMenu}
+      >
+        <MenuItem
+          onClick={() => {
+            setActiveFieldsOpen(true);
+            handleCloseActionsMenu();
+          }}
+        >
+          Cambiar campos
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            fetchTickets(true);
+            handleCloseActionsMenu();
+          }}
+        >
+          Descargar como Excel
+        </MenuItem>
+      </Menu>
     </Content>
   );
 }
