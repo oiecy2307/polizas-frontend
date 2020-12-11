@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
-import { trimObject } from 'utils/helper';
 import { isURL, isIP } from 'validator';
 
 import { wsUpdateInstanceSettings } from 'services/instances';
@@ -41,7 +40,7 @@ function ValidOrigins({ dispatch, instance }) {
       dispatch(aSetLoadingState(true));
       await wsUpdateInstanceSettings({
         type: 'valid-origins',
-        data: trimObject(nDomains),
+        data: nDomains,
       });
       dispatch(aOpenSnackbar('Dominio guardado', 'success'));
       setDomains(nDomains);
@@ -67,7 +66,7 @@ function ValidOrigins({ dispatch, instance }) {
       dispatch(aSetLoadingState(true));
       await wsUpdateInstanceSettings({
         type: 'valid-origins',
-        data: trimObject(nDomains),
+        data: nDomains,
       });
       dispatch(aOpenSnackbar('Dominio eliminado', 'success'));
       setDomains(nDomains);
