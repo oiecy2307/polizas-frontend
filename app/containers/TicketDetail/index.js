@@ -22,6 +22,8 @@ import {
   formatToFolio,
 } from 'utils/helper';
 import { LoggedUser } from 'contexts/logged-user';
+import html2canvas from 'html2canvas';
+import JsPDF from 'jspdf';
 
 import {
   wsGetTicketById,
@@ -52,6 +54,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import EditIcon from '@material-ui/icons/Edit';
 import SendIcon from '@material-ui/icons/Send';
 import IconButton from '@material-ui/core/IconButton';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import { Divider, FloatRight } from 'utils/globalStyledComponents';
 import {
@@ -85,10 +88,18 @@ export function TicketDetail({ dispatch, match, history }) {
   const [withOutSession, setWithOutSession] = useState(false);
   const [undoCancelledTicketOpen, setUndoCancelledTicketOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDownLoadingPdf, setIsDownloadingPdf] = useState(false);
+  const [actionsAnchorEl, setActionsAnchorEl] = useState(null);
 
   useEffect(() => {
     validateIsLogged();
   }, []);
+
+  useEffect(() => {
+    if (isDownLoadingPdf) {
+      printDocument();
+    }
+  }, [isDownLoadingPdf]);
 
   useEffect(() => {
     fetchTicket();
@@ -134,6 +145,25 @@ export function TicketDetail({ dispatch, match, history }) {
     } catch (e) {
       // ERROR HANDLER
     }
+  };
+
+  const printDocument = () => {
+    handleCloseActionsMenu();
+    const input = document.getElementById('divToPrint');
+    html2canvas(input)
+      .then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const width = input.clientWidth * 0.25;
+        const left = (210 - width) / 2;
+        const height = input.clientHeight * 0.25;
+        const pdf = new JsPDF();
+        pdf.addImage(imgData, 'JPEG', left, 0, width, height);
+        pdf.save('download.pdf');
+        setIsDownloadingPdf(false);
+      })
+      .catch(() => {
+        setIsDownloadingPdf(false);
+      });
   };
 
   const handleTicketSaved = () => {
@@ -336,6 +366,7 @@ export function TicketDetail({ dispatch, match, history }) {
   const idPopover = open ? 'popover-statuses' : undefined;
 
   const handleButtonClicked = () => {
+    handleCloseActionsMenu();
     if (isClient || isCancelled) return;
     switch (ticket.status) {
       case 'assigned': {
@@ -413,6 +444,26 @@ export function TicketDetail({ dispatch, match, history }) {
     return [];
   })();
 
+  const actionButton = (
+    <MenuItem onClick={handleButtonClicked} key="main-action">
+      {buttonText}
+    </MenuItem>
+  );
+
+  const downloadPdf = (
+    <MenuItem onClick={printDocument} key="print-action">
+      Descargar PDF
+    </MenuItem>
+  );
+
+  const handleOpenActionsMenu = event => {
+    setActionsAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseActionsMenu = () => {
+    setActionsAnchorEl(null);
+  };
+
   const handleTicketTimeChanged = time => {
     setTicket(_ticket => ({
       ..._ticket,
@@ -428,13 +479,19 @@ export function TicketDetail({ dispatch, match, history }) {
     !isCancelled &&
     !(currentUser.role === 'technical' && ticket.status === 'closed');
 
+  const actionsAvailable = showButton
+    ? [actionButton, downloadPdf]
+    : [downloadPdf];
+
+  const actionsOpen = Boolean(actionsAnchorEl);
+
   return (
     <MainContainer>
       <Helmet>
         <title>{shortName || 'Detalle ticket'}</title>
       </Helmet>
       {isCancelled && <Canceled>Ticket cancelado</Canceled>}
-      <Container>
+      <Container id="divToPrint">
         <TopSection>
           <div>
             <h4>{shortName}</h4>
@@ -442,7 +499,18 @@ export function TicketDetail({ dispatch, match, history }) {
               {`Reportado el ${moment(reportedDate).format('LL')}`}
             </div>
           </div>
-          {showButton && (
+          <IconButton onClick={handleOpenActionsMenu}>
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            id="actions-menu"
+            open={actionsOpen}
+            anchorEl={actionsAnchorEl}
+            onClose={handleCloseActionsMenu}
+          >
+            {actionsAvailable.map(action => action)}
+          </Menu>
+          {false && showButton && (
             <Button onClick={handleButtonClicked}>{buttonText}</Button>
           )}
         </TopSection>
@@ -584,7 +652,7 @@ export function TicketDetail({ dispatch, match, history }) {
               )}
             </React.Fragment>
           )}
-          {evidence.length > 0 && (
+          {evidence.length > 0 && !isDownLoadingPdf && (
             <React.Fragment>
               <h5>Evidencia</h5>
               <div className="evidence">
@@ -622,7 +690,9 @@ export function TicketDetail({ dispatch, match, history }) {
             >
               {statusesAvailable}
             </Menu>
-            <Fab onClick={handleOpen} icon={<EditIcon />} />
+            {!isDownLoadingPdf && (
+              <Fab onClick={handleOpen} icon={<EditIcon />} />
+            )}
             <CloseTicketDialog
               open={isCloseTicketDialogOpen}
               onClose={handleCloseModals}
