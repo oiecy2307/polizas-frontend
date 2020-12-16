@@ -147,25 +147,6 @@ export function TicketDetail({ dispatch, match, history }) {
     }
   };
 
-  const printDocument = () => {
-    handleCloseActionsMenu();
-    const input = document.getElementById('divToPrint');
-    html2canvas(input)
-      .then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const width = input.clientWidth * 0.25;
-        const left = (210 - width) / 2;
-        const height = input.clientHeight * 0.25;
-        const pdf = new JsPDF();
-        pdf.addImage(imgData, 'JPEG', left, 0, width, height);
-        pdf.save('download.pdf');
-        setIsDownloadingPdf(false);
-      })
-      .catch(() => {
-        setIsDownloadingPdf(false);
-      });
-  };
-
   const handleTicketSaved = () => {
     fetchTicket();
   };
@@ -356,6 +337,25 @@ export function TicketDetail({ dispatch, match, history }) {
         return 'Asignar ticket';
     }
   })();
+
+  const printDocument = () => {
+    handleCloseActionsMenu();
+    const input = document.getElementById('divToPrint');
+    html2canvas(input)
+      .then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const width = input.clientWidth * 0.25;
+        const left = (210 - width) / 2;
+        const height = input.clientHeight * 0.25;
+        const pdf = new JsPDF();
+        pdf.addImage(imgData, 'JPEG', left, 0, width, height);
+        pdf.save(`${shortName}.pdf`);
+        setIsDownloadingPdf(false);
+      })
+      .catch(() => {
+        setIsDownloadingPdf(false);
+      });
+  };
 
   const handleOpenAssignDialog = () => {
     if (isClient || isCancelled) return;

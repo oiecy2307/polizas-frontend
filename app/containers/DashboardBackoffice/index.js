@@ -23,7 +23,7 @@ import WarningIcon from '@material-ui/icons/ErrorOutlined';
 import CloseIcon from '@material-ui/icons/Close';
 import Money from '@material-ui/icons/AttachMoney';
 import Skeleton from '@material-ui/lab/Skeleton';
-import TimeTracker from 'components/TimeTracker';
+import Popover from '@material-ui/core/Popover';
 
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import { wsGetDashboardInformation } from 'services/dashboard';
@@ -31,6 +31,7 @@ import { getStatusLabel, getFullName, formatToFolio } from 'utils/helper';
 import PieChartItem from 'components/PieChartItem';
 import Avatar from 'components/Avatar';
 import EmptyState from 'components/EmptyState';
+import TimeTracker from 'components/TimeTracker';
 
 import makeSelectDashboardBackoffice from './selectors';
 import {
@@ -44,6 +45,7 @@ import {
   ItemCompany,
   ItemMainInfo,
   TodayTicketsSection,
+  PopoverContent,
 } from './styledComponents';
 
 const getIcon = ticket => {
@@ -73,6 +75,8 @@ export function DashboardBackoffice({ dispatch }) {
   const [openTickets, setOpenTickets] = useState([]);
   const [clientTickets, setClientTickets] = useState([]);
   const [ticketsByCompany, setTicketsByCompany] = useState([]);
+  const [ticketsPopover, setTicketsPopover] = useState(null);
+  const [ticketsPopoverAnchorEl, setTicketsPopoverAnchorEl] = useState(null);
   const { isResponsiveXs } = useContext(GlobalValuesContext);
   const currentUser = useContext(LoggedUser);
 
@@ -132,6 +136,17 @@ export function DashboardBackoffice({ dispatch }) {
     }
   };
 
+  const handleOpenTechnicalsTicketsPopover = (event, technical) => {
+    event.preventDefault(); // Evita evento del link
+    setTicketsPopoverAnchorEl(event.currentTarget);
+    setTicketsPopover(get(technical, 'technicalTickets', false) || []);
+  };
+
+  const handleCloseTicketsPopover = () => {
+    setTicketsPopoverAnchorEl(null);
+    setTicketsPopover(null);
+  };
+
   if (initialLoading) {
     return (
       <div>
@@ -174,15 +189,21 @@ export function DashboardBackoffice({ dispatch }) {
                   <div className="email text-ellipsis">{technical.email}</div>
                 </PersonalInfo>
                 {get(technical, 'technicalTickets', []).length > 0 ? (
-                  <Label background="#FBEAE5" color="#DE3618">{`${
-                    get(technical, 'technicalTickets', []).length
-                  } ${
-                    get(technical, 'technicalTickets', []).length === 1
-                      ? 'ticket'
-                      : 'tickets'
-                  }`}</Label>
+                  <Label
+                    onClick={event =>
+                      handleOpenTechnicalsTicketsPopover(event, technical)
+                    }
+                    background="#FBEAE5"
+                    color="#DE3618"
+                  >
+                    {`${get(technical, 'technicalTickets', []).length} ${
+                      get(technical, 'technicalTickets', []).length === 1
+                        ? 'ticket'
+                        : 'tickets'
+                    }`}
+                  </Label>
                 ) : (
-                  <Label>Libre</Label>
+                  <Label onClick={event => event.preventDefault()}>Libre</Label>
                 )}
               </TechnicalCheckbox>
             </Link>
@@ -210,7 +231,12 @@ export function DashboardBackoffice({ dispatch }) {
                   <Link to={`/tickets/${ticket.id}`}>
                     <ItemMessage>{ticket.shortName}</ItemMessage>
                     <div className="formal-name">
-                      Folio #{formatToFolio(get(ticket, 'number', ''))}
+                      <span style={{ color: '#108043' }}>
+                        Folio #{formatToFolio(get(ticket, 'number', ''))}
+                      </span>
+                    </div>
+                    <div className="formal-name">
+                      {get(ticket, 'client.company.name', 'Ticket anónimo')}
                     </div>
                   </Link>
                   <TimeTracker
@@ -336,6 +362,49 @@ export function DashboardBackoffice({ dispatch }) {
           </Paper>
         </React.Fragment>
       )}
+      <Popover
+        id="tickets-popover"
+        open={Boolean(ticketsPopoverAnchorEl)}
+        anchorEl={ticketsPopoverAnchorEl}
+        onClose={handleCloseTicketsPopover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        {Array.isArray(ticketsPopover) && (
+          <PopoverContent>
+            <h3>Tickets abiertos</h3>
+            {ticketsPopover.map(ticket => (
+              <div className="item" key={ticket.id}>
+                <IconGreen
+                  isRed={
+                    (ticket.status === 'closed' && !ticket.paid) ||
+                    ticket.status === 'cancelled'
+                  }
+                >
+                  {getIcon(ticket)}
+                </IconGreen>
+                <ItemMainInfo>
+                  <Link to={`/tickets/${ticket.id}`}>
+                    <ItemMessage>{ticket.shortName}</ItemMessage>
+                    <div className="formal-name">
+                      Folio #{formatToFolio(get(ticket, 'number', ''))}
+                    </div>
+                  </Link>
+                  <ItemCompany>
+                    {get(ticket, 'client.company.name', '-')}
+                  </ItemCompany>
+                </ItemMainInfo>
+              </div>
+            ))}
+          </PopoverContent>
+        )}
+      </Popover>
     </Content>
   );
 }

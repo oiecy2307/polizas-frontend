@@ -149,3 +149,27 @@ export const TodayTicketsSection = styled.div`
     border-top: 1px solid #f6f7f9;
   }
 `;
+
+export const PopoverContent = styled.div`
+  background: white;
+  width: 400px;
+  max-width: 100%;
+  max-height: 600px;
+
+  & .item {
+    padding: 18px 16px 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    border-bottom: 1px solid #f6f7f9;
+  }
+
+  & .item:first-child {
+    border-top: 1px solid #f6f7f9;
+  }
+
+  & h3 {
+    padding: 0 16px;
+  }
+`;
