@@ -41,7 +41,7 @@ function CommentItem({ comment, onDelete, ...restProps }) {
           </div>
           {canDelete && <DeleteIcon onClick={() => onDelete(comment.id)} />}
         </div>
-        <div>{comment.text}</div>
+        <div className="show-line-breaks">{comment.text}</div>
       </div>
     </Container>
   );

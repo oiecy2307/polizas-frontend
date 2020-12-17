@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -46,6 +46,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import CloseIcon from '@material-ui/icons/Close';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Menu from '@material-ui/core/Menu';
+import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 
 import EmptyState from 'components/EmptyState';
 import Label from 'components/Label';
@@ -171,6 +172,112 @@ const getFormatedDate = date => {
   }
 };
 
+const SortableHead = SortableContainer(({ children }) => (
+  <TableHead>
+    <TableRow>{children}</TableRow>
+  </TableHead>
+));
+
+const SortableCell = SortableElement(({ value }) => <>{value}</>);
+
+const getHeadersByKey = key => {
+  switch (key) {
+    case 'number':
+      return <TableCell align="left">Folio</TableCell>;
+    case 'shortName':
+      return <TableCell align="left">Nombre corto</TableCell>;
+    case 'statuses':
+      return <TableCell align="left">Estatus</TableCell>;
+    case 'invoice':
+      return <TableCell align="left">No. de factura</TableCell>;
+    case 'priority':
+      return <TableCell align="left">Prioridad</TableCell>;
+    case 'creationDate':
+      return <TableCell align="right">Fecha de reporte</TableCell>;
+    case 'companies':
+      return <TableCell align="left">Empresa</TableCell>;
+    case 'technicals':
+      return <TableCell align="left">Técnicos</TableCell>;
+    case 'finishDate':
+      return <TableCell align="right">Fecha de terminación</TableCell>;
+    case 'paid':
+      return <TableCell align="left">Pagado</TableCell>;
+    case 'timeUsed':
+      return <TableCell align="right">Tiempo implementado</TableCell>;
+    case 'cost':
+      return <TableCell align="right">Costo reportado</TableCell>;
+    case 'totalPaid':
+      return <TableCell align="right">Total pagado</TableCell>;
+    case 'paidDate':
+      return <TableCell align="right">Fecha de pago</TableCell>;
+    default:
+      return <TableCell align="left">Folio</TableCell>;
+  }
+};
+
+const getTableValueByKey = (key, item) => {
+  switch (key) {
+    case 'number':
+      return <TableCell align="left">{formatToFolio(item.number)}</TableCell>;
+    case 'shortName':
+      return <TableCell align="left">{item.shortName}</TableCell>;
+    case 'statuses':
+      return (
+        <TableCell align="left">
+          {getStatusLabel(item.status, item.paid)}
+        </TableCell>
+      );
+    case 'invoice':
+      return <TableCell align="left">{item.invoice}</TableCell>;
+    case 'priority':
+      return (
+        <TableCell align="left">
+          <div style={{ maxWidth: 110 }}>
+            <Label option={item.priority} />
+          </div>
+        </TableCell>
+      );
+    case 'creationDate':
+      return <TableCell align="right">{item.reportedDate}</TableCell>;
+    case 'companies':
+      return (
+        <TableCell align="left">
+          {get(item, 'client.company.name', '')}
+        </TableCell>
+      );
+    case 'technicals':
+      return (
+        <TableCell align="left">
+          {getFullName(get(item, 'technical', ''))}
+        </TableCell>
+      );
+    case 'finishDate':
+      return <TableCell align="right">{item.finishedDate || ''}</TableCell>;
+    case 'paid':
+      return <TableCell align="left">{item.paid ? 'Sí' : 'No'}</TableCell>;
+    case 'timeUsed':
+      return (
+        <TableCell align="right">
+          {minutesToHours(item.timeNeeded || 0)}
+        </TableCell>
+      );
+    case 'cost':
+      return (
+        <TableCell align="right">{toMoneyFormat(item.cost || 0)}</TableCell>
+      );
+    case 'totalPaid':
+      return (
+        <TableCell align="right">
+          {toMoneyFormat(item.totalPaid || 0)}
+        </TableCell>
+      );
+    case 'paidDate':
+      return <TableCell align="right">{item.paidDate || ''}</TableCell>;
+    default:
+      return <TableCell align="left">{formatToFolio(item.number)}</TableCell>;
+  }
+};
+
 export function TicketsReporter({ dispatch }) {
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(0);
@@ -221,6 +328,22 @@ export function TicketsReporter({ dispatch }) {
     paidDate: false,
     invoice: true,
   });
+  const [fieldsOrder, setFieldsOrder] = useState([
+    'number',
+    'shortName',
+    'statuses',
+    'invoice',
+    'priority',
+    'creationDate',
+    'companies',
+    'technicals',
+    'finishDate',
+    'paid',
+    'timeUsed',
+    'cost',
+    'totalPaid',
+    'paidDate',
+  ]);
   const [temporalFilters, setTemporalFilters] = useState(null);
   const [activeFieldsOpen, setActiveFieldsOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState('reportedDate');
@@ -313,6 +436,16 @@ export function TicketsReporter({ dispatch }) {
     }
   };
 
+  const onReorderEnd = useCallback(
+    ({ oldIndex, newIndex }) => {
+      const newOrder = [...fieldsOrder];
+      const moved = newOrder.splice(oldIndex, 1);
+      newOrder.splice(newIndex, 0, moved[0]);
+      setFieldsOrder(newOrder);
+    },
+    [fieldsOrder, setFieldsOrder],
+  );
+
   const handleClickRow = item => {
     window.open(`/tickets/${item.id}`, '_blank');
   };
@@ -354,6 +487,8 @@ export function TicketsReporter({ dispatch }) {
     label: getFullName(c),
   }));
   const classes = useStyles();
+
+  const fieldsOrderFiltered = fieldsOrder.filter(field => fieldsActive[field]);
 
   if (initialLoading) {
     return (
@@ -408,52 +543,15 @@ export function TicketsReporter({ dispatch }) {
       <Paper>
         {Boolean(items.length) && (
           <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                {fieldsActive.number && (
-                  <TableCell align="left">Folio</TableCell>
-                )}
-                {fieldsActive.shortName && (
-                  <TableCell align="left">Nombre corto</TableCell>
-                )}
-                {fieldsActive.statuses && (
-                  <TableCell align="left">Estatus</TableCell>
-                )}
-                {fieldsActive.invoice && (
-                  <TableCell align="left">No. de factura</TableCell>
-                )}
-                {fieldsActive.priority && (
-                  <TableCell align="left">Prioridad</TableCell>
-                )}
-                {fieldsActive.creationDate && (
-                  <TableCell align="right">Fecha de reporte</TableCell>
-                )}
-                {fieldsActive.companies && (
-                  <TableCell align="left">Empresa</TableCell>
-                )}
-                {fieldsActive.technicals && (
-                  <TableCell align="left">Técnicos</TableCell>
-                )}
-                {fieldsActive.finishDate && (
-                  <TableCell align="right">Fecha de terminación</TableCell>
-                )}
-                {fieldsActive.paid && (
-                  <TableCell align="left">Pagado</TableCell>
-                )}
-                {fieldsActive.timeUsed && (
-                  <TableCell align="right">Tiempo implementado</TableCell>
-                )}
-                {fieldsActive.cost && (
-                  <TableCell align="right">Costo reportado</TableCell>
-                )}
-                {fieldsActive.totalPaid && (
-                  <TableCell align="right">Total pagado</TableCell>
-                )}
-                {fieldsActive.paidDate && (
-                  <TableCell align="right">Fecha de pago</TableCell>
-                )}
-              </TableRow>
-            </TableHead>
+            <SortableHead axis="x" onSortEnd={onReorderEnd}>
+              {fieldsOrderFiltered.map((field, i) => (
+                <SortableCell
+                  index={i}
+                  key={field}
+                  value={getHeadersByKey(field)}
+                />
+              ))}
+            </SortableHead>
             <TableBody>
               {items.map(item => (
                 <TableRow
@@ -461,69 +559,8 @@ export function TicketsReporter({ dispatch }) {
                   onClick={() => handleClickRow(item)}
                   key={item.id}
                 >
-                  {fieldsActive.number && (
-                    <TableCell align="left">
-                      {formatToFolio(item.number)}
-                    </TableCell>
-                  )}
-                  {fieldsActive.shortName && (
-                    <TableCell align="left">{item.shortName}</TableCell>
-                  )}
-                  {fieldsActive.statuses && (
-                    <TableCell align="left">
-                      {getStatusLabel(item.status, item.paid)}
-                    </TableCell>
-                  )}
-                  {fieldsActive.invoice && (
-                    <TableCell align="left">{item.invoice}</TableCell>
-                  )}
-                  {fieldsActive.priority && (
-                    <TableCell align="left">
-                      <div style={{ maxWidth: 110 }}>
-                        <Label option={item.priority} />
-                      </div>
-                    </TableCell>
-                  )}
-                  {fieldsActive.creationDate && (
-                    <TableCell align="right">{item.reportedDate}</TableCell>
-                  )}
-                  {fieldsActive.companies && (
-                    <TableCell align="left">
-                      {get(item, 'client.company.name', '')}
-                    </TableCell>
-                  )}
-                  {fieldsActive.technicals && (
-                    <TableCell align="left">
-                      {getFullName(get(item, 'technical', ''))}
-                    </TableCell>
-                  )}
-                  {fieldsActive.finishDate && (
-                    <TableCell align="right">
-                      {item.finishedDate || ''}
-                    </TableCell>
-                  )}
-                  {fieldsActive.paid && (
-                    <TableCell align="left">
-                      {item.paid ? 'Sí' : 'No'}
-                    </TableCell>
-                  )}
-                  {fieldsActive.timeUsed && (
-                    <TableCell align="right">
-                      {minutesToHours(item.timeNeeded || 0)}
-                    </TableCell>
-                  )}
-                  {fieldsActive.cost && (
-                    <TableCell align="right">
-                      {toMoneyFormat(item.cost || 0)}
-                    </TableCell>
-                  )}
-                  {fieldsActive.totalPaid && (
-                    <TableCell align="right">
-                      {toMoneyFormat(item.totalPaid || 0)}
-                    </TableCell>
-                  )}
-                  {fieldsActive.paidDate && (
-                    <TableCell align="right">{item.paidDate || ''}</TableCell>
+                  {fieldsOrderFiltered.map(field =>
+                    getTableValueByKey(field, item),
                   )}
                 </TableRow>
               ))}

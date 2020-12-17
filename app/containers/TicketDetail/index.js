@@ -324,6 +324,8 @@ export function TicketDetail({ dispatch, match, history }) {
   const anonymousEmail = get(anonymousClient, 'email', '');
   const anonymousPhone = get(anonymousClient, 'phone', '');
 
+  console.log('descriptiondescription', description);
+
   const buttonText = (() => {
     switch (status) {
       case 'new':
@@ -515,7 +517,7 @@ export function TicketDetail({ dispatch, match, history }) {
           )}
         </TopSection>
         <Header>
-          <div className="description">{description}</div>
+          <div className="description show-line-breaks">{description}</div>
           <div className="labels">
             {priority && <Label option={priority} />}
             <Label onClick={handleOpenMenu} option={status} />

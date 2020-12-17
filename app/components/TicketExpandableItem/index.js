@@ -127,7 +127,7 @@ function TicketExpandableItem({
           <SpaceBetween>
             <div className="row">
               <DescriptionIcon />
-              <div>{ticket.description}</div>
+              <div className="show-line-breaks">{ticket.description}</div>
             </div>
             {ticket.priority && <Label option={ticket.priority} />}
           </SpaceBetween>

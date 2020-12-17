@@ -113,6 +113,10 @@ const GlobalStyle = createGlobalStyle`
   .one-line-text {
     white-space: nowrap;
   }
+
+  .show-line-breaks {
+    white-space: pre-wrap;
+  }
 `;
 
 export default GlobalStyle;

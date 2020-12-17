@@ -44,11 +44,12 @@ function Datepicker({ language, ...restProps }) {
         libInstance={moment}
       >
         <DatePicker
+          autoOk
           format="DD-MM-YYYY"
           inputVariant="filled"
           helperText=""
           cancelLabel="Cancelar"
-          okLabel="Aceptar"
+          okLabel=""
           clearable
           clearLabel="Limpiar"
           {...restProps}
