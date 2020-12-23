@@ -9,45 +9,34 @@ import PropTypes from 'prop-types';
 import moment from 'moment/min/moment-with-locales';
 import { get } from 'lodash';
 
-import ExpandableItem from 'components/ExpandableItem';
 import CloseTicketDialog from 'components/CloseTicketDialog';
 import AssignTicketDialog from 'components/AssignTicketDialog';
-import Button from 'components/Button';
-import { SpaceBetween } from 'utils/globalStyledComponents';
-import {
-  DateDetailContainer,
-  DateText,
-  IconPurple,
-  ItemMessage,
-  ItemCompany,
-  LabelPurple,
-  ItemMainInfo,
-} from '../styledComponents';
+import PayTicketDialog from 'components/PayTicketDialog';
+import TicketExpandableItem from 'components/TicketExpandableItem';
+import EmptyState from 'components/EmptyState';
+import { DateDetailContainer, DateText } from '../styledComponents';
 
 moment.locale('es');
 
-export function TicketsList({ tickets, date, onRefresh, dispatch }) {
+export function TicketsList({
+  tickets,
+  date,
+  onRefresh,
+  dispatch,
+  onTicketTimeChanged,
+}) {
   const [ticketSelected, setTicketSelected] = useState(null);
   const [isCloseTicketDialogOpen, setIsCloseTicketDialogOpen] = useState(false);
+  const [isPayTicketDialogOpen, setIsPayTicketDialogOpen] = useState(false);
   const [isAssignTicketDialogOpen, setIsAssignTicketDialogOpen] = useState(
     false,
   );
+
   const isToday = moment(date).isSame(new Date(), 'day');
   const formatedDate = moment(date).format('LL');
   const displayDate = isToday
     ? `Hoy (${moment(date).format('LL')})`
     : formatedDate;
-
-  const getButtonText = status => {
-    switch (status) {
-      case 'new':
-        return 'Asignar ticket';
-      case 'assigned':
-        return 'Cerrar ticket';
-      default:
-        return 'Asignar ticket';
-    }
-  };
 
   const handleButtonClicked = ticket => {
     setTicketSelected(ticket);
@@ -60,6 +49,10 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
         setIsAssignTicketDialogOpen(true);
         break;
       }
+      case 'closed': {
+        setIsPayTicketDialogOpen(true);
+        break;
+      }
       default:
         break;
     }
@@ -68,6 +61,7 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
   const handleClose = success => {
     setIsCloseTicketDialogOpen(false);
     setIsAssignTicketDialogOpen(false);
+    setIsPayTicketDialogOpen(false);
     if (success) {
       onRefresh();
     }
@@ -78,45 +72,40 @@ export function TicketsList({ tickets, date, onRefresh, dispatch }) {
     <div>
       <DateDetailContainer>
         <DateText>{displayDate}</DateText>
-        {tickets.map(ticket => (
-          <ExpandableItem
+        {tickets.map((ticket, index) => (
+          <TicketExpandableItem
+            ticket={ticket}
+            onButtonClicked={handleButtonClicked}
+            dispatch={dispatch}
             key={ticket.id}
-            header={
-              <React.Fragment>
-                <IconPurple />
-                <ItemMainInfo>
-                  <ItemMessage>{ticket.shortName}</ItemMessage>
-                  <ItemCompany>
-                    {get(ticket, 'client.company.name', '-')}
-                  </ItemCompany>
-                </ItemMainInfo>
-                {false && <LabelPurple>{ticket.status}</LabelPurple>}
-              </React.Fragment>
-            }
-            content={
-              <SpaceBetween>
-                <div>{ticket.description}</div>
-                {ticket.status !== 'closed' && (
-                  <Button onClick={() => handleButtonClicked(ticket)}>
-                    {getButtonText(ticket.status)}
-                  </Button>
-                )}
-              </SpaceBetween>
-            }
+            onTicketTimeChanged={time => onTicketTimeChanged(index, time)}
           />
         ))}
       </DateDetailContainer>
+      {!tickets.length && <EmptyState />}
       <CloseTicketDialog
         open={isCloseTicketDialogOpen}
         onClose={handleClose}
-        id={get(ticketSelected, 'id', '')}
+        id={get(ticketSelected, 'id', '').toString()}
         dispatch={dispatch}
+        time={get(ticketSelected, 'time', 0)}
       />
       <AssignTicketDialog
         open={isAssignTicketDialogOpen}
         onClose={handleClose}
         dispatch={dispatch}
-        id={get(ticketSelected, 'id', '')}
+        id={get(ticketSelected, 'id', '').toString()}
+        defaultPriority={get(ticketSelected, 'priority', null)}
+      />
+      <PayTicketDialog
+        open={isPayTicketDialogOpen}
+        onClose={handleClose}
+        dispatch={dispatch}
+        id={get(ticketSelected, 'id', '').toString()}
+        cost={get(ticketSelected, 'cost', '').toString()}
+        defaultTicket={
+          ticketSelected && ticketSelected.paid ? ticketSelected : null
+        }
       />
     </div>
   );
@@ -127,6 +116,11 @@ TicketsList.propTypes = {
   date: PropTypes.string,
   dispatch: PropTypes.func,
   onRefresh: PropTypes.func,
+  onTicketTimeChanged: PropTypes.func,
+};
+
+TicketsList.defaultProps = {
+  onTicketTimeChanged: () => {},
 };
 
 export default TicketsList;

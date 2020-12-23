@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "suppdesk"
+    "default": "suppdesk-271403",
+    "staging": "suppdesk-staging",
+    "development": "suppdesk-271403",
+    "production": "suppdesk-production"
   }
 }

@@ -18,6 +18,10 @@ export default language => {
       es: 'Tickets',
       en: 'Tickets',
     },
+    ticketsReporter: {
+      es: 'Reporteador tickets',
+      en: 'Tickets reporter',
+    },
     invoices: {
       es: 'Facturas',
       en: 'Invoices',
@@ -25,6 +29,30 @@ export default language => {
     users: {
       es: 'Usuarios',
       en: 'Users',
+    },
+    invitations: {
+      es: 'Invitaciones',
+      en: 'Invitations',
+    },
+    companies: {
+      es: 'Empresas',
+      en: 'Companies',
+    },
+    products: {
+      es: 'Productos',
+      en: 'Products',
+    },
+    solutions: {
+      es: 'Soluciones',
+      en: 'Solutions',
+    },
+    profile: {
+      es: 'Mi perfil',
+      en: 'My profile',
+    },
+    config: {
+      es: 'Configuración',
+      en: 'Settings',
     },
     logout: {
       es: 'Cerrar sesión',
@@ -39,8 +67,15 @@ export default language => {
     menu: {
       dashboard: values.dashboard[language],
       tickets: values.tickets[language],
+      ticketsReporter: values.ticketsReporter[language],
       invoices: values.invoices[language],
       users: values.users[language],
+      invitations: values.invitations[language],
+      companies: values.companies[language],
+      products: values.products[language],
+      solutions: values.solutions[language],
+      profile: values.profile[language],
+      config: values.config[language],
       logout: values.logout[language],
     },
   });

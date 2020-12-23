@@ -58,6 +58,10 @@ export default language => {
       es: 'Rol',
       en: 'Role',
     },
+    phoneNumber: {
+      es: 'Número de teléfono',
+      en: 'Phone number',
+    },
     company: {
       es: 'Empresa',
       en: 'Company',
@@ -77,6 +81,10 @@ export default language => {
     tooShort: {
       es: 'Contraseña muy corta',
       en: 'Password too short',
+    },
+    isNotNumber: {
+      es: 'Número no válido',
+      en: 'Not valid number',
     },
     emailError: {
       es: 'Correo no válido',
@@ -126,12 +134,14 @@ export default language => {
       password: values.password[language],
       passwordConfirmation: values.passwordConfirmation[language],
       role: values.role[language],
+      phoneNumber: values.phoneNumber[language],
       company: values.company[language],
     },
     required: values.required[language],
     invalidCharacters: values.invalidCharacters[language],
     tooLong: values.tooLong[language],
     tooShort: values.tooShort[language],
+    isNotNumber: values.isNotNumber[language],
     emailError: values.emailError[language],
     passwordDontMatch: values.passwordDontMatch[language],
     roles: {

@@ -1,9 +1,10 @@
 /* eslint-disable */
 import axios from 'axios';
-import { BASE_URL } from 'config';
+import config from 'config';
 import { ImmortalDB } from 'immortal-db';
 
 import history from 'utils/history';
+const { BASE_URL } = config;
 const apiCall = axios.create({
   baseURL: BASE_URL,
 });
@@ -16,7 +17,10 @@ apiCall.interceptors.response.use(response => response, async function(error) {
   let errorMessage = 'There was an error communicating with the server.';
   if (error.response) {
     if (error.response.status === 401) {
-      history.push('/');
+      await ImmortalDB.remove('user');
+      await ImmortalDB.remove('token');
+      await ImmortalDB.remove('notificationToken');
+      history.push('/inicio-sesion');
     }
     errorMessage = error.response.message
       ? error.response.message
@@ -47,7 +51,7 @@ export const post = (data) => {
   return new Promise ((resolve, reject) => {
     if(data.headers) {
       apiCall
-      .post(data.url, data.body, {headers: data.headers})
+      .post(data.url, data.body, { headers: data.headers })
       .then(response => {
         resolve(response.data);
       })
@@ -57,6 +61,28 @@ export const post = (data) => {
     } else {
       apiCall
       .post(data.url, data.body)
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(err => {
+        reject(err);
+      });
+    }
+  });
+};
+
+export const postFile = (data) => {
+  return new Promise ((resolve, reject) => {
+    if (data.headers) {
+      apiCall
+      .post(
+        data.url,
+        data.body,
+        {
+          headers: data.headers,
+          onUploadProgress: data.uploadProgress,
+        }
+      )
       .then(response => {
         resolve(response.data);
       })

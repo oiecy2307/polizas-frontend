@@ -25,6 +25,8 @@ function CreateEditTicketForm(props) {
             label="Tiempo empleado en solución (minutos)"
             helperText={touched.timeNeeded ? errors.timeNeeded : ''}
             error={touched.timeNeeded && Boolean(errors.timeNeeded)}
+            type="number"
+            maxLength="4"
           />
         )}
       />
@@ -37,20 +39,8 @@ function CreateEditTicketForm(props) {
             label="Costo de la solución"
             helperText={touched.cost ? errors.cost : ''}
             error={touched.cost && Boolean(errors.cost)}
-          />
-        )}
-      />
-      <Field
-        name="solution"
-        defaultValues={values.solution}
-        render={({ field }) => (
-          <Input
-            {...field}
-            label="Notas de la solución"
-            helperText={touched.solution ? errors.solution : ''}
-            error={touched.solution && Boolean(errors.solution)}
-            multiline
-            rows="4"
+            type="number"
+            maxLength="12"
           />
         )}
       />

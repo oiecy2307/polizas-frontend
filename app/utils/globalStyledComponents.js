@@ -4,6 +4,7 @@ export const Paper = styled.div`
   background-color: #ffffff;
   border-radius: 12px 12px 0 0;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+  overflow: auto;
 `;
 
 export const SpaceBetween = styled.div`
@@ -67,6 +68,8 @@ export const TabButton = styled.button`
   transition: 0.25s all;
   margin-right: ${({ noMargin }) => (noMargin ? 0 : 16)}px;
   margin-bottom: ${({ noMargin }) => (noMargin ? 0 : 16)}px;
+  position: relative;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 
   &:hover {
     background: #e3f1df;
@@ -78,4 +81,13 @@ export const FabContainer = styled.div`
   position: fixed;
   bottom: 24px;
   right: 24px;
+`;
+
+export const Divider = styled.div`
+  margin-top: ${props => props.size}px;
+`;
+
+export const FloatRight = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;

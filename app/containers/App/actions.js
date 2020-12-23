@@ -10,7 +10,7 @@ export function aSetLoadingState(isLoading) {
 export function aOpenSnackbar(text, severity) {
   return {
     type: OPEN_SNACKBAR,
-    text,
+    text: typeof text === 'string' ? text : 'Ocurrió un error inesperado.',
     severity,
   };
 }

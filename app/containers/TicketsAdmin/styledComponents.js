@@ -1,5 +1,12 @@
 import styled from 'styled-components';
 
+export const ButtonsSection = styled.div`
+  @media (max-width: 1190px) {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+`;
+
 export const Content = styled.div`
   display: flex;
   justify-content: space-between;
@@ -8,6 +15,8 @@ export const Content = styled.div`
   @media (max-width: 1190px) {
     flex-direction: column-reverse;
     align-items: center;
+    max-width: 560px;
+    margin: 8px auto;
     & > div {
       margin-bottom: 24px;
     }
@@ -45,11 +54,19 @@ export const PorAsignarItem = styled.div`
   cursor: pointer;
 `;
 
-export const IconPurple = styled.div`
-  background-color: #f6f0fd;
+export const IconGreen = styled.div`
+  background-color: ${props => (props.isRed ? '#fbeae5' : '#e3f1df')};
   border-radius: 50%;
   width: 32px;
   height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & svg {
+    color: ${props => (props.isRed ? '#DE3618' : '#108043')};
+    font-size: 18px;
+  }
 `;
 
 export const IconContainer = styled.div`
@@ -137,3 +154,50 @@ export const ColorsExplanation = styled.div`
     max-width: unset;
   }
 `;
+
+export const TicketInformation = styled.div`
+  & svg {
+    color: #108043;
+    margin-right: 24px;
+  }
+
+  & > div:not(:last-child) {
+    margin-bottom: 24px;
+  }
+
+  & .row {
+    display: flex;
+    padding-right: 8px;
+  }
+
+  & .row .time {
+    display: flex;
+    align-items: center;
+  }
+
+  & .row .time .action {
+    cursor: pointer;
+    margin-left: 8px;
+  }
+
+  & .row-technical {
+    display: flex;
+    align-items: center;
+  }
+
+  & .row-technical > div {
+    padding-left: 16px;
+  }
+`;
+
+export const ButtonDot = styled.span`
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #50b83c;
+`;
+
+export const Span = styled.span``;

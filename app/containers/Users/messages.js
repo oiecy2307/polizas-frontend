@@ -42,6 +42,10 @@ export default language => {
       es: 'Clientes',
       en: 'Clients',
     },
+    inactive: {
+      es: 'Inactivos',
+      en: 'Inactives',
+    },
   };
   return defineMessages({
     header: {
@@ -59,6 +63,7 @@ export default language => {
       technicalSupport: values.technicalSupport[language],
       salesman: values.salesman[language],
       clients: values.clients[language],
+      inactive: values.inactive[language],
     },
   });
 };

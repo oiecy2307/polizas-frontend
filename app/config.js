@@ -1,3 +1,20 @@
-// export const BASE_URL = 'https://af62fe16.ngrok.io/api';
-export const BASE_URL = 'https://oval-bricolage-271403.appspot.com/api';
-// export const BASE_URL = 'http://localhost:8080/api';
+import dev from './config.dev';
+import local from './config.local';
+import staging from './config.staging';
+// import production from './config.production';
+
+const config = (() => {
+  switch (process.env.NODE_ENV) {
+    case 'staging':
+      return staging;
+    case 'local':
+      return local;
+    case 'development':
+      return dev;
+    case 'production':
+    default:
+      return staging;
+  }
+})();
+
+export default config;

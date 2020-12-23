@@ -4,39 +4,41 @@
  *
  */
 
-import React, { memo, useState, useContext } from 'react';
+import React, { memo, useState, useContext, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { GlobalValuesContext } from 'contexts/global-values';
 import { Field } from 'formik';
-import { find } from 'lodash';
+import { find, get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 
+// import FormikDebugger from 'components/FormikDebugger';
 import Input from 'components/InputText';
 import Select from 'components/Select';
 import Datepicker from 'components/Datepicker';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import UploadEvidence from 'components/UploadEvidence';
+import Label from 'components/Label';
+import Button from 'components/Button';
+import { Divider } from 'utils/globalStyledComponents';
 
-import { Form } from './styledComponents';
+import { Form, PriorityOptions } from './styledComponents';
 import getMessages from './messages';
 
 function CreateEditTicketForm(props) {
-  const { technicals, isClient, clients } = props;
+  const {
+    technicals,
+    isClient,
+    clients,
+    dispatch,
+    defaultEvidence,
+    isClosed,
+    onCreateCompany,
+  } = props;
   const { language } = useContext(GlobalValuesContext);
   moment.locale(language);
   const [messages] = useState(getMessages(language));
-  const [options] = useState([
-    {
-      value: 'low',
-      label: messages.levels.lowLevel,
-    },
-    {
-      value: 'medium',
-      label: messages.levels.mediumLevel,
-    },
-    {
-      value: 'high',
-      label: messages.levels.highLevel,
-    },
-  ]);
+  const clientRef = useRef(null);
 
   const { setFieldValue, setFieldTouched, values, touched, errors } = props;
   return (
@@ -47,9 +49,11 @@ function CreateEditTicketForm(props) {
         render={({ field }) => (
           <Input
             {...field}
+            type="text"
             label={messages.fields.ticketTitle}
             helperText={touched.ticketTitle ? errors.ticketTitle : ''}
             error={touched.ticketTitle && Boolean(errors.ticketTitle)}
+            maxLength="255"
           />
         )}
       />
@@ -59,6 +63,7 @@ function CreateEditTicketForm(props) {
         render={({ field }) => (
           <Input
             {...field}
+            type="text"
             label={messages.fields.ticketDescription}
             helperText={
               touched.ticketDescription ? errors.ticketDescription : ''
@@ -68,36 +73,42 @@ function CreateEditTicketForm(props) {
             }
             multiline
             rows="4"
+            maxLength="10000"
           />
         )}
       />
-      <Field
-        defaultValue={values.ticketPriority}
-        name="ticketPriority"
-        render={({ field }) => {
-          const { label } = find(options, { value: field.value }) || {};
-          const value = field.value ? { value: field.value, label } : null;
-          return (
-            <Select
-              {...field}
-              value={value}
-              onChange={newValue => {
-                setFieldValue(field.name, newValue.value);
-              }}
-              options={options}
-              placeholder={messages.fields.ticketPriority}
-              error={
-                touched[field.name] && Boolean(errors[field.name])
-                  ? errors[field.name]
-                  : ''
-              }
-              onBlur={() => setFieldTouched(field.name, true)}
-            />
-          );
-        }}
+      <h4>{messages.fields.evidence}</h4>
+      <UploadEvidence
+        onFilesUploaded={files => setFieldValue('evidence', files)}
+        dispatch={dispatch}
+        defaultEvidence={defaultEvidence}
       />
       {!isClient && (
         <React.Fragment>
+          <h4>{messages.fields.ticketPriority}</h4>
+          <Field
+            defaultValue={values.ticketPriority}
+            name="ticketPriority"
+            render={({ field }) => (
+              <PriorityOptions>
+                <Label
+                  option={field.value === 'low' ? 'low' : 'unselected'}
+                  defaultText={messages.levels.lowLevel}
+                  onClick={() => setFieldValue(field.name, 'low')}
+                />
+                <Label
+                  option={field.value === 'medium' ? 'medium' : 'unselected'}
+                  defaultText={messages.levels.mediumLevel}
+                  onClick={() => setFieldValue(field.name, 'medium')}
+                />
+                <Label
+                  option={field.value === 'high' ? 'high' : 'unselected'}
+                  defaultText={messages.levels.highLevel}
+                  onClick={() => setFieldValue(field.name, 'high')}
+                />
+              </PriorityOptions>
+            )}
+          />
           <Field
             defaultValue={values.technicalId}
             name="technicalId"
@@ -109,7 +120,7 @@ function CreateEditTicketForm(props) {
                   {...field}
                   value={value}
                   onChange={newValue => {
-                    setFieldValue(field.name, newValue.value);
+                    setFieldValue(field.name, get(newValue, 'value', ''));
                   }}
                   options={technicals}
                   placeholder={messages.fields.technicalId}
@@ -130,45 +141,175 @@ function CreateEditTicketForm(props) {
               const { label } = find(clients, { value: field.value }) || {};
               const value = field.value ? { value: field.value, label } : null;
               return (
-                <Select
-                  {...field}
-                  value={value}
-                  onChange={newValue => {
-                    setFieldValue(field.name, newValue.value);
-                  }}
-                  options={clients}
-                  placeholder={messages.fields.clientId}
-                  error={
-                    touched[field.name] && Boolean(errors[field.name])
-                      ? errors[field.name]
-                      : ''
-                  }
-                  onBlur={() => setFieldTouched(field.name, true)}
-                />
+                <div ref={clientRef}>
+                  <Select
+                    {...field}
+                    value={value}
+                    onChange={newValue => {
+                      setFieldValue(field.name, get(newValue, 'value', ''));
+                    }}
+                    options={clients}
+                    placeholder={messages.fields.clientId}
+                    error={
+                      touched[field.name] && Boolean(errors[field.name])
+                        ? errors[field.name]
+                        : ''
+                    }
+                    onBlur={() => setFieldTouched(field.name, true)}
+                    customEmpty={() => (
+                      <div style={{ padding: '16px 0' }}>
+                        <div>Sin resultados</div>
+                        <Divider size="24" />
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => onCreateCompany(clientRef.current)}
+                        >
+                          Agregar nueva empresa
+                        </Button>
+                      </div>
+                    )}
+                  />
+                </div>
               );
             }}
           />
           <Field
-            name="dueDate"
-            defaultValues={values.dueDate}
+            name="reportedDate"
+            defaultValues={values.reportedDate}
             render={({ field }) => (
               <Datepicker
                 {...field}
-                value={values.dueDate}
-                id={messages.fields.dueDate}
-                label={messages.fields.dueDate}
+                value={values.reportedDate}
+                id={messages.fields.reportedDate}
+                label={messages.fields.reportedDate}
                 language={language}
                 onChange={newValue => {
-                  setFieldValue(
-                    field.name,
-                    moment(newValue, 'DD-MM-YYYY').format(),
-                  );
+                  if (!newValue) {
+                    setFieldValue(field.name, null);
+                  } else {
+                    setFieldValue(
+                      field.name,
+                      moment(newValue, 'DD-MM-YYYY').format(),
+                    );
+                  }
                 }}
-                helperText={touched.dueDate ? errors.dueDate : ''}
-                error={touched.dueDate && Boolean(errors.dueDate)}
+                helperText={touched.reportedDate ? errors.reportedDate : ''}
+                error={touched.reportedDate && Boolean(errors.reportedDate)}
               />
             )}
           />
+          {isClosed && (
+            <React.Fragment>
+              <Divider size="32" />
+              <Field
+                name="timeNeeded"
+                defaultValues={values.timeNeeded}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="number"
+                    label="Tiempo empleado en solución (minutos)"
+                    helperText={touched.timeNeeded ? errors.timeNeeded : ''}
+                    error={touched.timeNeeded && Boolean(errors.timeNeeded)}
+                    maxLength="4"
+                  />
+                )}
+              />
+              <Field
+                name="cost"
+                defaultValues={values.cost}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="number"
+                    label="Costo de la solución"
+                    helperText={touched.cost ? errors.cost : ''}
+                    error={touched.cost && Boolean(errors.cost)}
+                    maxLength="12"
+                  />
+                )}
+              />
+              <Field
+                name="invoice"
+                defaultValues={values.invoice}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="text"
+                    label="Número de factura"
+                    helperText={touched.invoice ? errors.invoice : ''}
+                    error={touched.invoice && Boolean(errors.invoice)}
+                    maxLength="255"
+                  />
+                )}
+              />
+              <Field
+                name="paid"
+                defaultValues={values.paid}
+                render={({ field }) => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={field.value}
+                        onChange={() => {
+                          setFieldTouched(field.name, true);
+                          setFieldValue(field.name, !values.paid);
+                        }}
+                        name="paid"
+                        color="primary"
+                      />
+                    }
+                    label="Pagado"
+                  />
+                )}
+              />
+              <Divider size="24" />
+              <Field
+                name="totalPaid"
+                defaultValues={values.totalPaid}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="number"
+                    label="Monto pagado"
+                    helperText={touched.totalPaid ? errors.totalPaid : ''}
+                    error={touched.totalPaid && Boolean(errors.totalPaid)}
+                    disabled={!values.paid}
+                    maxLength="12"
+                  />
+                )}
+              />
+              <Divider size="24" />
+              <Field
+                name="paidDate"
+                defaultValues={values.paidDate}
+                render={({ field }) => (
+                  <Datepicker
+                    {...field}
+                    value={values.paidDate}
+                    id={field.name}
+                    label="Fecha de pago"
+                    language={language}
+                    onChange={newValue => {
+                      if (!newValue) {
+                        setFieldValue(field.name, null);
+                      } else {
+                        setFieldValue(
+                          field.name,
+                          moment(newValue, 'DD-MM-YYYY').format(),
+                        );
+                      }
+                    }}
+                    helperText={touched.paidDate ? errors.paidDate : ''}
+                    error={touched.paidDate && Boolean(errors.paidDate)}
+                    disabled={!values.paid}
+                  />
+                )}
+              />
+            </React.Fragment>
+          )}
+          {/* <FormikDebugger /> */}
         </React.Fragment>
       )}
     </Form>
@@ -184,6 +325,10 @@ CreateEditTicketForm.propTypes = {
   technicals: PropTypes.array,
   clients: PropTypes.array,
   isClient: PropTypes.bool,
+  dispatch: PropTypes.func,
+  defaultEvidence: PropTypes.array,
+  isClosed: PropTypes.bool,
+  onCreateCompany: PropTypes.func,
 };
 
 export default memo(CreateEditTicketForm);

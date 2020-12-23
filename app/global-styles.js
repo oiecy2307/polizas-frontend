@@ -20,6 +20,11 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'product-sans', 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
 
+  a {
+    text-decoration: none;
+    color: #000000de;
+  }
+
   #app {
     background-color: #fafafa;
     min-height: 100%;
@@ -59,13 +64,58 @@ const GlobalStyle = createGlobalStyle`
     src:
       url('${ProductSansBoldItalic}') format('opentype');
   }
+
   .text-capitalize {
     text-transform: capitalize;
   }
+
   .text-ellipsis {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+  }
+
+  /* total width */
+  ::-webkit-scrollbar {
+      background-color: #fff;
+      width: 16px;
+      border-radius: 4px;
+  }
+
+  /* background of the scrollbar except button or resizer */
+  ::-webkit-scrollbar-track {
+      background-color:#fff
+      border-radius: 4px;
+  }
+  ::-webkit-scrollbar-track:hover {
+      background-color:#f4f4f4
+  }
+
+  /* scrollbar itself */
+  ::-webkit-scrollbar-thumb {
+      background-color:#babac0;
+      border-radius:16px;
+      border:5px solid #fff
+  }
+  ::-webkit-scrollbar-thumb:hover {
+      background-color:#a0a0a5;
+      border:4px solid #f4f4f4
+  }
+
+  /* set button(top and bottom of the scrollbar) */
+  ::-webkit-scrollbar-button {display:none}
+
+  .shadow {
+    background-color: #ffffff;
+    box-shadow: 0 1px 5px 0 rgba(0,0,0,0.1);
+  }
+
+  .one-line-text {
+    white-space: nowrap;
+  }
+
+  .show-line-breaks {
+    white-space: pre-wrap;
   }
 `;
 

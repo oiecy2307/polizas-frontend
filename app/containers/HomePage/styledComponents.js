@@ -44,4 +44,12 @@ export const P = styled.p`
 
 export const Form = styled.div`
   width: 100%;
+
+  & > div {
+    width: 100%;
+  }
+
+  & > div:not(:last-child) {
+    margin-bottom: 32px;
+  }
 `;

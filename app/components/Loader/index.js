@@ -5,9 +5,11 @@
  */
 
 import React, { memo } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import LayersIcon from '@material-ui/icons/Layers';
-import { LoaderContainer, Logo } from './styledComponents';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+import { LoaderContainer, Logo, LinearContainer } from './styledComponents';
 
 const iconStyle = {
   color: '#108043',
@@ -15,7 +17,15 @@ const iconStyle = {
   cursor: 'pointer',
 };
 
-function Loader() {
+function Loader({ linear }) {
+  if (linear) {
+    return (
+      <LinearContainer>
+        <LinearProgress />
+      </LinearContainer>
+    );
+  }
+
   return (
     <LoaderContainer>
       <Logo>
@@ -25,6 +35,8 @@ function Loader() {
   );
 }
 
-Loader.propTypes = {};
+Loader.propTypes = {
+  linear: PropTypes.bool,
+};
 
 export default memo(Loader);

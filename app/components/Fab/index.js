@@ -10,11 +10,11 @@ import { FabContainer } from 'utils/globalStyledComponents';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
-function FabComponent({ onClick, ...restProps }) {
+function FabComponent({ onClick, icon, ...restProps }) {
   return (
     <FabContainer>
       <Fab {...restProps} color="primary" aria-label="add" onClick={onClick}>
-        <AddIcon />
+        {icon || <AddIcon />}
       </Fab>
     </FabContainer>
   );
@@ -22,6 +22,7 @@ function FabComponent({ onClick, ...restProps }) {
 
 FabComponent.propTypes = {
   onClick: PropTypes.func,
+  icon: PropTypes.any,
 };
 
 export default memo(FabComponent);

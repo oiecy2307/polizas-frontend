@@ -1,11 +1,15 @@
 import styled from 'styled-components';
 
-export const Image = styled.img`
+export const Image = styled.div`
   border-radius: 50%;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
-  object-fit: cover;
+  /* object-fit: cover; */
   margin: 0;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px hsla(0, 0%, 0%, 0.05);
+  background-image: url('${props => props.src}');
+  background-size: cover;
 `;
 
 export const Name = styled.span`
@@ -19,4 +23,6 @@ export const Name = styled.span`
   border-radius: 50%;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px hsla(0, 0%, 0%, 0.05);
 `;

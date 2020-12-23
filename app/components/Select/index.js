@@ -4,10 +4,12 @@
  *
  */
 
-import React, { memo } from 'react';
+import React, { memo, useContext } from 'react';
+import { GlobalValuesContext } from 'contexts/global-values';
 import Select from 'react-select';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const Error = styled.div`
   margin-top: -28px;
@@ -30,18 +32,29 @@ const FloatingLabel = styled.span`
 `;
 
 function SelectStyled(props) {
+  const { customEmpty } = props;
   const borderBottom = props.error
     ? '2px solid rgb(244, 67, 54)'
     : '1px solid #919191';
+  const { isResponsive } = useContext(GlobalValuesContext);
+  const matches = useMediaQuery(
+    '@media only screen and (max-width: 1080px) and (min-width: 800px)',
+  );
+  const position =
+    matches || isResponsive
+      ? {}
+      : { menuPlacement: 'bottom', menuPosition: 'fixed' };
+
+  const noOptionsMessage = customEmpty || (() => <span>Sin resultados</span>);
+
   return (
     <SelectContainer>
       <Select
-        {...props}
-        noOptionsMessage={() => <span>Sin resultados</span>}
+        noOptionsMessage={noOptionsMessage}
         styles={{
           control: provided => ({
             ...provided,
-            height: 56,
+            minHeight: 56,
             backgroundColor: 'rgba(0, 0, 0, 0.09)',
             marginBottom: 32,
             border: 'none',
@@ -52,17 +65,33 @@ function SelectStyled(props) {
           }),
           menu: provided => ({
             ...provided,
-            zIndex: 99,
+            zIndex: 999,
           }),
           singleValue: provided => ({
             ...provided,
             top: '74%',
           }),
+          multiValue: provided => ({
+            ...provided,
+            backgroundColor: 'white',
+          }),
           placeholder: provided => ({
             ...provided,
             color: props.error ? 'rgb(244, 67, 54)' : 'rgba(0, 0, 0, 0.54)',
           }),
+          valueContainer: provided => ({
+            ...provided,
+            paddingTop: props.isMulti ? 32 : 0,
+          }),
+          menuPortal: provided => ({
+            ...provided,
+            background: 'white',
+            zIndex: 999,
+          }),
         }}
+        isClearable
+        {...props}
+        {...position}
       />
       {props.value && <FloatingLabel>{props.placeholder}</FloatingLabel>}
       {props.error && <Error>{props.error}</Error>}
@@ -75,6 +104,8 @@ SelectStyled.propTypes = {
   error: PropTypes.string,
   value: PropTypes.any,
   placeholder: PropTypes.any,
+  isMulti: PropTypes.bool,
+  customEmpty: PropTypes.func,
 };
 
 export default memo(SelectStyled);

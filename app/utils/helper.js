@@ -1,4 +1,95 @@
 import { ImmortalDB } from 'immortal-db';
+import Numeral from 'numeral';
+import { mapValues, times } from 'lodash';
+import history from 'utils/history';
+
+export const dateFormatToServer = 'YYYY-MM-DD';
+
+export const validateRoute = async route => {
+  const user = JSON.parse(await ImmortalDB.get('user'));
+  const routes = [
+    {
+      route: 'Tickets',
+      roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
+    },
+    {
+      route: 'Reporteador de tickets',
+      roles: ['admin', 'salesman'],
+    },
+    {
+      route: 'Facturas',
+      roles: [
+        /* 'admin', 'salesman', 'technical', 'client', 'client-admin' */
+      ],
+    },
+    {
+      route: 'Usuarios',
+      roles: ['admin', 'client-admin'],
+    },
+    {
+      route: 'Dashboard',
+      roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
+    },
+    {
+      route: 'Perfil',
+      roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
+    },
+    {
+      route: 'Detalle de ticket',
+      roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
+    },
+    {
+      route: 'Invitaciones',
+      roles: ['admin', 'client-admin'],
+    },
+    {
+      route: 'Empresas',
+      roles: ['admin'],
+    },
+    {
+      route: 'Productos',
+      roles: ['admin'],
+    },
+    {
+      route: 'Soluciones',
+      roles: ['admin', 'technical'],
+    },
+    {
+      route: 'Detalle de solución',
+      roles: ['admin', 'technical'],
+    },
+    {
+      route: 'Notificaciones',
+      roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
+    },
+    {
+      route: 'Detalle de empresa',
+      roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
+    },
+    {
+      route: 'Configuración',
+      roles: ['admin', 'salesman', 'technical', 'client', 'client-admin'],
+    },
+  ];
+
+  const role =
+    user.isCompanyAdmin && user.role === 'client' ? 'client-admin' : user.role;
+
+  const unauthorized = !(routes.find(r => r.route === route).roles || []).some(
+    r => r === role,
+  );
+
+  if (unauthorized) {
+    history.push('/');
+  }
+};
+
+const emojisRegex = /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
+
+export const trimObject = object =>
+  mapValues({ ...object }, value =>
+    typeof value === 'string' ? value.trim().replace(emojisRegex, '') : value,
+  );
 
 export const getCurrentUser = async () => {
   try {
@@ -27,39 +118,64 @@ export const getFullName = user => {
   }
 };
 
+export const getFileType = (fileName = '') => {
+  try {
+    const stringSections = fileName.split('.');
+    return stringSections[stringSections.length - 1].toLowerCase();
+  } catch (e) {
+    return '';
+  }
+};
+
+export const getIsImage = fileName => {
+  const type = getFileType(fileName).toLowerCase();
+  return type === 'png' || type === 'jpg' || type === 'jpeg';
+};
+
+export const getStatusLabel = (status, paid) => {
+  if (status === 'closed' && paid) return 'Pagado';
+  switch (status) {
+    case 'assigned':
+      return 'Asignado';
+    case 'closed':
+      return 'Cerrado';
+    case 'new':
+      return 'Nuevo';
+    case 'cancelled':
+    default:
+      return 'Cancelado';
+  }
+};
+
+export const getRoleLabel = role => {
+  switch (role) {
+    case 'admin':
+      return 'Administrador';
+    case 'technical':
+      return 'Técnico';
+    case 'client':
+      return 'Cliente';
+    case 'inactive':
+      return 'Inactivo';
+    case 'salesman':
+    default:
+      return 'Ventas';
+  }
+};
+
 export const mediaQuery = '@media (max-width: 768px)';
 export const mediaQueryS = '@media (max-width: 576px)';
+export const mediaQueryL = '@media (max-width: 1190px)';
 
-// export const createUrlForSrc = (imgSrc, format, size) => {
-//   const blob = new Blob([imgSrc], { type: getBlobType(format) });
-//   const urlCreator = window.URL || window.webkitURL;
-//   let snackbar = {
-//     open: false,
-//     text: '',
-//   };
-//   if (
-//     format !== 'pdf' &&
-//     format !== 'png' &&
-//     format !== 'jpeg' &&
-//     format !== 'jpg'
-//   ) {
-//     snackbar = {
-//       open: true,
-//       text: 'El formato del archivo no es válido',
-//     };
-//   }
-//   if (size > 5000000) {
-//     snackbar = {
-//       open: true,
-//       text: 'El tamaño del archivo debe ser menor a 5MB',
-//     };
-//   }
-//   const node = {
-//     imageUrl: snackbar.open ? '' : urlCreator.createObjectURL(blob),
-//     snackbar,
-//   };
-//   return node;
-// };
+export const minutesToHours = minutes => {
+  const hours = Number.parseInt(minutes / 60, 10);
+  const leftMinutes = Number.parseInt(minutes % 60, 10);
+  return `${hours < 10 ? '0' : ''}${hours}:${
+    leftMinutes < 10 ? '0' : ''
+  }${leftMinutes}`;
+};
+
+export const toMoneyFormat = number => Numeral(number).format('$0,0.00');
 
 export const textRegex = /^[a-zA-ZáÁéÉíÍóÓúÚñÑ ]+$/;
 
@@ -112,3 +228,20 @@ export const validateUrl = value =>
   /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(
     value,
   );
+
+const getZeros = number => {
+  try {
+    const { length } = number.toString();
+    if (length <= 4) return '0000';
+    let zeros = '';
+    times(length, () => {
+      zeros = zeros.concat('0');
+    });
+    return zeros;
+  } catch (e) {
+    return '0000';
+  }
+};
+
+export const formatToFolio = value =>
+  Numeral(typeof value === 'number' ? value : 0).format(getZeros(value));

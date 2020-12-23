@@ -19,8 +19,8 @@ export default language => {
       en: 'Please, fill the next fields to access our support system',
     },
     email: {
-      es: 'Correo / username',
-      en: 'Email / username',
+      es: 'Correo',
+      en: 'Email',
     },
     password: {
       es: 'Contraseña',

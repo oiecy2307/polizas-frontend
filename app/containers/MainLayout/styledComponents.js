@@ -15,6 +15,7 @@ export const TopBarContainer = styled.header`
   position: fixed;
   width: 100%;
   top: 0;
+  z-index: 9;
 `;
 
 export const Logo = styled.div`
@@ -46,14 +47,29 @@ export const Avatar = styled.img`
 export const Flex = styled.div`
   display: flex;
   min-height: calc(100vh - 64px);
+
+  & .content-wrapper {
+    margin-left: 236px;
+    width: calc(100% - 236px);
+  }
+
+  @media (max-width: 768px) {
+    & .content-wrapper {
+      margin: 0;
+      width: 100%;
+    }
+  }
 `;
 
 export const LeftMenu = styled.div`
   background-color: #ffffff;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.1);
   width: 236px;
-  min-height: calc(100vh - 64px);
+  height: calc(100vh - 64px);
   padding: 40px 8px;
+  position: fixed;
+  overflow: auto;
+  padding-bottom: 32px;
 
   @media (max-width: 768px) {
     display: none;
@@ -69,9 +85,11 @@ export const MenuResponsive = styled.div`
 `;
 
 export const Content = styled.div`
-  width: calc(100% - 236px);
+  width: 100%;
   min-height: calc(100vh - 64px);
   padding: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
   @media (max-width: 768px) {
     width: 100%;
     padding: 24px 16px;
@@ -105,8 +123,27 @@ export const MobileMenu = styled.div`
     display: flex;
   }
   & h1 {
-    text-transform: capitalize;
     margin: 0;
     margin-left: 16px;
+  }
+`;
+
+export const NotificationContainer = styled.div`
+  position: relative;
+  cursor: pointer;
+
+  & .badge {
+    background: #ff0c3e;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    position: absolute;
+    right: 20px;
+    top: -2px;
   }
 `;

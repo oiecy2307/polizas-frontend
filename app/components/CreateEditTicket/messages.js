@@ -38,6 +38,10 @@ export default language => {
       es: 'Nivel de urgencia',
       en: 'Priority level',
     },
+    evidence: {
+      es: 'Adjuntar evidencia (presiona para eliminar)',
+      en: 'Upload evidence (touch to delete)',
+    },
     technicalId: {
       es: 'Técnico asignado',
       en: 'Assigned technical',
@@ -46,9 +50,9 @@ export default language => {
       es: 'Cliente',
       en: 'Client',
     },
-    dueDate: {
-      es: 'Fecha terminación',
-      en: 'Due date',
+    reportedDate: {
+      es: 'Fecha de reporte',
+      en: 'Reported date',
     },
     required: {
       es: 'Campo requerido',
@@ -101,9 +105,10 @@ export default language => {
       ticketTitle: values.ticketTitle[language],
       ticketDescription: values.ticketDescription[language],
       ticketPriority: values.ticketPriority[language],
+      evidence: values.evidence[language],
       technicalId: values.technicalId[language],
       clientId: values.clientId[language],
-      dueDate: values.dueDate[language],
+      reportedDate: values.reportedDate[language],
     },
     required: values.required[language],
     invalidCharacters: values.invalidCharacters[language],

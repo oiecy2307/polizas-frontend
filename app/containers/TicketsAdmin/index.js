@@ -14,7 +14,12 @@ import { get } from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import { LoggedUser } from 'contexts/logged-user';
 
-import { wsGetTicketsByStatus, wsGetDatesWithTickets } from 'services/tickets';
+import {
+  wsGetTicketsByStatus,
+  wsGetDatesWithTickets,
+  wsGetTicketsBrief,
+} from 'services/tickets';
+import { dateFormatToServer } from 'utils/helper';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 import CalendarIcon from '@material-ui/icons/CalendarToday';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -36,6 +41,8 @@ import {
   ColorsExplanation,
   IconCalendarContainer,
   Explanation,
+  ButtonDot,
+  ButtonsSection,
 } from './styledComponents';
 
 export function TicketsAdmin({ dispatch }) {
@@ -53,12 +60,17 @@ export function TicketsAdmin({ dispatch }) {
   const [selectedDate, setSelectedDate] = useState(
     moment(new Date(), 'DD-MM-YYYY').format(),
   );
-  // const [lastDatesSearch, setLastDatesSearch] = useState('');
   const [debtDates, setDebtDates] = useState([]);
   const [onTimeDates, setOnTimeDates] = useState([]);
   const [idTechnical, setIdTechnical] = useState(null);
   const [idTechnicalFirstTime, setIdTechnicalFirstTime] = useState(true);
   const [isClient] = useState(get(currentUser, 'role', '') === 'client');
+  const [ticketsBrief, setTicketsBrief] = useState({
+    hasNew: false,
+    hasInProgress: false,
+    hasClose: false,
+    hasCancelled: false,
+  });
 
   const dates = [
     ...debtDates.map(date => ({ value: date, type: 'warning' })),
@@ -68,6 +80,10 @@ export function TicketsAdmin({ dispatch }) {
   useEffect(() => {
     fetchTickets(optionSelected, selectedDate);
   }, [optionSelected, selectedDate]);
+
+  useEffect(() => {
+    fetchTicketsBrief(optionSelected, selectedDate);
+  }, [selectedDate]);
 
   useEffect(() => {
     fetchDatesWithTickets(selectedDateMonth);
@@ -80,12 +96,28 @@ export function TicketsAdmin({ dispatch }) {
     }
     fetchTickets(optionSelected, selectedDate);
     fetchDatesWithTickets(selectedDateMonth);
+    fetchTicketsBrief(optionSelected, selectedDate);
   }, [idTechnical]);
+
+  async function fetchTicketsBrief(status, date) {
+    try {
+      const ldate = moment(date).format(dateFormatToServer);
+      let response = null;
+      if (isClient) {
+        response = await wsGetTicketsBrief(status, ldate, currentUser.id);
+      } else {
+        response = await wsGetTicketsBrief(status, ldate, null, idTechnical);
+      }
+      setTicketsBrief(response.data);
+    } catch (e) {
+      // ERROR HANDLER
+    }
+  }
 
   async function fetchTickets(status, date) {
     try {
       dispatch(aSetLoadingState(true));
-      const ldate = moment(date).format();
+      const ldate = moment(date).format(dateFormatToServer);
       let rTickets = null;
       if (isClient) {
         rTickets = await wsGetTicketsByStatus(status, ldate, currentUser.id);
@@ -109,8 +141,6 @@ export function TicketsAdmin({ dispatch }) {
       const momentDate = moment(date);
       const month = momentDate.month() + 1;
       const year = momentDate.year();
-      // const monthYearString = `${month}-${year}`;
-      // if (monthYearString === lastDatesSearch) return;
       let rDatesWTickets = null;
       if (isClient) {
         rDatesWTickets = await wsGetDatesWithTickets(
@@ -129,9 +159,8 @@ export function TicketsAdmin({ dispatch }) {
       if (rDatesWTickets.error) return;
       setDebtDates(get(rDatesWTickets, 'data.onDebt', []));
       setOnTimeDates(get(rDatesWTickets, 'data.onTime', []));
-      // setLastDatesSearch(monthYearString);
     } catch (e) {
-      console.error(e);
+      // ERROR HANDLER
     }
   }
 
@@ -142,53 +171,53 @@ export function TicketsAdmin({ dispatch }) {
   const handleCallback = () => {
     setDialogOpen(false);
     fetchTickets(optionSelected, selectedDate);
+    fetchTicketsBrief(optionSelected, selectedDate);
     fetchDatesWithTickets(selectedDateMonth);
+  };
+
+  const handleTicketTimeChanged = (index, time) => {
+    setTickets(_tickets => {
+      const newTickets = [..._tickets];
+      newTickets[index].time = time;
+      return newTickets;
+    });
   };
 
   return (
     <div>
       <Helmet>
         <title>Tickets</title>
-        <meta name="description" content="Description of TicketsAdmin" />
       </Helmet>
-      <div>
+      <ButtonsSection>
         <TabButton
           selected={optionSelected === 'new'}
           onClick={handleSelectOption('new')}
         >
+          {ticketsBrief.hasNew && <ButtonDot />}
           Por asignar
         </TabButton>
         <TabButton
           selected={optionSelected === 'assigned'}
           onClick={handleSelectOption('assigned')}
         >
+          {ticketsBrief.hasInProgress && <ButtonDot />}
           Abiertos
         </TabButton>
-        {/* <TabButton
-          selected={optionSelected === 'in-progress'}
-          onClick={handleSelectOption('in-progress')}
-        >
-          En progreso
-        </TabButton> */}
-        {/* <TabButton
-          selected={optionSelected === 'finished'}
-          onClick={handleSelectOption('finished')}
-        >
-          Terminados
-        </TabButton> */}
         <TabButton
           selected={optionSelected === 'closed'}
           onClick={handleSelectOption('closed')}
         >
+          {ticketsBrief.hasClose && <ButtonDot />}
           Cerrados
         </TabButton>
-        {/* <TabButton
+        <TabButton
           selected={optionSelected === 'cancelled'}
           onClick={handleSelectOption('cancelled')}
         >
-          Cancelado
-        </TabButton> */}
-      </div>
+          {ticketsBrief.hasCancelled && <ButtonDot />}
+          Cancelados
+        </TabButton>
+      </ButtonsSection>
       <Content>
         <LeftSection>
           <TicketsList
@@ -196,6 +225,8 @@ export function TicketsAdmin({ dispatch }) {
             date={selectedDate}
             onRefresh={handleCallback}
             dispatch={dispatch}
+            isClient={isClient}
+            onTicketTimeChanged={handleTicketTimeChanged}
           />
         </LeftSection>
         <div>
