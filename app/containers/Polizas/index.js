@@ -1,7 +1,6 @@
-/* eslint-disable no-unused-vars */
 /**
  *
- * Users
+ * Polizas
  *
  */
 
@@ -12,25 +11,21 @@ import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { get } from 'lodash';
-import moment from 'moment/min/moment-with-locales';
 import { GlobalValuesContext } from 'contexts/global-values';
 import { LoggedUser } from 'contexts/logged-user';
 import Fab from 'components/Fab';
 import Table from 'components/Table';
 import EmptyState from 'components/EmptyState';
-import CreateEditUser from 'components/CreateEditUser';
+import CreateEditPoliza from 'components/CreateEditPoliza';
 import SkeletonLoader from 'components/SkeletonLoader';
 
-import { wsGetUsers, wsDeleteUser } from 'services/users';
+import { wsGetPolizas, wsDeletePoliza } from 'services/polizas';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 
-import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectUsers from './selectors';
-import reducer from './reducer';
+import makeSelectPolizas from './selectors';
 import getMessages from './messages';
 
-export function Users(props) {
-  useInjectReducer({ key: 'users', reducer });
+export function Polizas(props) {
   const currentUser = useContext(LoggedUser);
   const isClientAdmin =
     currentUser.role === 'client' && currentUser.isCompanyAdmin;
@@ -39,9 +34,9 @@ export function Users(props) {
     isClientAdmin ? 'client' : 'admin',
   );
   const [messages] = useState(getMessages(language));
-  const [users, setUsers] = useState([]);
+  const [polizas, setPolizas] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [userToEdit, setUserToEdit] = useState(null);
+  const [polizaToEdit, setPolizaToEdit] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -49,54 +44,69 @@ export function Users(props) {
 
   const columns = [
     {
-      key: 'name',
-      label: messages.table.name,
-      style: { minWidth: 160 },
-    },
-    {
-      key: 'email',
-      label: messages.table.email,
+      key: 'nombreEmpleado',
+      label: messages.table.nombreEmpleado,
       style: { minWidth: 200 },
     },
     {
-      key: 'date',
-      label: messages.table.date,
+      key: 'empleadoGenero',
+      label: messages.table.empleadoGenero,
+      style: { minWidth: 200 },
+    },
+    {
+      key: 'productoSku',
+      label: messages.table.productoSku,
+      style: { minWidth: 160 },
+    },
+    {
+      key: 'cantidad',
+      label: messages.table.cantidad,
+      style: { minWidth: 160 },
+    },
+    {
+      key: 'fecha',
+      label: messages.table.fecha,
+      style: { minWidth: 200 },
+    },
+    {
+      key: 'nombre',
+      label: messages.table.nombre,
       style: { minWidth: 160 },
     },
   ];
 
-  const items = users.map(user => ({
-    id: user.id,
-    name: `${user.nombre} ${user.apellidoPaterno} ${user.apellidoMaterno}`,
-    email: user.email,
-    username: user.username,
-    date: moment(user.createdAt).format('LL'),
-    fullItem: user,
+  const items = polizas.map(poliza => ({
+    id: poliza.id,
+    nombreEmpleado: `${poliza.user.nombre} ${poliza.user.apellidoPaterno} ${
+      poliza.user.apellidoMaterno
+    }`,
+    empleadoGenero: poliza.empleadoGenero,
+    productoSku: poliza.inventario.sku,
+    cantidad: poliza.cantidad,
+    fecha: poliza.createdAt,
+    nombre: poliza.inventario.nombre,
+    usuarioId: poliza.userId,
+    inventarioId: poliza.inventarioId,
+    fullItem: poliza,
   }));
 
-  const handleOpenEditUser = user => {
-    setUserToEdit(user.fullItem);
+  const handleOpenEditPoliza = poliza => {
+    setPolizaToEdit(poliza.fullItem);
     setDialogOpen(true);
   };
 
-  const handleDesactivateUser = async user => {
+  const handleDesactivatePoliza = async poliza => {
     try {
-      if (user.id === currentUser.id) {
-        dispatch(
-          aOpenSnackbar('No puedes desactivar tu propio usuario', 'error'),
-        );
-        return;
-      }
       dispatch(aSetLoadingState(true));
-      const response = await wsDeleteUser(user.id);
+      const response = await wsDeletePoliza(poliza.id);
       if (response.error) {
-        dispatch(aOpenSnackbar('No se pudo eliminar el usuario', 'error'));
+        dispatch(aOpenSnackbar('No se pudo eliminar la poliza', 'error'));
       } else {
-        dispatch(aOpenSnackbar('Usuario eliminado correctamente', 'success'));
-        fetchUsers();
+        dispatch(aOpenSnackbar('Poliza eliminada correctamente', 'success'));
+        fetchPolizas();
       }
     } catch (e) {
-      dispatch(aOpenSnackbar('No se pudo eliminar el usuario', 'error'));
+      dispatch(aOpenSnackbar('No se pudo eliminar la poliza', 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
     }
@@ -107,35 +117,35 @@ export function Users(props) {
   if (!isClientAdmin) {
     optionsMenu.push({
       option: 'Editar',
-      action: handleOpenEditUser,
+      action: handleOpenEditPoliza,
     });
   }
 
   if (optionSelected !== 'inactive') {
     optionsMenu.push({
       option: 'Eliminar',
-      action: handleDesactivateUser,
+      action: handleDesactivatePoliza,
     });
   } else {
     optionsMenu.push({
       option: 'Activar',
-      action: handleDesactivateUser,
+      action: handleDesactivatePoliza,
     });
   }
 
   useEffect(() => {
-    fetchUsers();
+    fetchPolizas();
   }, []);
 
-  async function fetchUsers() {
+  async function fetchPolizas() {
     try {
       dispatch(aSetLoadingState(true));
-      const rUsers = await wsGetUsers();
-      if (rUsers.error)
-        dispatch(aOpenSnackbar('Error al consultar usuarios', 'error'));
-      setUsers(get(rUsers, 'data', []));
+      const rPolizas = await wsGetPolizas();
+      if (rPolizas.error)
+        dispatch(aOpenSnackbar('Error al consultar polizas', 'error'));
+      setPolizas(get(rPolizas, 'data', []));
     } catch (e) {
-      dispatch(aOpenSnackbar('Error al consultar usuarios', 'error'));
+      dispatch(aOpenSnackbar('Error al consultar polizas', 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
       setInitialLoading(false);
@@ -147,7 +157,7 @@ export function Users(props) {
   };
 
   const handleSaveSuccess = () => {
-    fetchUsers();
+    fetchPolizas();
   };
 
   const handleChangePage = (event, newPage) => {
@@ -163,7 +173,7 @@ export function Users(props) {
     return (
       <div>
         <Helmet>
-          <title>Usuarios</title>
+          <title>Polizas</title>
         </Helmet>
         <SkeletonLoader />
       </div>
@@ -173,11 +183,11 @@ export function Users(props) {
   return (
     <div>
       <Helmet>
-        <title>Usuarios</title>
-        <meta name="description" content="crud de usuarios" />
+        <title>Polizas</title>
+        <meta name="description" content="crud de polizas" />
       </Helmet>
 
-      {Boolean(users.length) && (
+      {Boolean(polizas.length) && (
         <Table
           columns={columns}
           items={items}
@@ -188,32 +198,32 @@ export function Users(props) {
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
-          labelRowsPerPage="Usuarios por página"
+          labelRowsPerPage="polizas por página"
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       )}
       <Fab onClick={() => setDialogOpen(true)} />
-      {!users.length && <EmptyState />}
-      <CreateEditUser
+      {!polizas.length && <EmptyState />}
+      <CreateEditPoliza
         open={dialogOpen}
         onClose={() => {
           setDialogOpen(false);
-          setUserToEdit(null);
+          setPolizaToEdit(null);
         }}
         callback={handleSaveSuccess}
         dispatch={dispatch}
-        userToEdit={userToEdit}
+        polizaToEdit={polizaToEdit}
       />
     </div>
   );
 }
 
-Users.propTypes = {
+Polizas.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
-  users: makeSelectUsers(),
+  users: makeSelectPolizas(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -227,4 +237,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default compose(withConnect)(Users);
+export default compose(withConnect)(Polizas);

@@ -10,12 +10,12 @@ export const scope = 'app.containers.HomePage';
 export default language => {
   const values = {
     welcome: {
-      es: 'Bienvenido a Suppdesk',
-      en: 'Welcome to Suppdesk',
+      es: 'Bienvenido a CRUD - Polizas',
+      en: 'Welcome to CRUD - Polizas',
     },
     welcomeMessage: {
       es:
-        'Por favor ingresa los siguientes datos para poder acceder a nuestro sistema de soporte.',
+        'Por favor ingresa los siguientes datos para poder acceder al sistema de polizas.',
       en: 'Please, fill the next fields to access our support system',
     },
     email: {

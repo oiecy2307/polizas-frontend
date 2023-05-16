@@ -1,22 +1,22 @@
 /*
- * CreateEditUser Messages
+ * CreateEditPoliza Messages
  *
- * This contains all the text for the CreateEditUser component.
+ * This contains all the text for the CreateEditPoliza component.
  */
 
 import { defineMessages } from 'react-intl';
 
-export const scope = 'app.components.CreateEditUser';
+export const scope = 'app.components.CreateEditPoliza';
 
 export default language => {
   const values = {
     titleNew: {
-      es: 'Nuevo usuario',
-      en: 'New user',
+      es: 'Nueva Poliza',
+      en: 'New Invoice',
     },
     titleEdit: {
-      es: 'Editar usuario',
-      en: 'Editing user',
+      es: 'Editar poliza',
+      en: 'Editing invoice',
     },
     save: {
       es: 'Guardar',
@@ -26,45 +26,33 @@ export default language => {
       es: 'Cancelar',
       en: 'Cancel',
     },
-    name: {
+    empleadoGenero: {
+      es: 'Genero',
+      en: 'Gender',
+    },
+    productoSku: {
+      es: 'sku',
+      en: 'sku',
+    },
+    cantidad: {
+      es: 'cantidad',
+      en: 'quantity',
+    },
+    fecha: {
+      es: 'Fecha',
+      en: 'date',
+    },
+    nombre: {
       es: 'Nombre',
-      en: 'Name',
+      en: 'name',
     },
-    lastname: {
-      es: 'Apellido paterno',
-      en: 'First lastname',
+    inventoryId: {
+      es: 'Producto asignado',
+      en: 'Assigned product',
     },
-    secondLastName: {
-      es: 'Apellido materno',
-      en: 'Second lastname',
-    },
-    email: {
-      es: 'Correo electrónico',
-      en: 'Email',
-    },
-    username: {
-      es: 'Nombre de usuario',
-      en: 'Username',
-    },
-    password: {
-      es: 'Contraseña',
-      en: 'Password',
-    },
-    passwordConfirmation: {
-      es: 'Confirme contraseña',
-      en: 'Confirm password',
-    },
-    role: {
-      es: 'Rol',
-      en: 'Role',
-    },
-    phoneNumber: {
-      es: 'Número de teléfono',
-      en: 'Phone number',
-    },
-    company: {
-      es: 'Empresa',
-      en: 'Company',
+    userId: {
+      es: 'Usuario',
+      en: 'user',
     },
     required: {
       es: 'Campo requerido',
@@ -107,7 +95,7 @@ export default language => {
   return defineMessages({
     header: {
       id: `${scope}.header`,
-      defaultMessage: 'This is the CreateEditUser component!',
+      defaultMessage: 'This is the CreateEditPoliza component!',
     },
     title: {
       create: values.titleNew[language],
@@ -118,16 +106,18 @@ export default language => {
       cancel: values.cancel[language],
     },
     fields: {
-      name: values.name[language],
-      lastname: values.lastname[language],
-      secondLastName: values.secondLastName[language],
-      email: values.email[language],
-      username: values.username[language],
-      password: values.password[language],
-      passwordConfirmation: values.passwordConfirmation[language],
-      role: values.role[language],
-      phoneNumber: values.phoneNumber[language],
-      company: values.company[language],
+      empleadoGenero: values.empleadoGenero[language],
+      productoSku: values.productoSku[language],
+      cantidad: values.cantidad[language],
+      fecha: values.fecha[language],
+      nombre: values.nombre[language],
+      inventoryId: values.inventoryId[language],
+      userId: values.userId[language],
+      // password: values.password[language],
+      // passwordConfirmation: values.passwordConfirmation[language],
+      // role: values.role[language],
+      // phoneNumber: values.phoneNumber[language],
+      // company: values.company[language],
     },
     required: values.required[language],
     invalidCharacters: values.invalidCharacters[language],

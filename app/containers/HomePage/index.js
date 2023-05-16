@@ -25,11 +25,7 @@ import FilledInput from '@material-ui/core/FilledInput';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
-import {
-  SpaceBetween,
-  LabelButton,
-  Button,
-} from 'utils/globalStyledComponents';
+import { SpaceBetween, Button } from 'utils/globalStyledComponents';
 import {
   MainContainer,
   FormSection,
@@ -67,17 +63,13 @@ function HomePage({ history, dispatch }) {
         } else {
           await ImmortalDB.set('user', JSON.stringify(response.user));
           await ImmortalDB.set('token', response.token);
-          history.push('/');
+          history.push('/polizas');
         }
       }
     } catch (e) {
       dispatch(aOpenSnackbar('Usuario y/o contraseña incorrectos', 'error'));
     }
   }
-
-  const handleGoToPasswordRequest = () => {
-    history.push('/solicitar-contrasena');
-  };
 
   const handleKeyPressPassword = e => {
     if (e.key === 'Enter') {
@@ -135,9 +127,6 @@ function HomePage({ history, dispatch }) {
             />
           </FormControl>
           <SpaceBetween>
-            <LabelButton onClick={handleGoToPasswordRequest}>
-              Olvidé mi contraseña
-            </LabelButton>
             <Button disabled={disabled} onClick={() => handleLogin()}>
               {messages.login}
             </Button>

@@ -23,19 +23,11 @@ import { aSetLoadingState } from 'containers/App/actions';
 
 import LayersIcon from '@material-ui/icons/Layers';
 import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import ExitIcon from '@material-ui/icons/ExitToAppOutlined';
-import AccountCircleIcon from '@material-ui/icons/AccountCircleOutlined';
 import UserIcon from '@material-ui/icons/GroupOutlined';
-import UserAddIcon from '@material-ui/icons/PersonAddOutlined';
-import CompanyAddIcon from '@material-ui/icons/BusinessOutlined';
-import AssignmentAddIcon from '@material-ui/icons/AssignmentOutlined';
 import ProductsIcon from '@material-ui/icons/CategoryOutlined';
-import SolutionsIcon from '@material-ui/icons/EmojiObjectsOutlined';
-import SettingsIcon from '@material-ui/icons/SettingsOutlined';
 
 import Drawer from '@material-ui/core/SwipeableDrawer';
-import Avatar from 'components/Avatar';
 import NotificationsPop from 'components/NotificationsPop';
 
 import { useInjectSaga } from 'utils/injectSaga';
@@ -54,6 +46,7 @@ import {
   Content,
   MobileMenu,
   MenuResponsive,
+  // eslint-disable-next-line no-unused-vars
   NotificationContainer,
 } from './styledComponents';
 import {
@@ -85,6 +78,7 @@ export function MainLayout({
   const [messages] = useState(getMessages(language));
   const [currentUser, setCurrentUser] = useState({});
   const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [notificationsCount, setNotificationsCount] = useState(0);
 
   useEffect(() => {
@@ -263,18 +257,8 @@ export function MainLayout({
     }
   }
 
-  const handleOpenNotifications = event => {
-    setNotificationsAnchorEl(event.currentTarget);
-  };
-
-  const handleGoToDashboard = () => {
-    history.push('/');
-  };
-
   if (!pageLoaded) return <div />;
   const isAdmin = currentUser.role === 'admin';
-  const isTechnical = currentUser.role === 'technical';
-  const isSalesman = currentUser.role === 'salesman';
   const isClientAdmin =
     currentUser.role === 'client' && currentUser.isCompanyAdmin;
 
@@ -282,37 +266,12 @@ export function MainLayout({
     <React.Fragment>
       <SidebarItem
         onClick={handleChangeRoute}
-        to="/"
-        selected={optionSelected === '/'}
+        to="/polizas"
+        selected={optionSelected === '/polizas'}
       >
-        <SidebarIcon icon="dashboard" />
-        <SidebarItemText>{messages.menu.dashboard}</SidebarItemText>
+        <SidebarIcon icon="polizas" />
+        <SidebarItemText>{messages.menu.polizas}</SidebarItemText>
       </SidebarItem>
-      <SidebarItem
-        onClick={handleChangeRoute}
-        to="/tickets"
-        selected={optionSelected === '/tickets'}
-      >
-        <SidebarIcon icon="tickets" />
-        <SidebarItemText>{messages.menu.tickets}</SidebarItemText>
-      </SidebarItem>
-      {(isAdmin || isSalesman) && (
-        <SidebarItem
-          onClick={handleChangeRoute}
-          to="/reporteador-tickets"
-          selected={optionSelected === '/reporteador-tickets'}
-        >
-          <AssignmentAddIcon />
-          <SidebarItemText>{messages.menu.ticketsReporter}</SidebarItemText>
-        </SidebarItem>
-      )}
-      {/* <SidebarItem
-        onClick={handleChangeRoute('/facturas')}
-        selected={optionSelected === '/facturas'}
-      >
-        <SidebarIcon icon="facturas" />
-        <SidebarItemText>{messages.menu.invoices}</SidebarItemText>
-      </SidebarItem> */}
       {(isAdmin || isClientAdmin) && (
         <SidebarItem
           onClick={handleChangeRoute}
@@ -323,62 +282,16 @@ export function MainLayout({
           <SidebarItemText>{messages.menu.users}</SidebarItemText>
         </SidebarItem>
       )}
-      {(isAdmin || isClientAdmin) && (
-        <SidebarItem
-          onClick={handleChangeRoute}
-          to="/invitaciones"
-          selected={optionSelected === '/invitaciones'}
-        >
-          <UserAddIcon />
-          <SidebarItemText>{messages.menu.invitations}</SidebarItemText>
-        </SidebarItem>
-      )}
       {isAdmin && (
         <SidebarItem
           onClick={handleChangeRoute}
-          to="/empresas"
-          selected={optionSelected === '/empresas'}
-        >
-          <CompanyAddIcon />
-          <SidebarItemText>{messages.menu.companies}</SidebarItemText>
-        </SidebarItem>
-      )}
-      {isAdmin && (
-        <SidebarItem
-          onClick={handleChangeRoute}
-          to="/productos"
-          selected={optionSelected === '/productos'}
+          to="/inventario"
+          selected={optionSelected === '/inventario'}
         >
           <ProductsIcon />
           <SidebarItemText>{messages.menu.products}</SidebarItemText>
         </SidebarItem>
       )}
-      {(isAdmin || isTechnical) && (
-        <SidebarItem
-          onClick={handleChangeRoute}
-          to="/soluciones"
-          selected={optionSelected === '/soluciones'}
-        >
-          <SolutionsIcon />
-          <SidebarItemText>{messages.menu.solutions}</SidebarItemText>
-        </SidebarItem>
-      )}
-      <SidebarItem
-        onClick={handleChangeRoute}
-        to={`/perfil/${currentUser.id}`}
-        selected={optionSelected === `/perfil/${currentUser.id}`}
-      >
-        <AccountCircleIcon />
-        <SidebarItemText>{messages.menu.profile}</SidebarItemText>
-      </SidebarItem>
-      <SidebarItem
-        onClick={handleChangeRoute}
-        to="/configuracion"
-        selected={optionSelected === '/configuracion'}
-      >
-        <SettingsIcon />
-        <SidebarItemText>{messages.menu.config}</SidebarItemText>
-      </SidebarItem>
       <SidebarItemWOLink onClick={handleLogOut}>
         <ExitIcon />
         <SidebarItemText>{messages.menu.logout}</SidebarItemText>
@@ -390,28 +303,11 @@ export function MainLayout({
     <LoggedUser.Provider value={currentUser}>
       <MainContainer>
         <TopBarContainer>
-          <AlignVertical
-            onClick={handleGoToDashboard}
-            style={{ cursor: 'pointer' }}
-          >
+          <AlignVertical style={{ cursor: 'pointer' }}>
             <Logo>
               <LayersIcon style={{ ...iconStyle }} />
             </Logo>
-            <Suppdesk>Suppdesk</Suppdesk>
-          </AlignVertical>
-          <AlignVertical>
-            <NotificationContainer onClick={handleOpenNotifications}>
-              <NotificationsIcon
-                style={{ ...iconStyle, color: '#637381', marginRight: 24 }}
-              />
-              {notificationsCount > 0 && (
-                <div className="badge">{notificationsCount}</div>
-              )}
-            </NotificationContainer>
-            <Avatar
-              name={get(currentUser, 'name', '')}
-              src={get(currentUser, 'image', '')}
-            />
+            <Suppdesk>Crud Polizas</Suppdesk>
           </AlignVertical>
         </TopBarContainer>
         <MobileMenu>
@@ -427,7 +323,7 @@ export function MainLayout({
                 <Logo>
                   <LayersIcon style={{ ...iconStyle }} />
                 </Logo>
-                <Suppdesk>Suppdesk</Suppdesk>
+                <Suppdesk>Crud Polizas</Suppdesk>
               </AlignVertical>
               {menu}
             </MenuResponsive>

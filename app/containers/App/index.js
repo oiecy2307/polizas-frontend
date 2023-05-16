@@ -25,26 +25,13 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import HomePage from 'containers/HomePage/Loadable';
-import PasswordRequest from 'containers/PasswordRequest/Loadable';
 import Register from 'containers/Register/Loadable';
 import RecoverPassword from 'containers/RecoverPassword/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import TicketsAdmin from 'containers/TicketsAdmin/Loadable';
-import TicketsReporter from 'containers/TicketsReporter/Loadable';
-import UserProfile from 'containers/UserProfile';
-import Invoices from 'containers/Invoices/Loadable';
 import MainLayout from 'containers/MainLayout';
-import DashboardBackoffice from 'containers/DashboardBackoffice';
 import Users from 'containers/Users/Loadable';
-import TicketDetail from 'containers/TicketDetail/Loadable';
-import Companies from 'containers/Companies/Loadable';
-import Products from 'containers/Products/Loadable';
-import Solutions from 'containers/Solutions/Loadable';
-import SolutionDetail from 'containers/SolutionDetail/Loadable';
-import Notifications from 'containers/Notifications/Loadable';
-import Invitations from 'containers/Invitations';
-import CompanyDetail from 'containers/CompanyDetail/Loadable';
-import UserSettings from 'containers/UserSettings/Loadable';
+import Inventory from 'containers/Inventory/Loadable';
+import Polizas from 'containers/Polizas';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -106,36 +93,16 @@ function App({ app, dispatch }) {
   return (
     <GlobalValuesContext.Provider value={globalValues}>
       <MuiThemeProvider theme={theme}>
-        <Helmet
-          titleTemplate="%s - Suppdesk"
-          defaultTitle="Backoffice - Suppdesk"
-        >
-          <meta
-            name="description"
-            content="Suppdesk - administración de tickets"
-          />
+        <Helmet titleTemplate="%s - CRUD" defaultTitle="CRUD">
+          <meta name="description" content="CRUD - administración de polizas" />
         </Helmet>
         <Switch>
           <AppRoute
             exact
-            path="/tickets"
+            path="/polizas"
             layout={MainLayout}
-            responsiveTitle="Tickets"
-            component={TicketsAdmin}
-          />
-          <AppRoute
-            exact
-            path="/reporteador-tickets"
-            layout={MainLayout}
-            responsiveTitle="Reporteador de tickets"
-            component={TicketsReporter}
-          />
-          <AppRoute
-            exact
-            path="/facturas"
-            layout={MainLayout}
-            responsiveTitle="Facturas"
-            component={Invoices}
+            responsiveTitle="Polizas"
+            component={Polizas}
           />
           <AppRoute
             exact
@@ -146,80 +113,10 @@ function App({ app, dispatch }) {
           />
           <AppRoute
             exact
-            path="/"
-            layout={MainLayout}
-            responsiveTitle="Dashboard"
-            component={DashboardBackoffice}
-          />
-          <AppRoute
-            exact
-            path="/perfil/:id"
-            layout={MainLayout}
-            responsiveTitle="Perfil"
-            component={UserProfile}
-          />
-          <AppRoute
-            exact
-            path="/tickets/:id"
-            layout={MainLayout}
-            responsiveTitle="Detalle de ticket"
-            component={TicketDetail}
-          />
-          <AppRoute
-            exact
-            path="/invitaciones"
-            layout={MainLayout}
-            responsiveTitle="Invitaciones"
-            component={Invitations}
-          />
-          <AppRoute
-            exact
-            path="/empresas"
-            layout={MainLayout}
-            responsiveTitle="Empresas"
-            component={Companies}
-          />
-          <AppRoute
-            exact
-            path="/productos"
+            path="/inventario"
             layout={MainLayout}
             responsiveTitle="Productos"
-            component={Products}
-          />
-          <AppRoute
-            exact
-            path="/soluciones"
-            layout={MainLayout}
-            responsiveTitle="Soluciones"
-            component={Solutions}
-          />
-          <AppRoute
-            exact
-            path="/soluciones/:id"
-            layout={MainLayout}
-            responsiveTitle="Detalle de solución"
-            component={SolutionDetail}
-          />
-          <AppRoute
-            exact
-            path="/notificaciones"
-            layout={MainLayout}
-            responsiveTitle="Notificaciones"
-            component={Notifications}
-          />
-          <AppRoute
-            exact
-            path="/empresas/:id"
-            layout={MainLayout}
-            responsiveTitle="Detalle de empresa"
-            component={CompanyDetail}
-          />
-          <AppRoute
-            exact
-            path="/configuracion"
-            layout={MainLayout}
-            responsiveTitle="Configuración"
-            component={UserSettings}
+            component={Inventory}
           />
           <Route exact path="/inicio-sesion" component={HomePage} />
           <Route exact path="/registro/:token" component={Register} />
@@ -227,17 +124,6 @@ function App({ app, dispatch }) {
             exact
             path="/recuperar-contrasena/:token"
             component={RecoverPassword}
-          />
-          <Route
-            exact
-            path="/solicitar-contrasena"
-            component={PasswordRequest}
-          />
-          <Route
-            exact
-            path="/seguimiento-ticket/:id"
-            responsiveTitle="Detalle de ticket"
-            component={TicketDetail}
           />
           <Route component={NotFoundPage} />
         </Switch>

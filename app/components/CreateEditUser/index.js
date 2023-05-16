@@ -12,8 +12,8 @@ import * as Yup from 'yup';
 import { get } from 'lodash';
 
 import { textRegex, trimObject } from 'utils/helper';
-import { wRegister } from 'services/auth';
-import { wsUpdateUser } from 'services/users';
+// eslint-disable-next-line import/named
+import { wsUpdateUser, wCreateUser } from 'services/users';
 import { wsUpdateProfileInfo } from 'services/profile';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 
@@ -45,7 +45,7 @@ function CreateEditUser({
       } else if (isEditing) {
         response = await wsUpdateUser(userToEdit.id, trimObject(body));
       } else {
-        response = await wRegister(trimObject(body));
+        response = await wCreateUser(trimObject(body));
       }
       if (response.error) {
         dispatch(aOpenSnackbar('Error al guardar el usuario', 'error'));
@@ -63,29 +63,27 @@ function CreateEditUser({
   }
 
   const defaultValues = {
-    name: get(userToEdit, 'name', ''),
-    lastname: get(userToEdit, 'lastname', ''),
-    secondLastName: get(userToEdit, 'secondLastName', ''),
+    nombre: get(userToEdit, 'nombre', ''),
+    apellidoPaterno: get(userToEdit, 'apellidoPaterno', ''),
+    apellidoMaterno: get(userToEdit, 'apellidoMaterno', ''),
     email: get(userToEdit, 'email', ''),
-    // username: get(userToEdit, 'username', ''),
+    username: get(userToEdit, 'username', ''),
     password: '',
     role: get(userToEdit, 'role', ''),
-    company: get(userToEdit, 'company.name', ''),
-    phoneNumber: get(userToEdit, 'phoneNumber', ''),
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string(messages.fields.name)
+    nombre: Yup.string(messages.fields.name)
       .trim()
       .required(messages.required)
       .max(100, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
-    lastname: Yup.string(messages.fields.lastname)
+    apellidoPaterno: Yup.string(messages.fields.lastname)
       .trim()
       .required(messages.required)
       .max(100, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
-    secondLastName: Yup.string(messages.fields.secondLastName)
+    apellidoMaterno: Yup.string(messages.fields.secondLastName)
       .trim()
       .max(100, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
@@ -94,9 +92,9 @@ function CreateEditUser({
       .email(messages.emailError)
       .max(200, messages.tooLong)
       .required(messages.required),
-    // username: Yup.string(messages.fields.username)
-    //   .required(messages.required)
-    //   .max(150, messages.tooLong),
+    username: Yup.string(messages.fields.username)
+      .required(messages.required)
+      .max(150, messages.tooLong),
     password: Yup.string(messages.fields.password)
       .trim()
       [isEditing ? 'notRequired' : 'required'](messages.required)
@@ -111,13 +109,6 @@ function CreateEditUser({
       .required(messages.required)
       .max(150, messages.tooLong)
       .matches(textRegex, messages.invalidCharacters),
-    company: Yup.string(messages.fields.role)
-      .trim()
-      .max(150, messages.tooLong)
-      .matches(textRegex, messages.invalidCharacters),
-    phoneNumber: Yup.number(messages.fields.role)
-      .typeError(messages.isNotNumber)
-      .max(9999999999999999, messages.tooLong),
   });
 
   const dialogTitle = isEditing ? messages.title.edit : messages.title.create;

@@ -25,16 +25,8 @@ function CreateEditUserForm(props) {
       label: 'Administrador',
     },
     {
-      value: 'technical',
-      label: 'Soporte',
-    },
-    {
-      value: 'salesman',
+      value: 'vendedor',
       label: 'Ventas',
-    },
-    {
-      value: 'client',
-      label: 'Cliente',
     },
   ]);
   const {
@@ -46,46 +38,53 @@ function CreateEditUserForm(props) {
     isEditing,
     fromProfile,
   } = props;
+
   return (
     <Form>
       <Field
-        name="name"
-        defaultValues={values.name}
+        name="nombre"
+        defaultValues={values.nombre}
         render={({ field }) => (
           <Input
             {...field}
             type="text"
-            label={messages.fields.name}
-            helperText={touched.name ? errors.name : ''}
-            error={touched.name && Boolean(errors.name)}
+            label={messages.fields.nombre}
+            helperText={touched.nombre ? errors.nombre : 'Nombre'}
+            error={touched.nombre && Boolean(errors.nombre)}
             maxLength="100"
           />
         )}
       />
       <Field
-        name="lastname"
-        defaultValues={values.lastname}
+        name="apellidoPaterno"
+        defaultValues={values.apellidoPaterno}
         render={({ field }) => (
           <Input
             {...field}
             type="text"
-            label={messages.fields.lastname}
-            helperText={touched.lastname ? errors.lastname : ''}
-            error={touched.lastname && Boolean(errors.lastname)}
+            label={messages.fields.apellidoPaterno}
+            helperText={
+              touched.lastname ? errors.apellidoPaterno : 'Apellido Paterno'
+            }
+            error={touched.apellidoPaterno && Boolean(errors.apellidoPaterno)}
             maxLength="100"
           />
         )}
       />
       <Field
-        name="secondLastName"
-        defaultValues={values.secondLastName}
+        name="apellidoMaterno"
+        defaultValues={values.apellidoMaterno}
         render={({ field }) => (
           <Input
             {...field}
             type="text"
-            label={messages.fields.secondLastName}
-            helperText={touched.secondLastName ? errors.secondLastName : ''}
-            error={touched.secondLastName && Boolean(errors.secondLastName)}
+            label={messages.fields.apellidoMaterno}
+            helperText={
+              touched.apellidoMaterno
+                ? errors.apellidoMaterno
+                : 'Apellido Materno'
+            }
+            error={touched.apellidoMaterno && Boolean(errors.apellidoMaterno)}
             maxLength="100"
           />
         )}
@@ -106,21 +105,7 @@ function CreateEditUserForm(props) {
           )}
         />
       )}
-      {false && (
-        <Field
-          name="username"
-          defaultValues={values.username}
-          render={({ field }) => (
-            <Input
-              {...field}
-              type="text"
-              label={messages.fields.username}
-              helperText={touched.username ? errors.username : ''}
-              error={touched.username && Boolean(errors.username)}
-            />
-          )}
-        />
-      )}
+
       {!isEditing && (
         <React.Fragment>
           <Field
@@ -190,16 +175,15 @@ function CreateEditUserForm(props) {
         </React.Fragment>
       )}
       <Field
-        name="phoneNumber"
-        defaultValues={values.phoneNumber}
+        name="username"
+        defaultValues={values.username}
         render={({ field }) => (
           <Input
             {...field}
-            type="tel"
-            label={messages.fields.phoneNumber}
-            helperText={touched.phoneNumber ? errors.phoneNumber : ''}
-            error={touched.phoneNumber && Boolean(errors.phoneNumber)}
-            maxLength="16"
+            type="text"
+            label={messages.fields.username}
+            helperText={touched.username ? errors.username : ''}
+            error={touched.username && Boolean(errors.username)}
           />
         )}
       />

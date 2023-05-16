@@ -1,10 +1,10 @@
 import { get, getToken, patch, post, deleteRequest } from 'utils/http';
 
-export const wsGetUsers = async () => {
+export const wsGetPolizas = async () => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
     get({
-      url: `/users`,
+      url: `/polizas`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -14,11 +14,11 @@ export const wsGetUsers = async () => {
   });
 };
 
-export const wsUpdateUser = async (id, body) => {
+export const wsUpdatePoliza = async (id, body) => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
     patch({
-      url: `/users/${id}`,
+      url: `/polizas/${id}`,
       body,
       headers: {
         Authorization: `Bearer ${token}`,
@@ -29,11 +29,11 @@ export const wsUpdateUser = async (id, body) => {
   });
 };
 
-export const wCreateUser = async body => {
+export const wsCreatePoliza = async body => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
     post({
-      url: `/users`,
+      url: `/polizas`,
       body,
       headers: {
         Authorization: `Bearer ${token}`,
@@ -44,11 +44,11 @@ export const wCreateUser = async body => {
   });
 };
 
-export const wsDeleteUser = async id => {
+export const wsDeletePoliza = async id => {
   const token = await getToken();
   return new Promise((resolve, reject) => {
     deleteRequest({
-      url: `/users/${id}`,
+      url: `/polizas/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

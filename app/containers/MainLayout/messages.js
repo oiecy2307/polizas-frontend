@@ -14,9 +14,9 @@ export default language => {
       es: 'Dashboard',
       en: 'Dashboard',
     },
-    tickets: {
-      es: 'Tickets',
-      en: 'Tickets',
+    polizas: {
+      es: 'Polizas',
+      en: 'Polizas',
     },
     ticketsReporter: {
       es: 'Reporteador tickets',
@@ -66,7 +66,7 @@ export default language => {
     },
     menu: {
       dashboard: values.dashboard[language],
-      tickets: values.tickets[language],
+      polizas: values.polizas[language],
       ticketsReporter: values.ticketsReporter[language],
       invoices: values.invoices[language],
       users: values.users[language],

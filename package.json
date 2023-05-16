@@ -1,16 +1,16 @@
 {
-  "name": "suppdesk-web",
+  "name": "crud-polizas",
   "version": "1.0.1",
   "description": "Tickets management system. Create -> follow -> resolve -> document",
   "repository": {
     "type": "git",
-    "url": "git://gitlab.com/pedromedina95/zuppdesk-web.git"
+    "url": ""
   },
   "engines": {
     "npm": ">=5",
     "node": ">=8.15.1"
   },
-  "author": "Pedro Medina Contreras",
+  "author": "Oscar Sandoval Alfaro",
   "license": "MIT",
   "scripts": {
     "analyze:clean": "rimraf stats.json",

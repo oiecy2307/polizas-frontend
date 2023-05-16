@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /**
  *
- * Users
+ * Inventory
  *
  */
 
@@ -21,16 +21,16 @@ import EmptyState from 'components/EmptyState';
 import CreateEditUser from 'components/CreateEditUser';
 import SkeletonLoader from 'components/SkeletonLoader';
 
-import { wsGetUsers, wsDeleteUser } from 'services/users';
+import { wsGetInventario } from 'services/inventario';
 import { aSetLoadingState, aOpenSnackbar } from 'containers/App/actions';
 
 import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectUsers from './selectors';
+import makeSelectInventario from './selectors';
 import reducer from './reducer';
 import getMessages from './messages';
 
-export function Users(props) {
-  useInjectReducer({ key: 'users', reducer });
+export function Inventory(props) {
+  useInjectReducer({ key: 'inventario', reducer });
   const currentUser = useContext(LoggedUser);
   const isClientAdmin =
     currentUser.role === 'client' && currentUser.isCompanyAdmin;
@@ -39,7 +39,7 @@ export function Users(props) {
     isClientAdmin ? 'client' : 'admin',
   );
   const [messages] = useState(getMessages(language));
-  const [users, setUsers] = useState([]);
+  const [inventory, setInventory] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [userToEdit, setUserToEdit] = useState(null);
   const [page, setPage] = useState(0);
@@ -54,24 +54,23 @@ export function Users(props) {
       style: { minWidth: 160 },
     },
     {
-      key: 'email',
-      label: messages.table.email,
+      key: 'sku',
+      label: messages.table.sku,
       style: { minWidth: 200 },
     },
     {
-      key: 'date',
-      label: messages.table.date,
+      key: 'cantidad',
+      label: messages.table.cantidad,
       style: { minWidth: 160 },
     },
   ];
 
-  const items = users.map(user => ({
-    id: user.id,
-    name: `${user.nombre} ${user.apellidoPaterno} ${user.apellidoMaterno}`,
-    email: user.email,
-    username: user.username,
-    date: moment(user.createdAt).format('LL'),
-    fullItem: user,
+  const items = inventory.map(product => ({
+    id: product.id,
+    name: product.nombre,
+    sku: product.sku,
+    cantidad: product.cantidad,
+    fullItem: product,
   }));
 
   const handleOpenEditUser = user => {
@@ -79,63 +78,19 @@ export function Users(props) {
     setDialogOpen(true);
   };
 
-  const handleDesactivateUser = async user => {
-    try {
-      if (user.id === currentUser.id) {
-        dispatch(
-          aOpenSnackbar('No puedes desactivar tu propio usuario', 'error'),
-        );
-        return;
-      }
-      dispatch(aSetLoadingState(true));
-      const response = await wsDeleteUser(user.id);
-      if (response.error) {
-        dispatch(aOpenSnackbar('No se pudo eliminar el usuario', 'error'));
-      } else {
-        dispatch(aOpenSnackbar('Usuario eliminado correctamente', 'success'));
-        fetchUsers();
-      }
-    } catch (e) {
-      dispatch(aOpenSnackbar('No se pudo eliminar el usuario', 'error'));
-    } finally {
-      dispatch(aSetLoadingState(false));
-    }
-  };
-
-  const optionsMenu = [];
-
-  if (!isClientAdmin) {
-    optionsMenu.push({
-      option: 'Editar',
-      action: handleOpenEditUser,
-    });
-  }
-
-  if (optionSelected !== 'inactive') {
-    optionsMenu.push({
-      option: 'Eliminar',
-      action: handleDesactivateUser,
-    });
-  } else {
-    optionsMenu.push({
-      option: 'Activar',
-      action: handleDesactivateUser,
-    });
-  }
-
   useEffect(() => {
-    fetchUsers();
+    fetchInventory();
   }, []);
 
-  async function fetchUsers() {
+  async function fetchInventory() {
     try {
       dispatch(aSetLoadingState(true));
-      const rUsers = await wsGetUsers();
-      if (rUsers.error)
-        dispatch(aOpenSnackbar('Error al consultar usuarios', 'error'));
-      setUsers(get(rUsers, 'data', []));
+      const rInventory = await wsGetInventario();
+      if (rInventory.error)
+        dispatch(aOpenSnackbar('Error al consultar el inventario', 'error'));
+      setInventory(get(rInventory, 'data', []));
     } catch (e) {
-      dispatch(aOpenSnackbar('Error al consultar usuarios', 'error'));
+      dispatch(aOpenSnackbar('Error al consultar el inventrio', 'error'));
     } finally {
       dispatch(aSetLoadingState(false));
       setInitialLoading(false);
@@ -147,7 +102,7 @@ export function Users(props) {
   };
 
   const handleSaveSuccess = () => {
-    fetchUsers();
+    fetchInventory();
   };
 
   const handleChangePage = (event, newPage) => {
@@ -163,7 +118,7 @@ export function Users(props) {
     return (
       <div>
         <Helmet>
-          <title>Usuarios</title>
+          <title>Inventario</title>
         </Helmet>
         <SkeletonLoader />
       </div>
@@ -173,16 +128,15 @@ export function Users(props) {
   return (
     <div>
       <Helmet>
-        <title>Usuarios</title>
+        <title>Inventario</title>
         <meta name="description" content="crud de usuarios" />
       </Helmet>
 
-      {Boolean(users.length) && (
+      {Boolean(inventory.length) && (
         <Table
           columns={columns}
           items={items}
           withMenu
-          optionsMenu={optionsMenu}
           isClickable
           showPagination={false}
           rowsPerPage={rowsPerPage}
@@ -192,28 +146,16 @@ export function Users(props) {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       )}
-      <Fab onClick={() => setDialogOpen(true)} />
-      {!users.length && <EmptyState />}
-      <CreateEditUser
-        open={dialogOpen}
-        onClose={() => {
-          setDialogOpen(false);
-          setUserToEdit(null);
-        }}
-        callback={handleSaveSuccess}
-        dispatch={dispatch}
-        userToEdit={userToEdit}
-      />
     </div>
   );
 }
 
-Users.propTypes = {
+Inventory.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
-  users: makeSelectUsers(),
+  inventario: makeSelectInventario(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -227,4 +169,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default compose(withConnect)(Users);
+export default compose(withConnect)(Inventory);
